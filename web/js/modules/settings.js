@@ -208,7 +208,8 @@ TR.modules.settings = (el, D, route) => {
       <div class="row"><button type="button" class="btn" data-k="scan">지금 스캔 (전 종목)</button>${local && !phone ? `<button type="button" class="btn" data-k="mac">맥 알림 테스트</button>` : ""}</div>
     </details>`;
 
-  el.innerHTML = `<section class="panel settings">${phone ? phoneAppBox : phoneBox + apkBox + kakaoBox}${pushBox}${lineBox}${uniBox}${themeBox}${sysBox}</section>
+  el.innerHTML = `<section class="panel settings">${phone ? phoneAppBox : phoneBox + apkBox + kakaoBox}${pushBox}${lineBox}${uniBox}${themeBox}${sysBox}
+    <p class="hint">차트 엔진: <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a> · Apache-2.0 (js/vendor)</p></section>
     <div class="savebar" hidden role="region" aria-label="저장하지 않은 변경"><span>저장하지 않은 변경이 있어요</span><button type="button" class="btn primary" data-savebar>저장</button></div>`;
 
   // ---------- 동작 ----------

@@ -57,8 +57,10 @@ TR.modules.detail = (el, D, route) => {
     let lo = 0, hi = dIdx.length - 1;                            // 시작 = 첫 앵커가 있는 봉
     while (lo < hi) { const mid = (lo + hi) >> 1; if (dIdx[mid] < i1 - 1e-9) lo = mid + 1; else hi = mid; }
     const start = dIdx[lo] >= i1 - 1e-9 ? lo : dIdx.length - 1;
+    let lo2 = start, hi2 = dIdx.length - 1;                       // 둘째 앵커가 있는 봉(내 선 손잡이 위치)
+    while (lo2 < hi2) { const mid = (lo2 + hi2) >> 1; if (dIdx[mid] < i2 - 1e-9) lo2 = mid + 1; else hi2 = mid; }
     const label = x.kind === "user" ? "내 빗각" : `${x.status === "broken" ? "전환" : x.side === "sup" ? "지지" : "저항"} ${x.grade}`;
-    return { kind: x.kind, side: x.side, broken: x.status === "broken", weak: !x.alertable && x.kind !== "user",
+    return { id: x.kind === "user" ? x.id : null, a: { i: start, p: x.p1 }, b: { i: lo2, p: x.p2 }, kind: x.kind, side: x.side, broken: x.status === "broken", weak: !x.alertable && x.kind !== "user",
              width: x.grade === "S" ? 2.6 : x.kind === "user" ? 2.4 : 2, label: x.alertable || x.kind === "user" ? label : "", start,
              valueAt: (i) => { const di = D_(i); return di < i1 - 1e-9 ? null : Math.exp(lp1 + m * (di - i1)); } };
   }
@@ -173,7 +175,7 @@ TR.modules.detail = (el, D, route) => {
           </div>
           ${st.draw ? `<p class="drawhint">차트에서 시작점과 끝점을 차례로 ${isMobile() ? "탭" : "클릭"}하세요(그리는 중에도 드래그로 이동 가능). 선은 오른쪽으로 연장되고 저장되어 알림 대상이 됩니다.</p>` : ""}
           <div class="chart-box"></div>
-          ${helpSeen < 3 ? `<p class="hint ch-help">${isMobile() ? "두 손가락으로 확대·축소 · 좌우로 밀어 이동 · 탭하면 가격 보기 · 두 번 탭하면 맞춤" : "휠·트랙패드로 확대·축소 · 드래그로 이동 · 더블클릭으로 맞춤"}${canDraw ? "" : " · 빗각 그리기는 일봉·주봉에서"}</p>` : ""}
+          ${helpSeen < 3 ? `<p class="hint ch-help">${isMobile() ? "두 손가락으로 확대·축소 · 좌우로 밀어 이동 · 가격 축을 위아래로 끌면 세로 확대 · 두 번 탭하면 맞춤 · 내 빗각을 누르면 끝점 옮기기·지우기" : "휠로 확대·축소 · 드래그로 이동 · 가격·시간 축을 끌어 늘리기 · 더블클릭으로 맞춤 · 내 빗각을 클릭하면 끝점 옮기기·지우기"}${canDraw ? "" : " · 빗각 그리기는 일봉·주봉에서"}</p>` : ""}
           <div class="legend"><span><i class="lg lg-sup"></i>지지 빗각</span><span><i class="lg lg-res"></i>저항 빗각</span><span><i class="lg lg-sup dash"></i>역할 전환(리테스트 대기)</span><span><i class="lg lg-user"></i>내 빗각</span>
             ${st.ma ? `<span><i class="lg lg-ma20"></i>MA20</span><span><i class="lg lg-ma60"></i>MA60</span><span><i class="lg lg-ma120"></i>MA120</span><span><i class="lg lg-ma200"></i>MA200</span>` : ""}</div>
         </div>
@@ -202,19 +204,28 @@ TR.modules.detail = (el, D, route) => {
         </aside>
       </section>`;
 
+    // 차트의 두 점(봉 번호 · 가격) → 저장할 내 선. 그린 시점의 위치로 역할 결정: 현재가가 선 위면 지지, 아래면 저항
+    function userLine(a, b) {
+      if (!cur || !(cur.tf === "1d" || cur.tf === "1w")) return null;
+      const d1 = cur.bars[a.i]?.d, d2 = cur.bars[b.i]?.d;
+      if (!d1 || !d2 || d1 >= d2) { toast("서로 다른 두 날짜를 선택하세요"); return null; }
+      const dd = cur.daily.d, i1 = idxOfDate(dd, d1), i2 = idxOfDate(dd, d2);
+      const now = Math.exp(Math.log(a.p) + ((Math.log(b.p) - Math.log(a.p)) / (i2 - i1 || 1)) * (dd.length - 1 - i1));
+      return { d1, p1: a.p, d2, p2: b.p, side: it.price >= now ? "sup" : "res" };
+    }
     chart?.destroy();
     chart = TR.chart.create(el.querySelector(".chart-box"), {
       height: isMobile() ? 380 : 520,
       onView: (v) => { if (cur) TR.store.chartView = { key: `${sym}:${cur.tf}`, v }; },       // 15분마다 새로 그려도 보던 범위 유지
       onDraw: async (a, b) => {
-        if (!cur || !(cur.tf === "1d" || cur.tf === "1w")) return;
-        const d1 = cur.bars[a.i].d, d2 = cur.bars[b.i].d;
-        if (d1 >= d2) { toast("서로 다른 두 날짜를 선택하세요"); return; }
-        // 그린 시점의 위치로 역할 결정: 현재가가 선 위면 지지, 아래면 저항
-        const dd = cur.daily.d, i1 = idxOfDate(dd, d1), i2 = idxOfDate(dd, d2);
-        const now = Math.exp(Math.log(a.p) + ((Math.log(b.p) - Math.log(a.p)) / (i2 - i1 || 1)) * (dd.length - 1 - i1));
-        await saveLines([...mine, { d1, p1: a.p, d2, p2: b.p, side: it.price >= now ? "sup" : "res" }]);
+        const ln = userLine(a, b);
+        if (ln) await saveLines([...mine, ln]);
       },
+      onEdit: async (id, a, b) => {                                 // 내 선 끝점 · 통째 이동
+        const ln = userLine(a, b);
+        if (ln) await saveLines(mine.map((u) => (u.id === id ? { ...u, ...ln } : u)));
+      },
+      onDelete: (id) => saveLines(mine.filter((u) => u.id !== id)),
     });
     chart.setDraw(st.draw);
     if (cur) applyChart(false);

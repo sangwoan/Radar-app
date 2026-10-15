@@ -306,9 +306,14 @@ code, .copy { font-family: var(--mono); font-size: 0.72rem; background: var(--ca
 .chart-box { position: relative; min-height: 380px; }
 .chart-box.loading { opacity: .55; }
 .ch-ohlc { font-size: 0.72rem; min-height: 1.15rem; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ch-canvas { display: block; width: 100%; touch-action: pan-y; cursor: grab; border-radius: 0.4rem; }
-.ch-canvas:active { cursor: grabbing; }
-.ch-canvas.drawing { cursor: crosshair; }
+.ch-wrap { position: relative; }
+.ch-lw { width: 100%; border-radius: 0.4rem; overflow: hidden; }
+.ch-lw.drawing { cursor: crosshair; touch-action: none; }
+.ch-lw.drawing * { touch-action: none !important; }
+.ch-del { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 3; }
+.ch-del[hidden], .ch-hint[hidden] { display: none; }
+.ch-hint { position: absolute; left: 0.5rem; right: 4.5rem; bottom: 2rem; z-index: 3; margin: 0; padding: 0.3rem 0.5rem; border-radius: 0.4rem;
+  font-size: 0.74rem; background: color-mix(in srgb, var(--card) 88%, transparent); color: var(--text-2); pointer-events: none; }
 .ch-help { margin-top: 0.3rem; }
 .btn.sm { padding: 0.32rem 0.6rem; font-size: 0.76rem; }
 

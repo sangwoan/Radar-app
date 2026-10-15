@@ -1,0 +1,5 @@
+TradingView Lightweight Charts™
+Copyright (c) 2026 TradingView, Inc. https://www.tradingview.com/
+
+Radar의 차트 엔진(js/vendor/lightweight-charts.js, v5.2.1, Apache License 2.0 — LICENSE-lightweight-charts.txt).
+고친 점: 원본 파일은 그대로 쓰고, 빗각 그리기·수정·자석·선 라벨·축 맞춤은 js/chart.js에서 플러그인(primitive)으로 더했다.
