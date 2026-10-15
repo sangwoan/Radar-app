@@ -1,5 +1,9 @@
 TradingView Lightweight Charts™
 Copyright (c) 2026 TradingView, Inc. https://www.tradingview.com/
 
-Radar의 차트 엔진(js/vendor/lightweight-charts.js, v5.2.1, Apache License 2.0 — LICENSE-lightweight-charts.txt).
-고친 점: 원본 파일은 그대로 쓰고, 빗각 그리기·수정·자석·선 라벨·축 맞춤은 js/chart.js에서 플러그인(primitive)으로 더했다.
+Radar의 차트 엔진(js/vendor/lightweight-charts.js)은 TradingView Lightweight Charts v5.2.1(Apache License 2.0 — LICENSE-lightweight-charts.txt)을 고친 것이다.
+고친 내용: tools/charts/radar.patch(바뀐 곳마다 "Radar:" 주석), 빌드: tools/build_charts.sh
+  1. 봉 사이(소수) 위치의 좌표 계산 — 원본은 0을 돌려줘 미래 영역으로 연장한 선이 왼쪽 끝으로 튀었다
+  2. timeScale.maxFutureRatio — 마지막 봉 오른쪽 빈 영역의 한도
+  3. 가격 축의 현재가 라벨이 priceLineSource를 따름
+빗각 그리기 · 수정 · 자석 · 선 라벨 · 축 맞춤은 js/chart.js의 플러그인(primitive)이다.

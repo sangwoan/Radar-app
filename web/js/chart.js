@@ -35,7 +35,9 @@ TR.chart = (() => {
       layout: { background: { type: "solid", color: C.bg }, textColor: C.axis, fontFamily: C.font, fontSize: 11, attributionLogo: false },
       grid: { vertLines: { color: C.grid }, horzLines: { color: C.grid } },
       rightPriceScale: { borderVisible: false, scaleMargins: { top: 0.06, bottom: 0.2 } },
-      timeScale: { borderVisible: false, rightOffset: 6, minBarSpacing: 0.4, shiftVisibleRangeOnNewBar: false, tickMarkFormatter: tick },
+      timeScale: { borderVisible: false, rightOffset: 6, minBarSpacing: 0.4, shiftVisibleRangeOnNewBar: false, tickMarkFormatter: tick,
+                   maxFutureRatio: 0.5 },                         // 엔진 수정: 미래 빈 영역은 화면 절반까지만(밀어도 빈 화면만 남지 않게)
+      trackingMode: { exitMode: LW.TrackingModeExitMode.OnTouchEnd },   // 길게 눌러 본 크로스헤어는 손을 떼면 사라지고 다음 밀기는 이동
       localization: { locale: "ko-KR", priceFormatter: (p) => TR.util.price(p), timeFormatter: (t) => fmtTime(t, true) },
       crosshair: { mode: LW.CrosshairMode.Normal, vertLine: { labelBackgroundColor: C.user }, horzLine: { labelBackgroundColor: C.user } },
       handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
@@ -134,6 +136,7 @@ TR.chart = (() => {
             }
           }
         }
+        for (const lb of this.labels) lb.y = Math.max(12, lb.y);
         this.labels.sort((a, b) => a.y - b.y);
         for (let k = 1; k < this.labels.length; k++) if (this.labels[k].y - this.labels[k - 1].y < 13) this.labels[k].y = this.labels[k - 1].y + 13;
         this.axis = axis;
@@ -247,6 +250,7 @@ TR.chart = (() => {
         if (ln.id !== sel) select(ln.id);
         gest = { type: h === 0 ? "a" : h === 1 ? "b" : "move", x0: pt.x, y0: pt.y, ln, moved: false, start: at(pt, false) };
       } else return;
+      touch.mine = true;
       e.stopPropagation();
       window.addEventListener("pointermove", move, true);
       window.addEventListener("pointerup", up, true);
@@ -324,15 +328,33 @@ TR.chart = (() => {
     }
     // 엔진이 터치 · 마우스 호환 이벤트로도 받으므로, 우리가 맡은 제스처 동안은 그것도 막는다(세로 스크롤 포함)
     const block = (e) => { if (gest) { e.stopPropagation(); if (e.cancelable && e.type === "touchmove") e.preventDefault(); } };
-    box.addEventListener("pointerdown", down, true);
     for (const t of ["touchstart", "touchmove", "touchend", "mousedown", "mousemove", "mouseup"]) box.addEventListener(t, block, { capture: true, passive: false });
-    // 맞춤: 더블클릭 · 두 번 탭(그리기 모드 아닐 때)
+    // 맞춤: 더블클릭 · 두 번 탭(그리기 모드 아닐 때). 탭 = 손가락 하나 · 짧게 · 거의 안 움직임 — 핀치 뒤 두 손가락을 떼는 것을 두 번 탭으로 보면 화면이 처음으로 돌아간다
     box.addEventListener("dblclick", (e) => { if (!S.draw && local(e).x <= plotW()) { reset(); } });
-    box.addEventListener("pointerup", (e) => {
-      if (S.draw || e.pointerType === "mouse") return;
+    const touch = { ids: new Set(), multi: false, t0: 0, x0: 0, y0: 0, moved: false };
+    box.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") return;
+      if (!touch.ids.size) Object.assign(touch, { multi: false, t0: performance.now(), x0: e.clientX, y0: e.clientY, moved: false });
+      else touch.multi = true;
+      touch.ids.add(e.pointerId);
+    }, true);
+    const touchMove = (e) => {
+      if (touch.ids.has(e.pointerId) && Math.hypot(e.clientX - touch.x0, e.clientY - touch.y0) > 10) touch.moved = true;
+    };
+    const touchEnd = (e) => {
+      if (!touch.ids.delete(e.pointerId) || touch.ids.size) return;
+      const tap = e.type === "pointerup" && !touch.multi && !touch.moved && !touch.mine && performance.now() - touch.t0 < 300;
+      touch.mine = false;
+      if (!tap || S.draw) { lastTap = 0; return; }
       const now = performance.now();
-      if (now - lastTap < 320) { reset(); lastTap = 0; } else lastTap = now;
-    });
+      if (lastTap && now - lastTap.t < 350 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 40) { lastTap = 0; reset(); }
+      else lastTap = { t: now, x: e.clientX, y: e.clientY };
+    };
+    // 떼기는 창(window)에서 받는다 — 우리 제스처 처리(up)가 이벤트를 막아도 손가락 수를 놓치지 않게(먼저 등록돼 먼저 불림)
+    window.addEventListener("pointermove", touchMove, true);
+    window.addEventListener("pointerup", touchEnd, true);
+    window.addEventListener("pointercancel", touchEnd, true);
+    box.addEventListener("pointerdown", down, true);
     delBtn.addEventListener("click", () => { const id = sel; select(null); if (id != null) opt.onDelete?.(id); });
 
     const drawHint = () => (window.matchMedia("(pointer: coarse)").matches ? "시작점에서 끝점까지 끌거나 두 점을 차례로 누르세요 · 고가 · 저가 근처는 자동으로 붙습니다"
@@ -341,6 +363,7 @@ TR.chart = (() => {
 
     // ---------- 데이터 ----------
     function setData(d, keepView) {
+      if (!live.has(api)) return;                                  // 정리된 차트(빨리 넘긴 종목 · 시간 단위의 늦게 온 데이터)는 무시
       if (gest) { pending = [d, keepView]; return; }               // 끄는 중에는 미뤘다가 놓은 뒤에
       const hadBars = n() > 0;
       S = { ...S, ...d };
@@ -381,9 +404,16 @@ TR.chart = (() => {
         hintText(on ? drawHint() : "");
         prim.request();
       },
-      reset,
-      setView(v) { if (v && v.width > 0) ts().setVisibleLogicalRange({ from: v.right - v.width, to: v.right }); },
-      destroy() { if (!live.delete(api)) return; finish(); chart.remove(); },
+      reset() { if (live.has(api)) reset(); },
+      setView(v) { if (live.has(api) && v && v.width > 0) ts().setVisibleLogicalRange({ from: v.right - v.width, to: v.right }); },
+      destroy() {
+        if (!live.delete(api)) return;
+        finish();
+        window.removeEventListener("pointermove", touchMove, true);
+        window.removeEventListener("pointerup", touchEnd, true);
+        window.removeEventListener("pointercancel", touchEnd, true);
+        chart.remove();
+      },
     };
     live.add(api);
     return api;
