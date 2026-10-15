@@ -1,0 +1,117 @@
+{
+  "mode": "atr",
+  "approach_atr": 2.0,
+  "near_atr": 1.0,
+  "zone_atr": 0.5,
+  "reset_atr": 2.5,
+  "approach_cap_pct": 10,
+  "near_cap_pct": 5,
+  "approach_pct": 5,
+  "near_pct": 3,
+  "touch_pct": 0.5,
+  "reset_pct": 7,
+  "min_touches": 3,
+  "scan_minutes": 15,
+  "include_auto": true,
+  "include_user": true,
+  "favorites": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "XRPUSDT",
+    "BNBUSDT",
+    "DOGEUSDT",
+    "^GSPC",
+    "^NDX",
+    "^IXIC",
+    "^SOX",
+    "KOSPI",
+    "KOSDAQ",
+    "AAPL",
+    "MSFT",
+    "GOOGL",
+    "AMZN",
+    "META",
+    "TSLA",
+    "AVGO",
+    "TSM",
+    "MU",
+    "005930.KS",
+    "000660.KS",
+    "NVDA"
+  ],
+  "push": {
+    "approach": true,
+    "near": true,
+    "touch": true,
+    "confirm": true,
+    "break": true,
+    "fail": true,
+    "retest": true,
+    "volume": true
+  },
+  "digest": {
+    "on": true,
+    "times": [
+      "07:05",
+      "09:15",
+      "15:50"
+    ],
+    "min_grade": "A",
+    "types": [
+      "confirm",
+      "break",
+      "retest",
+      "fail"
+    ],
+    "max_items": 15
+  },
+  "push_groups": [
+    "crypto",
+    "index",
+    "macro",
+    "us",
+    "kr"
+  ],
+  "quiet": {
+    "on": true,
+    "start": "00:30",
+    "end": "07:00"
+  },
+  "kakao": true,
+  "mac_notify": true,
+  "volume": {
+    "on": true,
+    "lookback": 3,
+    "base_days": 20,
+    "ratio": 3.0,
+    "max_move": 5.0,
+    "groups": [
+      "us",
+      "kr",
+      "crypto"
+    ]
+  },
+  "detect": {
+    "k": 5,
+    "min_span": 8,
+    "tol_atr": 0.35,
+    "tol_min": 0.004,
+    "tol_max": 0.03,
+    "windows_stock": [
+      126,
+      252
+    ],
+    "windows_crypto": [
+      180,
+      365
+    ],
+    "lines_per_side": 2,
+    "candidates_per_side": 4,
+    "show_min_quality": 35,
+    "max_lines": 2,
+    "touch_tol": 1.25,
+    "relevance_atr": 3
+  },
+  "min_quality": 40
+}

@@ -1,0 +1,2979 @@
+{
+  "groups": [
+    {
+      "id": "crypto",
+      "label": "코인",
+      "items": [
+        {
+          "sym": "BTCUSDT",
+          "name": "비트코인",
+          "en": "Bitcoin",
+          "src": "binance",
+          "tv": "BINANCE:BTCUSDT",
+          "market": "crypto",
+          "rank": 1,
+          "mcap": 1660110095418,
+          "auto": true
+        },
+        {
+          "sym": "ETHUSDT",
+          "name": "이더리움",
+          "en": "Ethereum",
+          "src": "binance",
+          "tv": "BINANCE:ETHUSDT",
+          "market": "crypto",
+          "rank": 2,
+          "mcap": 308700501574,
+          "auto": true
+        },
+        {
+          "sym": "BNBUSDT",
+          "name": "BNB",
+          "en": "BNB",
+          "src": "binance",
+          "tv": "BINANCE:BNBUSDT",
+          "market": "crypto",
+          "rank": 4,
+          "mcap": 99489654473,
+          "auto": true
+        },
+        {
+          "sym": "XRPUSDT",
+          "name": "리플",
+          "en": "XRP",
+          "src": "binance",
+          "tv": "BINANCE:XRPUSDT",
+          "market": "crypto",
+          "rank": 5,
+          "mcap": 87602523580,
+          "auto": true
+        },
+        {
+          "sym": "SOLUSDT",
+          "name": "솔라나",
+          "en": "Solana",
+          "src": "binance",
+          "tv": "BINANCE:SOLUSDT",
+          "market": "crypto",
+          "rank": 7,
+          "mcap": 64912533227,
+          "auto": true
+        },
+        {
+          "sym": "TRXUSDT",
+          "name": "트론",
+          "en": "TRON",
+          "src": "binance",
+          "tv": "BINANCE:TRXUSDT",
+          "market": "crypto",
+          "rank": 8,
+          "mcap": 31486391021,
+          "auto": true
+        },
+        {
+          "sym": "ZECUSDT",
+          "name": "지캐시",
+          "en": "Zcash",
+          "src": "binance",
+          "tv": "BINANCE:ZECUSDT",
+          "market": "crypto",
+          "rank": 10,
+          "mcap": 21802549207,
+          "auto": true
+        },
+        {
+          "sym": "HYPEUSDT",
+          "name": "하이퍼리퀴드",
+          "en": "Hyperliquid",
+          "src": "bybit",
+          "tv": "BYBIT:HYPEUSDT",
+          "market": "crypto",
+          "rank": 11,
+          "mcap": 19007029239,
+          "auto": true
+        },
+        {
+          "sym": "DOGEUSDT",
+          "name": "도지코인",
+          "en": "Dogecoin",
+          "src": "binance",
+          "tv": "BINANCE:DOGEUSDT",
+          "market": "crypto",
+          "rank": 12,
+          "mcap": 13455702586,
+          "auto": true
+        },
+        {
+          "sym": "LINKUSDT",
+          "name": "체인링크",
+          "en": "Chainlink",
+          "src": "binance",
+          "tv": "BINANCE:LINKUSDT",
+          "market": "crypto",
+          "rank": 14,
+          "mcap": 10090955724,
+          "auto": true
+        },
+        {
+          "sym": "XMR-USD",
+          "name": "모네로",
+          "en": "Monero",
+          "src": "yahoo",
+          "tv": "CRYPTO:XMRUSD",
+          "market": "crypto",
+          "rank": 15,
+          "mcap": 10025727536,
+          "auto": true
+        },
+        {
+          "sym": "ADAUSDT",
+          "name": "에이다",
+          "en": "Cardano",
+          "src": "binance",
+          "tv": "BINANCE:ADAUSDT",
+          "market": "crypto",
+          "rank": 17,
+          "mcap": 9306358828,
+          "auto": true
+        },
+        {
+          "sym": "NEARUSDT",
+          "name": "니어",
+          "en": "NEAR Protocol",
+          "src": "binance",
+          "tv": "BINANCE:NEARUSDT",
+          "market": "crypto",
+          "rank": 19,
+          "mcap": 7370203542,
+          "auto": true
+        },
+        {
+          "sym": "XLMUSDT",
+          "name": "스텔라루멘",
+          "en": "Stellar",
+          "src": "binance",
+          "tv": "BINANCE:XLMUSDT",
+          "market": "crypto",
+          "rank": 21,
+          "mcap": 6985793083,
+          "auto": true
+        },
+        {
+          "sym": "BCHUSDT",
+          "name": "비트코인캐시",
+          "en": "Bitcoin Cash",
+          "src": "binance",
+          "tv": "BINANCE:BCHUSDT",
+          "market": "crypto",
+          "rank": 22,
+          "mcap": 5598045314,
+          "auto": true
+        },
+        {
+          "sym": "LTCUSDT",
+          "name": "라이트코인",
+          "en": "Litecoin",
+          "src": "binance",
+          "tv": "BINANCE:LTCUSDT",
+          "market": "crypto",
+          "rank": 23,
+          "mcap": 4991444314,
+          "auto": true
+        },
+        {
+          "sym": "CCUSDT",
+          "name": "캔톤",
+          "en": "Canton",
+          "src": "bybit",
+          "tv": "BYBIT:CCUSDT",
+          "market": "crypto",
+          "rank": 24,
+          "mcap": 4965352715,
+          "auto": true
+        },
+        {
+          "sym": "AVAXUSDT",
+          "name": "아발란체",
+          "en": "Avalanche",
+          "src": "binance",
+          "tv": "BINANCE:AVAXUSDT",
+          "market": "crypto",
+          "rank": 26,
+          "mcap": 4810585391,
+          "auto": true
+        },
+        {
+          "sym": "UNIUSDT",
+          "name": "유니스왑",
+          "en": "Uniswap",
+          "src": "binance",
+          "tv": "BINANCE:UNIUSDT",
+          "market": "crypto",
+          "rank": 28,
+          "mcap": 4710719436,
+          "auto": true
+        },
+        {
+          "sym": "SUIUSDT",
+          "name": "수이",
+          "en": "Sui",
+          "src": "binance",
+          "tv": "BINANCE:SUIUSDT",
+          "market": "crypto",
+          "rank": 30,
+          "mcap": 4511171871,
+          "auto": true
+        },
+        {
+          "sym": "HBARUSDT",
+          "name": "헤데라",
+          "en": "Hedera",
+          "src": "binance",
+          "tv": "BINANCE:HBARUSDT",
+          "market": "crypto",
+          "rank": 32,
+          "mcap": 4047319700,
+          "auto": true
+        },
+        {
+          "sym": "GRAMUSDT",
+          "name": "그램(톤)",
+          "en": "Gram (prev. Toncoin)",
+          "src": "bybit",
+          "tv": "BYBIT:GRAMUSDT",
+          "market": "crypto",
+          "rank": 33,
+          "mcap": 3940094043,
+          "auto": true
+        },
+        {
+          "sym": "QNTUSDT",
+          "name": "퀀트",
+          "en": "Quant",
+          "src": "binance",
+          "tv": "BINANCE:QNTUSDT",
+          "market": "crypto",
+          "rank": 35,
+          "mcap": 3350001720,
+          "auto": true
+        },
+        {
+          "sym": "TAOUSDT",
+          "name": "비텐서",
+          "en": "Bittensor",
+          "src": "binance",
+          "tv": "BINANCE:TAOUSDT",
+          "market": "crypto",
+          "rank": 36,
+          "mcap": 3290359186,
+          "auto": true
+        },
+        {
+          "sym": "SHIBUSDT",
+          "name": "시바이누",
+          "en": "Shiba Inu",
+          "src": "binance",
+          "tv": "BINANCE:SHIBUSDT",
+          "market": "crypto",
+          "rank": 37,
+          "mcap": 3191947618,
+          "auto": true
+        },
+        {
+          "sym": "ENAUSDT",
+          "name": "에테나",
+          "en": "Ethena",
+          "src": "binance",
+          "tv": "BINANCE:ENAUSDT",
+          "market": "crypto",
+          "rank": 39,
+          "mcap": 3051316213,
+          "auto": true
+        },
+        {
+          "sym": "PUMPUSDT",
+          "name": "펌프펀",
+          "en": "Pump.fun",
+          "src": "binance",
+          "tv": "BINANCE:PUMPUSDT",
+          "market": "crypto",
+          "rank": 43,
+          "mcap": 2572284602,
+          "auto": true
+        },
+        {
+          "sym": "AAVEUSDT",
+          "name": "에이브",
+          "en": "Aave",
+          "src": "binance",
+          "tv": "BINANCE:AAVEUSDT",
+          "market": "crypto",
+          "rank": 44,
+          "mcap": 2549585862,
+          "auto": true
+        },
+        {
+          "sym": "ONDOUSDT",
+          "name": "온도",
+          "en": "Ondo",
+          "src": "binance",
+          "tv": "BINANCE:ONDOUSDT",
+          "market": "crypto",
+          "rank": 46,
+          "mcap": 2440331386,
+          "auto": true
+        },
+        {
+          "sym": "DOTUSDT",
+          "name": "폴카닷",
+          "en": "Polkadot",
+          "src": "binance",
+          "tv": "BINANCE:DOTUSDT",
+          "market": "crypto",
+          "rank": 51,
+          "mcap": 2165481040,
+          "auto": true
+        },
+        {
+          "sym": "WLDUSDT",
+          "name": "월드코인",
+          "en": "Worldcoin",
+          "src": "binance",
+          "tv": "BINANCE:WLDUSDT",
+          "market": "crypto",
+          "rank": 52,
+          "mcap": 2044963475,
+          "auto": true
+        },
+        {
+          "sym": "ASTERUSDT",
+          "name": "애스터",
+          "en": "Aster",
+          "src": "binance",
+          "tv": "BINANCE:ASTERUSDT",
+          "market": "crypto",
+          "rank": 53,
+          "mcap": 1919807001,
+          "auto": true
+        },
+        {
+          "sym": "ICPUSDT",
+          "name": "인터넷컴퓨터",
+          "en": "Internet Computer",
+          "src": "binance",
+          "tv": "BINANCE:ICPUSDT",
+          "market": "crypto",
+          "rank": 54,
+          "mcap": 1893989676,
+          "auto": true
+        },
+        {
+          "sym": "MNTUSDT",
+          "name": "맨틀",
+          "en": "Mantle",
+          "src": "bybit",
+          "tv": "BYBIT:MNTUSDT",
+          "market": "crypto",
+          "rank": 55,
+          "mcap": 1851433423,
+          "auto": true
+        },
+        {
+          "sym": "SKYUSDT",
+          "name": "스카이",
+          "en": "Sky",
+          "src": "binance",
+          "tv": "BINANCE:SKYUSDT",
+          "market": "crypto",
+          "rank": 56,
+          "mcap": 1836149960,
+          "auto": true
+        },
+        {
+          "sym": "WLFIUSDT",
+          "name": "월드리버티",
+          "en": "World Liberty Financial",
+          "src": "binance",
+          "tv": "BINANCE:WLFIUSDT",
+          "market": "crypto",
+          "rank": 59,
+          "mcap": 1810851362,
+          "auto": true
+        },
+        {
+          "sym": "PEPEUSDT",
+          "name": "페페",
+          "en": "Pepe",
+          "src": "binance",
+          "tv": "BINANCE:PEPEUSDT",
+          "market": "crypto",
+          "rank": 61,
+          "mcap": 1750615648,
+          "auto": true
+        },
+        {
+          "sym": "MORPHOUSDT",
+          "name": "모포",
+          "en": "Morpho",
+          "src": "binance",
+          "tv": "BINANCE:MORPHOUSDT",
+          "market": "crypto",
+          "rank": 62,
+          "mcap": 1721328281,
+          "auto": true
+        },
+        {
+          "sym": "ETCUSDT",
+          "name": "이더리움클래식",
+          "en": "Ethereum Classic",
+          "src": "binance",
+          "tv": "BINANCE:ETCUSDT",
+          "market": "crypto",
+          "rank": 67,
+          "mcap": 1329825562,
+          "auto": true
+        },
+        {
+          "sym": "ARBUSDT",
+          "name": "아비트럼",
+          "en": "Arbitrum",
+          "src": "binance",
+          "tv": "BINANCE:ARBUSDT",
+          "market": "crypto",
+          "rank": 69,
+          "mcap": 1304328989,
+          "auto": true
+        },
+        {
+          "sym": "JUPUSDT",
+          "name": "주피터",
+          "en": "Jupiter",
+          "src": "binance",
+          "tv": "BINANCE:JUPUSDT",
+          "market": "crypto",
+          "rank": 71,
+          "mcap": 1171057911,
+          "auto": true
+        },
+        {
+          "sym": "ALGOUSDT",
+          "name": "알고랜드",
+          "en": "Algorand",
+          "src": "binance",
+          "tv": "BINANCE:ALGOUSDT",
+          "market": "crypto",
+          "rank": 72,
+          "mcap": 1162239412,
+          "auto": true
+        },
+        {
+          "sym": "VVVUSDT",
+          "name": "베니스",
+          "en": "Venice Token",
+          "src": "bybit",
+          "tv": "BYBIT:VVVUSDT",
+          "market": "crypto",
+          "rank": 73,
+          "mcap": 1160220272,
+          "auto": true
+        },
+        {
+          "sym": "JSTUSDT",
+          "name": "저스트",
+          "en": "JUST",
+          "src": "binance",
+          "tv": "BINANCE:JSTUSDT",
+          "market": "crypto",
+          "rank": 75,
+          "mcap": 1132099818,
+          "auto": true
+        },
+        {
+          "sym": "POLUSDT",
+          "name": "폴리곤",
+          "en": "POL (ex-MATIC)",
+          "src": "binance",
+          "tv": "BINANCE:POLUSDT",
+          "market": "crypto",
+          "rank": 76,
+          "mcap": 1121693407,
+          "auto": true
+        },
+        {
+          "sym": "KASUSDT",
+          "name": "카스파",
+          "en": "Kaspa",
+          "src": "bybit",
+          "tv": "BYBIT:KASUSDT",
+          "market": "crypto",
+          "rank": 77,
+          "mcap": 1109287484,
+          "auto": true
+        },
+        {
+          "sym": "RENDERUSDT",
+          "name": "렌더",
+          "en": "Render",
+          "src": "binance",
+          "tv": "BINANCE:RENDERUSDT",
+          "market": "crypto",
+          "rank": 79,
+          "mcap": 1069498047,
+          "auto": true
+        },
+        {
+          "sym": "FILUSDT",
+          "name": "파일코인",
+          "en": "Filecoin",
+          "src": "binance",
+          "tv": "BINANCE:FILUSDT",
+          "market": "crypto",
+          "rank": 80,
+          "mcap": 1026317758,
+          "auto": true
+        },
+        {
+          "sym": "ATOMUSDT",
+          "name": "코스모스",
+          "en": "Cosmos Hub",
+          "src": "binance",
+          "tv": "BINANCE:ATOMUSDT",
+          "market": "crypto",
+          "rank": 81,
+          "mcap": 991710735,
+          "auto": true
+        },
+        {
+          "sym": "ZROUSDT",
+          "name": "LayerZero",
+          "en": "LayerZero",
+          "src": "binance",
+          "tv": "BINANCE:ZROUSDT",
+          "market": "crypto",
+          "rank": 83,
+          "mcap": 957634972,
+          "auto": true
+        }
+      ]
+    },
+    {
+      "id": "index",
+      "label": "지수",
+      "items": [
+        {
+          "sym": "^GSPC",
+          "name": "S&P 500",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SP:SPX",
+          "auto": true
+        },
+        {
+          "sym": "^NDX",
+          "name": "나스닥 100",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NASDAQ:NDX",
+          "auto": true
+        },
+        {
+          "sym": "^IXIC",
+          "name": "나스닥 종합",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NASDAQ:IXIC",
+          "auto": true
+        },
+        {
+          "sym": "^DJI",
+          "name": "다우존스",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "DJ:DJI",
+          "auto": true
+        },
+        {
+          "sym": "^RUT",
+          "name": "러셀 2000",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TVC:RUT",
+          "auto": true
+        },
+        {
+          "sym": "^SOX",
+          "name": "필라델피아 반도체",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NASDAQ:SOX",
+          "auto": true
+        },
+        {
+          "sym": "KOSPI",
+          "name": "코스피",
+          "src": "naver",
+          "kind": "index",
+          "code": "KOSPI",
+          "market": "krx",
+          "ysym": "^KS11",
+          "tv": "KRX:KOSPI",
+          "auto": true
+        },
+        {
+          "sym": "KOSPI200",
+          "name": "코스피 200",
+          "src": "naver",
+          "kind": "index",
+          "code": "KPI200",
+          "market": "krx",
+          "ysym": "^KS200",
+          "tv": "KRX:KOSPI200",
+          "auto": true
+        },
+        {
+          "sym": "KOSDAQ",
+          "name": "코스닥",
+          "src": "naver",
+          "kind": "index",
+          "code": "KOSDAQ",
+          "market": "krx",
+          "ysym": "^KQ11",
+          "tv": "KRX:KOSDAQ",
+          "auto": true
+        },
+        {
+          "sym": "^N225",
+          "name": "니케이 225",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "TVC:NI225",
+          "auto": true
+        },
+        {
+          "sym": "^HSI",
+          "name": "항셍",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "TVC:HSI",
+          "auto": true
+        },
+        {
+          "sym": "000001.SS",
+          "name": "상해종합",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "SSE:000001",
+          "auto": true
+        },
+        {
+          "sym": "^TWII",
+          "name": "대만 가권",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "TWSE:TAIEX",
+          "auto": true
+        },
+        {
+          "sym": "^NSEI",
+          "name": "인도 니프티 50",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "NSE:NIFTY",
+          "auto": true
+        },
+        {
+          "sym": "^GDAXI",
+          "name": "독일 DAX",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "XETR:DAX",
+          "auto": true
+        },
+        {
+          "sym": "^STOXX50E",
+          "name": "유로스톡스 50",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "TVC:SX5E",
+          "auto": true
+        },
+        {
+          "sym": "^FTSE",
+          "name": "영국 FTSE 100",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "TVC:UKX",
+          "auto": true
+        }
+      ]
+    },
+    {
+      "id": "macro",
+      "label": "원자재·환율·금리",
+      "items": [
+        {
+          "sym": "GC=F",
+          "name": "금",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "COMEX:GC1!",
+          "auto": true
+        },
+        {
+          "sym": "SI=F",
+          "name": "은",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "COMEX:SI1!",
+          "auto": true
+        },
+        {
+          "sym": "HG=F",
+          "name": "구리",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "COMEX:HG1!",
+          "auto": true
+        },
+        {
+          "sym": "CL=F",
+          "name": "WTI 원유",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "NYMEX:CL1!",
+          "auto": true
+        },
+        {
+          "sym": "NG=F",
+          "name": "천연가스",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "NYMEX:NG1!",
+          "auto": true
+        },
+        {
+          "sym": "DX-Y.NYB",
+          "name": "달러인덱스",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "TVC:DXY",
+          "auto": true
+        },
+        {
+          "sym": "KRW=X",
+          "name": "원/달러",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "FX_IDC:USDKRW",
+          "auto": true
+        },
+        {
+          "sym": "JPY=X",
+          "name": "엔/달러",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "FX:USDJPY",
+          "auto": true
+        },
+        {
+          "sym": "EURUSD=X",
+          "name": "유로/달러",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "FX:EURUSD",
+          "auto": true
+        },
+        {
+          "sym": "^TNX",
+          "name": "미 10년물 금리",
+          "src": "yahoo",
+          "market": "global",
+          "tv": "TVC:US10Y",
+          "auto": true
+        }
+      ]
+    },
+    {
+      "id": "us",
+      "label": "미국 대형주",
+      "items": [
+        {
+          "sym": "NVDA",
+          "name": "엔비디아",
+          "en": "NVIDIA",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NVDA",
+          "mcap": 5525648000000.0,
+          "auto": true
+        },
+        {
+          "sym": "AAPL",
+          "name": "애플",
+          "en": "Apple",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "AAPL",
+          "mcap": 4912984755200.0,
+          "auto": true
+        },
+        {
+          "sym": "GOOGL",
+          "name": "알파벳",
+          "en": "Alphabet",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "GOOGL",
+          "mcap": 4300801800000.0,
+          "auto": true
+        },
+        {
+          "sym": "MSFT",
+          "name": "마이크로소프트",
+          "en": "Microsoft",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MSFT",
+          "mcap": 3973186625869.0,
+          "auto": true
+        },
+        {
+          "sym": "AMZN",
+          "name": "아마존",
+          "en": "Amazon.com",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "AMZN",
+          "mcap": 2830652270700.0,
+          "auto": true
+        },
+        {
+          "sym": "TSM",
+          "name": "TSMC",
+          "en": "Taiwan Semiconductor Manufacturing",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TSM",
+          "mcap": 2351094538032.0,
+          "auto": true
+        },
+        {
+          "sym": "META",
+          "name": "메타",
+          "en": "Meta Platforms",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "META",
+          "mcap": 1830816298721.0,
+          "auto": true
+        },
+        {
+          "sym": "AVGO",
+          "name": "브로드컴",
+          "en": "Broadcom",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "AVGO",
+          "mcap": 1725858141392.0,
+          "auto": true
+        },
+        {
+          "sym": "TSLA",
+          "name": "테슬라",
+          "en": "Tesla",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TSLA",
+          "mcap": 1511491787684.0,
+          "auto": true
+        },
+        {
+          "sym": "MU",
+          "name": "마이크론",
+          "en": "Micron Technology",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MU",
+          "mcap": 1162145552379.0,
+          "auto": true
+        },
+        {
+          "sym": "BRK-B",
+          "name": "버크셔해서웨이",
+          "en": "Berkshire Hathaway",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BRK.B",
+          "mcap": 1137618269115.0,
+          "auto": true
+        },
+        {
+          "sym": "LLY",
+          "name": "일라이릴리",
+          "en": "Eli Lilly",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "LLY",
+          "mcap": 1110114146043.0,
+          "auto": true
+        },
+        {
+          "sym": "AMD",
+          "name": "AMD",
+          "en": "Advanced Micro Devices",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "AMD",
+          "mcap": 992708073040.0,
+          "auto": true
+        },
+        {
+          "sym": "JPM",
+          "name": "JP모건",
+          "en": "JP Morgan Chase",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "JPM",
+          "mcap": 885149421073.0,
+          "auto": true
+        },
+        {
+          "sym": "WMT",
+          "name": "월마트",
+          "en": "Walmart",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "WMT",
+          "mcap": 883422643935.0,
+          "auto": true
+        },
+        {
+          "sym": "XOM",
+          "name": "엑슨모빌",
+          "en": "ExxonMobil",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "XOM",
+          "mcap": 694666406522.0,
+          "auto": true
+        },
+        {
+          "sym": "V",
+          "name": "비자",
+          "en": "Visa",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "V",
+          "mcap": 688704801476.0,
+          "auto": true
+        },
+        {
+          "sym": "ASML",
+          "name": "ASML",
+          "en": "ASML",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ASML",
+          "mcap": 686174485706.0,
+          "auto": true
+        },
+        {
+          "sym": "JNJ",
+          "name": "존슨앤드존슨",
+          "en": "Johnson & Johnson",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "JNJ",
+          "mcap": 630043889200.0,
+          "auto": true
+        },
+        {
+          "sym": "INTC",
+          "name": "인텔",
+          "en": "Intel",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "INTC",
+          "mcap": 553346777802.0,
+          "auto": true
+        },
+        {
+          "sym": "MA",
+          "name": "마스터카드",
+          "en": "Mastercard",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MA",
+          "mcap": 516092496052.0,
+          "auto": true
+        },
+        {
+          "sym": "PLTR",
+          "name": "팔란티어",
+          "en": "Palantir Technologies",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PLTR",
+          "mcap": 502149279994.0,
+          "auto": true
+        },
+        {
+          "sym": "ABBV",
+          "name": "애브비",
+          "en": "AbbVie",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ABBV",
+          "mcap": 488554915784.0,
+          "auto": true
+        },
+        {
+          "sym": "CSCO",
+          "name": "시스코",
+          "en": "Cisco Systems",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CSCO",
+          "mcap": 466762859894.0,
+          "auto": true
+        },
+        {
+          "sym": "ORCL",
+          "name": "오라클",
+          "en": "Oracle",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ORCL",
+          "mcap": 428654262469.0,
+          "auto": true
+        },
+        {
+          "sym": "COST",
+          "name": "코스트코",
+          "en": "Costco Wholesale",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "COST",
+          "mcap": 419608043155.0,
+          "auto": true
+        },
+        {
+          "sym": "CVX",
+          "name": "셰브론",
+          "en": "Chevron",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CVX",
+          "mcap": 418823994663.0,
+          "auto": true
+        },
+        {
+          "sym": "AMAT",
+          "name": "어플라이드머티리얼즈",
+          "en": "Applied Materials",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "AMAT",
+          "mcap": 402377711524.0,
+          "auto": true
+        },
+        {
+          "sym": "LRCX",
+          "name": "램리서치",
+          "en": "Lam Research",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "LRCX",
+          "mcap": 399004143580.0,
+          "auto": true
+        },
+        {
+          "sym": "BAC",
+          "name": "뱅크오브아메리카",
+          "en": "Bank of America",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BAC",
+          "mcap": 379846091187.0,
+          "auto": true
+        },
+        {
+          "sym": "KO",
+          "name": "코카콜라",
+          "en": "Coca-Cola",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "KO",
+          "mcap": 378839460846.0,
+          "auto": true
+        },
+        {
+          "sym": "DELL",
+          "name": "델",
+          "en": "Dell Technologies",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "DELL",
+          "mcap": 372624420265.0,
+          "auto": true
+        },
+        {
+          "sym": "CAT",
+          "name": "캐터필러",
+          "en": "Caterpillar",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CAT",
+          "mcap": 367955958398.0,
+          "auto": true
+        },
+        {
+          "sym": "MRK",
+          "name": "머크",
+          "en": "Merck",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MRK",
+          "mcap": 359220190493.0,
+          "auto": true
+        },
+        {
+          "sym": "PG",
+          "name": "P&G",
+          "en": "Procter & Gamble",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PG",
+          "mcap": 351524011664.0,
+          "auto": true
+        },
+        {
+          "sym": "PANW",
+          "name": "팔로알토",
+          "en": "Palo Alto Networks",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PANW",
+          "mcap": 342562040000.0,
+          "auto": true
+        },
+        {
+          "sym": "UNH",
+          "name": "유나이티드헬스",
+          "en": "UnitedHealth",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "UNH",
+          "mcap": 340457725467.0,
+          "auto": true
+        },
+        {
+          "sym": "GE",
+          "name": "GE에어로스페이스",
+          "en": "GE Aerospace",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "GE",
+          "mcap": 319776766507.0,
+          "auto": true
+        },
+        {
+          "sym": "HSBC",
+          "name": "HSBC",
+          "en": "HSBC",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "HSBC",
+          "mcap": 319231800434.0,
+          "auto": true
+        },
+        {
+          "sym": "PM",
+          "name": "필립모리스",
+          "en": "Philip Morris International",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PM",
+          "mcap": 313577437792.0,
+          "auto": true
+        },
+        {
+          "sym": "MS",
+          "name": "모건스탠리",
+          "en": "Morgan Stanley",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MS",
+          "mcap": 298439006806.0,
+          "auto": true
+        },
+        {
+          "sym": "NFLX",
+          "name": "넷플릭스",
+          "en": "Netflix",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NFLX",
+          "mcap": 292724959223.0,
+          "auto": true
+        },
+        {
+          "sym": "HD",
+          "name": "홈디포",
+          "en": "Home Depot",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "HD",
+          "mcap": 290068281863.0,
+          "auto": true
+        },
+        {
+          "sym": "ARM",
+          "name": "ARM",
+          "en": "Arm Holdings",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ARM",
+          "mcap": 283336632503.0,
+          "auto": true
+        },
+        {
+          "sym": "CRWD",
+          "name": "크라우드스트라이크",
+          "en": "CrowdStrike",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CRWD",
+          "mcap": 281623038944.0,
+          "auto": true
+        },
+        {
+          "sym": "SHEL",
+          "name": "셸",
+          "en": "Shell plc",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SHEL",
+          "mcap": 277105177011.0,
+          "auto": true
+        },
+        {
+          "sym": "NVS",
+          "name": "노바티스",
+          "en": "Novartis",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NVS",
+          "mcap": 274296803856.0,
+          "auto": true
+        },
+        {
+          "sym": "ANET",
+          "name": "아리스타",
+          "en": "Arista Networks",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ANET",
+          "mcap": 273357830208.0,
+          "auto": true
+        },
+        {
+          "sym": "BABA",
+          "name": "알리바바",
+          "en": "Alibaba",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BABA",
+          "mcap": 269792267825.0,
+          "auto": true
+        },
+        {
+          "sym": "GEV",
+          "name": "GE버노바",
+          "en": "GE Vernova",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "GEV",
+          "mcap": 267593338838.0,
+          "auto": true
+        },
+        {
+          "sym": "RY",
+          "name": "캐나다왕립은행",
+          "en": "Royal Bank Of Canada",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "RY",
+          "mcap": 265685922726.0,
+          "auto": true
+        },
+        {
+          "sym": "SAP",
+          "name": "SAP",
+          "en": "SAP",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SAP",
+          "mcap": 263858138949.0,
+          "auto": true
+        },
+        {
+          "sym": "GS",
+          "name": "골드만삭스",
+          "en": "Goldman Sachs",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "GS",
+          "mcap": 260691585011.0,
+          "auto": true
+        },
+        {
+          "sym": "TXN",
+          "name": "텍사스인스트루먼트",
+          "en": "Texas Instruments",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TXN",
+          "mcap": 259124898426.0,
+          "auto": true
+        },
+        {
+          "sym": "KLAC",
+          "name": "KLA",
+          "en": "KLA",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "KLAC",
+          "mcap": 255220119640.0,
+          "auto": true
+        },
+        {
+          "sym": "WFC",
+          "name": "웰스파고",
+          "en": "Wells Fargo",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "WFC",
+          "mcap": 252655144523.0,
+          "auto": true
+        },
+        {
+          "sym": "RTX",
+          "name": "RTX",
+          "en": "RTX",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "RTX",
+          "mcap": 250642582040.0,
+          "auto": true
+        },
+        {
+          "sym": "AZN",
+          "name": "아스트라제네카",
+          "en": "AstraZeneca",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "AZN",
+          "mcap": 246875558345.0,
+          "auto": true
+        },
+        {
+          "sym": "TMO",
+          "name": "써모피셔",
+          "en": "Thermo Fisher Scientific",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TMO",
+          "mcap": 243301109134.0,
+          "auto": true
+        },
+        {
+          "sym": "MRVL",
+          "name": "마벨",
+          "en": "Marvell Technology",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MRVL",
+          "mcap": 241393032000.0,
+          "auto": true
+        },
+        {
+          "sym": "SNDK",
+          "name": "샌디스크",
+          "en": "Sandisk",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SNDK",
+          "mcap": 229882233941.0,
+          "auto": true
+        },
+        {
+          "sym": "AMGN",
+          "name": "암젠",
+          "en": "Amgen",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "AMGN",
+          "mcap": 224291999914.0,
+          "auto": true
+        },
+        {
+          "sym": "LIN",
+          "name": "린데",
+          "en": "Linde",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "LIN",
+          "mcap": 222989934248.0,
+          "auto": true
+        },
+        {
+          "sym": "SHOP",
+          "name": "쇼피파이",
+          "en": "Shopify",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SHOP",
+          "mcap": 221389313621.0,
+          "auto": true
+        },
+        {
+          "sym": "BHP",
+          "name": "BHP",
+          "en": "BHP",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BHP",
+          "mcap": 220500991122.0,
+          "auto": true
+        },
+        {
+          "sym": "C",
+          "name": "씨티그룹",
+          "en": "Citigroup",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "C",
+          "mcap": 217462904548.0,
+          "auto": true
+        },
+        {
+          "sym": "APH",
+          "name": "암페놀",
+          "en": "Amphenol",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "APH",
+          "mcap": 215130953577.0,
+          "auto": true
+        },
+        {
+          "sym": "IBM",
+          "name": "IBM",
+          "en": "International Business Machines",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "IBM",
+          "mcap": 213986984001.0,
+          "auto": true
+        },
+        {
+          "sym": "AXP",
+          "name": "아메리칸익스프레스",
+          "en": "American Express",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "AXP",
+          "mcap": 208110231236.0,
+          "auto": true
+        },
+        {
+          "sym": "ADI",
+          "name": "아날로그디바이스",
+          "en": "Analog Devices",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ADI",
+          "mcap": 196825646228.0,
+          "auto": true
+        },
+        {
+          "sym": "SAN",
+          "name": "산탄데르",
+          "en": "Banco Santander",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SAN",
+          "mcap": 195263816788.0,
+          "auto": true
+        },
+        {
+          "sym": "CRM",
+          "name": "세일즈포스",
+          "en": "Salesforce",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CRM",
+          "mcap": 188573990000.0,
+          "auto": true
+        },
+        {
+          "sym": "TD",
+          "name": "토론토도미니언",
+          "en": "Toronto Dominion Bank",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TD",
+          "mcap": 187973346563.0,
+          "auto": true
+        },
+        {
+          "sym": "TTE",
+          "name": "토탈에너지",
+          "en": "TotalEnergies",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TTE",
+          "mcap": 187880119942.0,
+          "auto": true
+        },
+        {
+          "sym": "GILD",
+          "name": "길리어드",
+          "en": "Gilead Sciences",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "GILD",
+          "mcap": 187444020781.0,
+          "auto": true
+        },
+        {
+          "sym": "DIS",
+          "name": "디즈니",
+          "en": "Walt Disney",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "DIS",
+          "mcap": 186568519761.0,
+          "auto": true
+        },
+        {
+          "sym": "QCOM",
+          "name": "퀄컴",
+          "en": "QUALCOMM",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "QCOM",
+          "mcap": 184316053136.0,
+          "auto": true
+        },
+        {
+          "sym": "STX",
+          "name": "씨게이트",
+          "en": "Seagate Technology",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "STX",
+          "mcap": 179086625433.0,
+          "auto": true
+        },
+        {
+          "sym": "SCCO",
+          "name": "서던코퍼",
+          "en": "Southern Copper",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SCCO",
+          "mcap": 174550536212.0,
+          "auto": true
+        },
+        {
+          "sym": "VZ",
+          "name": "버라이즌",
+          "en": "Verizon Communications",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "VZ",
+          "mcap": 173046387163.0,
+          "auto": true
+        },
+        {
+          "sym": "ABT",
+          "name": "애보트",
+          "en": "Abbott Laboratories",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ABT",
+          "mcap": 172346176282.0,
+          "auto": true
+        },
+        {
+          "sym": "PEP",
+          "name": "펩시코",
+          "en": "PepsiCo",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PEP",
+          "mcap": 171664495359.0,
+          "auto": true
+        },
+        {
+          "sym": "NVO",
+          "name": "노보노디스크",
+          "en": "Novo Nordisk",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NVO",
+          "mcap": 171095235293.0,
+          "auto": true
+        },
+        {
+          "sym": "BLK",
+          "name": "블랙록",
+          "en": "BlackRock",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BLK",
+          "mcap": 167628937249.0,
+          "auto": true
+        },
+        {
+          "sym": "DE",
+          "name": "디어",
+          "en": "Deere",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "DE",
+          "mcap": 167418507073.0,
+          "auto": true
+        },
+        {
+          "sym": "SCHW",
+          "name": "찰스슈왑",
+          "en": "Charles Schwab",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SCHW",
+          "mcap": 167226763544.0,
+          "auto": true
+        },
+        {
+          "sym": "ETN",
+          "name": "이튼",
+          "en": "Eaton",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ETN",
+          "mcap": 166876060000.0,
+          "auto": true
+        },
+        {
+          "sym": "MCD",
+          "name": "맥도날드",
+          "en": "McDonald's",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MCD",
+          "mcap": 166458517337.0,
+          "auto": true
+        },
+        {
+          "sym": "UNP",
+          "name": "유니온퍼시픽",
+          "en": "Union Pacific",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "UNP",
+          "mcap": 165354974113.0,
+          "auto": true
+        },
+        {
+          "sym": "PBR",
+          "name": "페트로브라스",
+          "en": "Petroleo Brasileiro S.A. Petrobras",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PBR",
+          "mcap": 163042469439.0,
+          "auto": true
+        },
+        {
+          "sym": "WELL",
+          "name": "웰타워",
+          "en": "Welltower",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "WELL",
+          "mcap": 162506364102.0,
+          "auto": true
+        },
+        {
+          "sym": "NEE",
+          "name": "넥스트에라",
+          "en": "NextEra Energy",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NEE",
+          "mcap": 161412993812.0,
+          "auto": true
+        },
+        {
+          "sym": "PFE",
+          "name": "화이자",
+          "en": "Pfizer",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PFE",
+          "mcap": 161186769097.0,
+          "auto": true
+        },
+        {
+          "sym": "COP",
+          "name": "코노코필립스",
+          "en": "ConocoPhillips",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "COP",
+          "mcap": 161099355934.0,
+          "auto": true
+        },
+        {
+          "sym": "TMUS",
+          "name": "T모바일",
+          "en": "T-Mobile US",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TMUS",
+          "mcap": 159377548260.0,
+          "auto": true
+        },
+        {
+          "sym": "DHR",
+          "name": "다나허",
+          "en": "Danaher",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "DHR",
+          "mcap": 154523364530.0,
+          "auto": true
+        },
+        {
+          "sym": "TJX",
+          "name": "TJX",
+          "en": "TJX Companies",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TJX",
+          "mcap": 152632400704.0,
+          "auto": true
+        },
+        {
+          "sym": "BUD",
+          "name": "AB인베브",
+          "en": "Anheuser-Busch Inbev",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BUD",
+          "mcap": 152505049066.0,
+          "auto": true
+        },
+        {
+          "sym": "T",
+          "name": "AT&T",
+          "en": "AT&T",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "T",
+          "mcap": 151985913717.0,
+          "auto": true
+        },
+        {
+          "sym": "BA",
+          "name": "보잉",
+          "en": "Boeing",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BA",
+          "mcap": 150462740707.0,
+          "auto": true
+        },
+        {
+          "sym": "ISRG",
+          "name": "인튜이티브서지컬",
+          "en": "Intuitive Surgical",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ISRG",
+          "mcap": 149775756990.0,
+          "auto": true
+        },
+        {
+          "sym": "UBS",
+          "name": "UBS",
+          "en": "UBS",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "UBS",
+          "mcap": 149368339016.0,
+          "auto": true
+        },
+        {
+          "sym": "WDC",
+          "name": "웨스턴디지털",
+          "en": "Western Digital",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "WDC",
+          "mcap": 148411087094.0,
+          "auto": true
+        },
+        {
+          "sym": "UBER",
+          "name": "우버",
+          "en": "Uber Technologies",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "UBER",
+          "mcap": 146063474253.0,
+          "auto": true
+        },
+        {
+          "sym": "NOW",
+          "name": "서비스나우",
+          "en": "ServiceNow",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NOW",
+          "mcap": 145649240000.0,
+          "auto": true
+        },
+        {
+          "sym": "FTNT",
+          "name": "포티넷",
+          "en": "Fortinet",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "FTNT",
+          "mcap": 142890733922.0,
+          "auto": true
+        },
+        {
+          "sym": "ACN",
+          "name": "액센추어",
+          "en": "Accenture",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ACN",
+          "mcap": 139549684503.0,
+          "auto": true
+        },
+        {
+          "sym": "GLW",
+          "name": "코닝",
+          "en": "Corning",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "GLW",
+          "mcap": 134962323701.0,
+          "auto": true
+        },
+        {
+          "sym": "UL",
+          "name": "유니레버",
+          "en": "Unilever",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "UL",
+          "mcap": 134128420437.0,
+          "auto": true
+        },
+        {
+          "sym": "CB",
+          "name": "처브",
+          "en": "Chubb",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CB",
+          "mcap": 131634911891.0,
+          "auto": true
+        },
+        {
+          "sym": "SNOW",
+          "name": "스노우플레이크",
+          "en": "Snowflake",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SNOW",
+          "mcap": 130144392000.0,
+          "auto": true
+        },
+        {
+          "sym": "VRTX",
+          "name": "버텍스",
+          "en": "Vertex Pharmaceuticals",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "VRTX",
+          "mcap": 129285348114.0,
+          "auto": true
+        },
+        {
+          "sym": "NET",
+          "name": "클라우드플레어",
+          "en": "Cloudflare",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NET",
+          "mcap": 128519851535.0,
+          "auto": true
+        },
+        {
+          "sym": "MNST",
+          "name": "몬스터베버리지",
+          "en": "Monster Beverage",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MNST",
+          "mcap": 128239656729.0,
+          "auto": true
+        },
+        {
+          "sym": "MPC",
+          "name": "마라톤페트롤리엄",
+          "en": "Marathon Petroleum",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MPC",
+          "mcap": 127783691908.0,
+          "auto": true
+        },
+        {
+          "sym": "PGR",
+          "name": "프로그레시브",
+          "en": "Progressive Insurance",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PGR",
+          "mcap": 126407663951.0,
+          "auto": true
+        },
+        {
+          "sym": "VLO",
+          "name": "발레로",
+          "en": "Valero Energy",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "VLO",
+          "mcap": 124888536209.0,
+          "auto": true
+        },
+        {
+          "sym": "NEM",
+          "name": "뉴몬트",
+          "en": "Newmont",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "NEM",
+          "mcap": 124167097215.0,
+          "auto": true
+        },
+        {
+          "sym": "PLD",
+          "name": "프로로지스",
+          "en": "Prologis",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PLD",
+          "mcap": 122766361240.0,
+          "auto": true
+        },
+        {
+          "sym": "COF",
+          "name": "캐피탈원",
+          "en": "Capital One Financial",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "COF",
+          "mcap": 122242988421.0,
+          "auto": true
+        },
+        {
+          "sym": "PH",
+          "name": "파커하니핀",
+          "en": "Parker-Hannifin",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PH",
+          "mcap": 121390766182.0,
+          "auto": true
+        },
+        {
+          "sym": "BP",
+          "name": "BP",
+          "en": "BP",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BP",
+          "mcap": 121079281046.0,
+          "auto": true
+        },
+        {
+          "sym": "BMY",
+          "name": "BMS",
+          "en": "Bristol-Myers Squibb",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BMY",
+          "mcap": 120765290463.0,
+          "auto": true
+        },
+        {
+          "sym": "BKNG",
+          "name": "부킹홀딩스",
+          "en": "Booking Holdings",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BKNG",
+          "mcap": 120476349370.0,
+          "auto": true
+        },
+        {
+          "sym": "SPGI",
+          "name": "S&P글로벌",
+          "en": "S&P Global",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SPGI",
+          "mcap": 120225336000.0,
+          "auto": true
+        },
+        {
+          "sym": "BTI",
+          "name": "BAT",
+          "en": "British American Tobacco Industries",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BTI",
+          "mcap": 119898512303.0,
+          "auto": true
+        },
+        {
+          "sym": "MO",
+          "name": "알트리아",
+          "en": "Altria",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MO",
+          "mcap": 119687244616.0,
+          "auto": true
+        },
+        {
+          "sym": "RIO",
+          "name": "리오틴토",
+          "en": "Rio Tinto",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "RIO",
+          "mcap": 119047336992.0,
+          "auto": true
+        },
+        {
+          "sym": "LMT",
+          "name": "록히드마틴",
+          "en": "Lockheed Martin",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "LMT",
+          "mcap": 117608659821.0,
+          "auto": true
+        },
+        {
+          "sym": "PDD",
+          "name": "PDD(테무)",
+          "en": "PDD",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PDD",
+          "mcap": 115793302184.0,
+          "auto": true
+        },
+        {
+          "sym": "HDB",
+          "name": "HDFC은행",
+          "en": "HDFC Bank",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "HDB",
+          "mcap": 114321415449.0,
+          "auto": true
+        },
+        {
+          "sym": "MDT",
+          "name": "메드트로닉",
+          "en": "Medtronic",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MDT",
+          "mcap": 113178120507.0,
+          "auto": true
+        },
+        {
+          "sym": "BMO",
+          "name": "몬트리올은행",
+          "en": "Bank Of Montreal",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BMO",
+          "mcap": 113015046814.0,
+          "auto": true
+        },
+        {
+          "sym": "PSX",
+          "name": "필립스66",
+          "en": "Phillips 66",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PSX",
+          "mcap": 110999638413.0,
+          "auto": true
+        },
+        {
+          "sym": "CVS",
+          "name": "CVS헬스",
+          "en": "CVS Health",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CVS",
+          "mcap": 110196086993.0,
+          "auto": true
+        },
+        {
+          "sym": "MCK",
+          "name": "맥케슨",
+          "en": "McKesson",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "MCK",
+          "mcap": 109459696399.0,
+          "auto": true
+        },
+        {
+          "sym": "SPOT",
+          "name": "스포티파이",
+          "en": "Spotify Technology",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SPOT",
+          "mcap": 108914223337.0,
+          "auto": true
+        },
+        {
+          "sym": "BNS",
+          "name": "노바스코샤은행",
+          "en": "Bank Nova Scotia",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "BNS",
+          "mcap": 108509341992.0,
+          "auto": true
+        },
+        {
+          "sym": "EQNR",
+          "name": "에퀴노르",
+          "en": "Equinor ASA",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "EQNR",
+          "mcap": 107536657000.0,
+          "auto": true
+        },
+        {
+          "sym": "ADP",
+          "name": "ADP",
+          "en": "Automatic Data Processing",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ADP",
+          "mcap": 107336619322.0,
+          "auto": true
+        },
+        {
+          "sym": "SYK",
+          "name": "스트라이커",
+          "en": "Stryker",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SYK",
+          "mcap": 106376312847.0,
+          "auto": true
+        },
+        {
+          "sym": "FCX",
+          "name": "프리포트맥모란",
+          "en": "Freeport-McMoRan",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "FCX",
+          "mcap": 105820131270.0,
+          "auto": true
+        },
+        {
+          "sym": "CEG",
+          "name": "컨스텔레이션에너지",
+          "en": "Constellation Energy",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CEG",
+          "mcap": 105608400459.0,
+          "auto": true
+        },
+        {
+          "sym": "DDOG",
+          "name": "Datadog",
+          "en": "Datadog",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "DDOG",
+          "mcap": 105302341538.0,
+          "auto": true
+        },
+        {
+          "sym": "TT",
+          "name": "트레인테크놀로지스",
+          "en": "Trane Technologies",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "TT",
+          "mcap": 104946654965.0,
+          "auto": true
+        },
+        {
+          "sym": "LOW",
+          "name": "로우스",
+          "en": "Lowe's Companies",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "LOW",
+          "mcap": 104356047534.0,
+          "auto": true
+        },
+        {
+          "sym": "PWR",
+          "name": "Quanta Services",
+          "en": "Quanta Services",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "PWR",
+          "mcap": 104005984187.0,
+          "auto": true
+        },
+        {
+          "sym": "SBUX",
+          "name": "스타벅스",
+          "en": "Starbucks",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "SBUX",
+          "mcap": 103455000000.0,
+          "auto": true
+        },
+        {
+          "sym": "ASX",
+          "name": "ASE테크놀로지",
+          "en": "ASE Technology",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ASX",
+          "mcap": 103394910866.0,
+          "auto": true
+        },
+        {
+          "sym": "CNQ",
+          "name": "Canadian Natural Resources",
+          "en": "Canadian Natural Resources",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CNQ",
+          "mcap": 102717906000.0,
+          "auto": true
+        },
+        {
+          "sym": "ENB",
+          "name": "엔브리지",
+          "en": "Enbridge",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "ENB",
+          "mcap": 101779462577.0,
+          "auto": true
+        },
+        {
+          "sym": "EQIX",
+          "name": "에퀴닉스",
+          "en": "Equinix",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "EQIX",
+          "mcap": 101243070137.0,
+          "auto": true
+        },
+        {
+          "sym": "CME",
+          "name": "CME그룹",
+          "en": "CME",
+          "src": "yahoo",
+          "market": "us",
+          "tv": "CME",
+          "mcap": 100883558027.0,
+          "auto": true
+        }
+      ]
+    },
+    {
+      "id": "kr",
+      "label": "한국 대형주",
+      "items": [
+        {
+          "sym": "005930.KS",
+          "code": "005930",
+          "name": "삼성전자",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:005930",
+          "mcap": 1467415930608000.0,
+          "auto": true
+        },
+        {
+          "sym": "000660.KS",
+          "code": "000660",
+          "name": "SK하이닉스",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:000660",
+          "mcap": 1172440245825000.0,
+          "auto": true
+        },
+        {
+          "sym": "402340.KS",
+          "code": "402340",
+          "name": "SK스퀘어",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:402340",
+          "mcap": 129549366036000.0,
+          "auto": true
+        },
+        {
+          "sym": "009150.KS",
+          "code": "009150",
+          "name": "삼성전기",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:009150",
+          "mcap": 111517688128000.0,
+          "auto": true
+        },
+        {
+          "sym": "373220.KS",
+          "code": "373220",
+          "name": "LG에너지솔루션",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:373220",
+          "mcap": 92781000000000.0,
+          "auto": true
+        },
+        {
+          "sym": "005380.KS",
+          "code": "005380",
+          "name": "현대차",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:005380",
+          "mcap": 64804077702000.0,
+          "auto": true
+        },
+        {
+          "sym": "105560.KS",
+          "code": "105560",
+          "name": "KB금융",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:105560",
+          "mcap": 57530350454800.0,
+          "auto": true
+        },
+        {
+          "sym": "207940.KS",
+          "code": "207940",
+          "name": "삼성바이오로직스",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:207940",
+          "mcap": 55363977396000.0,
+          "auto": true
+        },
+        {
+          "sym": "032830.KS",
+          "code": "032830",
+          "name": "삼성생명",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:032830",
+          "mcap": 52800000000000.0,
+          "auto": true
+        },
+        {
+          "sym": "028260.KS",
+          "code": "028260",
+          "name": "삼성물산",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:028260",
+          "mcap": 50434117691000.0,
+          "auto": true
+        },
+        {
+          "sym": "055550.KS",
+          "code": "055550",
+          "name": "신한지주",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:055550",
+          "mcap": 46991968923900.0,
+          "auto": true
+        },
+        {
+          "sym": "034020.KS",
+          "code": "034020",
+          "name": "두산에너빌리티",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:034020",
+          "mcap": 45543897480600.0,
+          "auto": true
+        },
+        {
+          "sym": "006400.KS",
+          "code": "006400",
+          "name": "삼성SDI",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:006400",
+          "mcap": 45208482330000.0,
+          "auto": true
+        },
+        {
+          "sym": "012450.KS",
+          "code": "012450",
+          "name": "한화에어로스페이스",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:012450",
+          "mcap": 44241398058000.0,
+          "auto": true
+        },
+        {
+          "sym": "000270.KS",
+          "code": "000270",
+          "name": "기아",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:000270",
+          "mcap": 41969397285000.0,
+          "auto": true
+        },
+        {
+          "sym": "068270.KS",
+          "code": "068270",
+          "name": "셀트리온",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:068270",
+          "mcap": 41940876832800.0,
+          "auto": true
+        },
+        {
+          "sym": "034730.KS",
+          "code": "034730",
+          "name": "SK",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:034730",
+          "mcap": 38861448808000.0,
+          "auto": true
+        },
+        {
+          "sym": "329180.KS",
+          "code": "329180",
+          "name": "HD현대중공업",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:329180",
+          "mcap": 37786041000000.0,
+          "auto": true
+        },
+        {
+          "sym": "086790.KS",
+          "code": "086790",
+          "name": "하나금융지주",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:086790",
+          "mcap": 33491880876000.0,
+          "auto": true
+        },
+        {
+          "sym": "012330.KS",
+          "code": "012330",
+          "name": "현대모비스",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:012330",
+          "mcap": 31616845920000.0,
+          "auto": true
+        },
+        {
+          "sym": "066570.KS",
+          "code": "066570",
+          "name": "LG전자",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:066570",
+          "mcap": 30182523421400.0,
+          "auto": true
+        },
+        {
+          "sym": "000810.KS",
+          "code": "000810",
+          "name": "삼성화재",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:000810",
+          "mcap": 27458195895000.0,
+          "auto": true
+        },
+        {
+          "sym": "035420.KS",
+          "code": "035420",
+          "name": "NAVER",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:035420",
+          "mcap": 27331358109300.0,
+          "auto": true
+        },
+        {
+          "sym": "010120.KS",
+          "code": "010120",
+          "name": "LS ELECTRIC",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:010120",
+          "mcap": 27285000000000.0,
+          "auto": true
+        },
+        {
+          "sym": "096770.KS",
+          "code": "096770",
+          "name": "SK이노베이션",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:096770",
+          "mcap": 25814360727600.0,
+          "auto": true
+        },
+        {
+          "sym": "316140.KS",
+          "code": "316140",
+          "name": "우리금융지주",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:316140",
+          "mcap": 23687687807550.0,
+          "auto": true
+        },
+        {
+          "sym": "042700.KS",
+          "code": "042700",
+          "name": "한미반도체",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:042700",
+          "mcap": 23637425600000.0,
+          "auto": true
+        },
+        {
+          "sym": "005490.KS",
+          "code": "005490",
+          "name": "POSCO홀딩스",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:005490",
+          "mcap": 23613975046000.0,
+          "auto": true
+        },
+        {
+          "sym": "138040.KS",
+          "code": "138040",
+          "name": "메리츠금융지주",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:138040",
+          "mcap": 21554328762400.0,
+          "auto": true
+        },
+        {
+          "sym": "010130.KS",
+          "code": "010130",
+          "name": "고려아연",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:010130",
+          "mcap": 20977333845000.0,
+          "auto": true
+        },
+        {
+          "sym": "298040.KS",
+          "code": "298040",
+          "name": "효성중공업",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:298040",
+          "mcap": 20886987520000.0,
+          "auto": true
+        },
+        {
+          "sym": "267260.KS",
+          "code": "267260",
+          "name": "HD현대일렉트릭",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:267260",
+          "mcap": 20691055490000.0,
+          "auto": true
+        },
+        {
+          "sym": "011200.KS",
+          "code": "011200",
+          "name": "HMM",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:011200",
+          "mcap": 20609749644500.0,
+          "auto": true
+        },
+        {
+          "sym": "042660.KS",
+          "code": "042660",
+          "name": "한화오션",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:042660",
+          "mcap": 20437773379800.0,
+          "auto": true
+        },
+        {
+          "sym": "009540.KS",
+          "code": "009540",
+          "name": "HD한국조선해양",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:009540",
+          "mcap": 19745699364000.0,
+          "auto": true
+        },
+        {
+          "sym": "000150.KS",
+          "code": "000150",
+          "name": "두산",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:000150",
+          "mcap": 19691703360000.0,
+          "auto": true
+        },
+        {
+          "sym": "033780.KS",
+          "code": "033780",
+          "name": "KT&G",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:033780",
+          "mcap": 18592452669600.0,
+          "auto": true
+        },
+        {
+          "sym": "051910.KS",
+          "code": "051910",
+          "name": "LG화학",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:051910",
+          "mcap": 18389304830500.0,
+          "auto": true
+        },
+        {
+          "sym": "015760.KS",
+          "code": "015760",
+          "name": "한국전력",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:015760",
+          "mcap": 18263877990650.0,
+          "auto": true
+        },
+        {
+          "sym": "010950.KS",
+          "code": "010950",
+          "name": "S-Oil",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:010950",
+          "mcap": 17990730161600.0,
+          "auto": true
+        },
+        {
+          "sym": "017670.KS",
+          "code": "017670",
+          "name": "SK텔레콤",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:017670",
+          "mcap": 17032851202900.0,
+          "auto": true
+        },
+        {
+          "sym": "003550.KS",
+          "code": "003550",
+          "name": "LG",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:003550",
+          "mcap": 16101948426000.0,
+          "auto": true
+        },
+        {
+          "sym": "024110.KS",
+          "code": "024110",
+          "name": "기업은행",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:024110",
+          "mcap": 15828903499650.0,
+          "auto": true
+        },
+        {
+          "sym": "003670.KS",
+          "code": "003670",
+          "name": "포스코퓨처엠",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:003670",
+          "mcap": 15743480940000.0,
+          "auto": true
+        },
+        {
+          "sym": "010140.KS",
+          "code": "010140",
+          "name": "삼성중공업",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:010140",
+          "mcap": 15734400000000.0,
+          "auto": true
+        },
+        {
+          "sym": "006800.KS",
+          "code": "006800",
+          "name": "미래에셋증권",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:006800",
+          "mcap": 15313193638200.0,
+          "auto": true
+        },
+        {
+          "sym": "018260.KS",
+          "code": "018260",
+          "name": "삼성에스디에스",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:018260",
+          "mcap": 14941653180000.0,
+          "auto": true
+        },
+        {
+          "sym": "035720.KS",
+          "code": "035720",
+          "name": "카카오",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:035720",
+          "mcap": 14131716269000.0,
+          "auto": true
+        },
+        {
+          "sym": "272210.KS",
+          "code": "272210",
+          "name": "한화시스템",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:272210",
+          "mcap": 14074494480500.0,
+          "auto": true
+        },
+        {
+          "sym": "086280.KS",
+          "code": "086280",
+          "name": "현대글로비스",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:086280",
+          "mcap": 13605000000000.0,
+          "auto": true
+        },
+        {
+          "sym": "267250.KS",
+          "code": "267250",
+          "name": "HD현대",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:267250",
+          "mcap": 13428824450000.0,
+          "auto": true
+        },
+        {
+          "sym": "079550.KS",
+          "code": "079550",
+          "name": "LIG디펜스앤에어로스페이스",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:079550",
+          "mcap": 12936000000000.0,
+          "auto": true
+        },
+        {
+          "sym": "278470.KS",
+          "code": "278470",
+          "name": "에이피알",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:278470",
+          "mcap": 12934882552500.0,
+          "auto": true
+        },
+        {
+          "sym": "005830.KS",
+          "code": "005830",
+          "name": "DB손해보험",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:005830",
+          "mcap": 12635017322100.0,
+          "auto": true
+        },
+        {
+          "sym": "030200.KS",
+          "code": "030200",
+          "name": "KT",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:030200",
+          "mcap": 12500275576000.0,
+          "auto": true
+        },
+        {
+          "sym": "011070.KS",
+          "code": "011070",
+          "name": "LG이노텍",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:011070",
+          "mcap": 11443046234500.0,
+          "auto": true
+        },
+        {
+          "sym": "003490.KS",
+          "code": "003490",
+          "name": "대한항공",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:003490",
+          "mcap": 11378016818100.0,
+          "auto": true
+        },
+        {
+          "sym": "047810.KS",
+          "code": "047810",
+          "name": "한국항공우주",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:047810",
+          "mcap": 11160899751500.0,
+          "auto": true
+        },
+        {
+          "sym": "000720.KS",
+          "code": "000720",
+          "name": "현대건설",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:000720",
+          "mcap": 11013085158500.0,
+          "auto": true
+        },
+        {
+          "sym": "064350.KS",
+          "code": "064350",
+          "name": "현대로템",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:064350",
+          "mcap": 10892400841400.0,
+          "auto": true
+        },
+        {
+          "sym": "196170.KQ",
+          "code": "196170",
+          "name": "알테오젠",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:196170",
+          "mcap": 15916197890500.0,
+          "auto": true
+        },
+        {
+          "sym": "036930.KQ",
+          "code": "036930",
+          "name": "주성엔지니어링",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:036930",
+          "mcap": 11620280250000.0,
+          "auto": true
+        },
+        {
+          "sym": "086520.KQ",
+          "code": "086520",
+          "name": "에코프로",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:086520",
+          "mcap": 11391619152800.0,
+          "auto": true
+        },
+        {
+          "sym": "247540.KQ",
+          "code": "247540",
+          "name": "에코프로비엠",
+          "src": "naver",
+          "market": "krx",
+          "tv": "KRX:247540",
+          "mcap": 11328764257200.0,
+          "auto": true
+        }
+      ]
+    }
+  ]
+}
