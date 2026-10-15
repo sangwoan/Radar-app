@@ -1,15 +1,17 @@
-// 인터랙티브 캔들 차트 — 엔진: TradingView Lightweight Charts(js/vendor, Apache-2.0) + 빗각 플러그인(이 파일)
-//  조작(엔진): 핀치 · 휠 확대, 드래그 이동(관성), 가격 · 시간 축을 끌어 늘리기, 축 더블클릭 맞춤. 휴대폰은 세로 밀기 = 페이지 스크롤.
-//  맞춤: 차트 더블클릭 · 두 번 탭. 크로스헤어 위치의 시 · 고 · 저 · 종은 위 줄(ch-ohlc)에.
-//  빗각(플러그인): 서버가 고른 선 + 내 선을 시작점부터 미래 영역까지, 오른쪽 가격 축에 선 값 표시. 멀리 있는 선 · 이평은 세로 축을 늘리지 않는다.
-//  그리기 모드: 시작점에서 끝점까지 끌기, 또는 두 점을 차례로 탭. 봉의 고가 · 저가 가까이면 붙는다(자석).
-//  내 선 고치기: 선을 누르면 선택(양 끝 손잡이) → 손잡이를 끌어 끝점 이동, 선을 끌어 통째로 이동, '선 지우기'.
-// 봉 위치는 '봉 번호'(logical)로 다룬다 — 선(valueAt)과 그리기 결과({i, p})가 예전 차트와 같은 좌표다.
+// 인터랙티브 캔들 차트 — 엔진: TradingView Lightweight Charts(js/vendor, Radar 수정판) + 빗각 플러그인(이 파일)
+//  보기 모드(기본): 핀치 · 휠 확대, 드래그 이동(관성), 가격 · 시간 축 끌어 늘리기, 두 번 탭 · 더블클릭 맞춤. 휴대폰 세로 밀기 = 페이지 스크롤.
+//    내 빗각은 건드려지지 않는다(잘못 눌러 옮겨지지 않게).
+//  그리기 모드(setDraw): 한 손가락 = 그리기 · 고치기, 두 손가락 = 이동 · 확대(엔진의 이동 · 확대는 끈다).
+//    빈 곳에서 끌기(또는 두 점 탭) → 새 빗각. 선을 누르면 선택 → 손잡이로 끝점, 선을 끌면 통째 이동, '선 지우기'.
+//    자석(setMagnet): 손가락에서 가장 가까운 봉의 고가(위) · 저가(아래) 중 가까운 쪽에 늘 붙는다.
+//    저장은 화면(detail.js)이 차례로 하고, 차트는 결과를 기다리지 않고 바로 보여 준다(local: id → 끝점 | 지움).
+// 봉 위치는 '봉 번호'(logical)로 다룬다 — 선(valueAt)과 그리기 결과({i, p})가 같은 좌표다.
 TR.chart = (() => {
   const LW = window.LightweightCharts;
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const DEFAULT_BARS = { "15m": 160, "1h": 150, "4h": 150, "1d": 130, "1w": 120 };
-  const SNAP = 14, HIT = 14, HANDLE = 22, MOVE = 7;           // 자석 · 선 잡기 · 손잡이 · 끌기 시작 거리(px)
+  const HIT = 16, HANDLE = 22, MOVE = 7;                        // 선 잡기 · 손잡이 · 끌기 시작 거리(px)
+  const newId = () => `u-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;   // 서버 · 폰 엔진이 그대로 쓰는 형식(u-[a-z0-9]{4,20})
 
   function colors() {
     return { bg: css("--card"), grid: css("--line"), axis: css("--muted"), text: css("--text"), text2: css("--text-2"), up: css("--up"),
@@ -17,17 +19,18 @@ TR.chart = (() => {
              ma: [css("--series-1"), css("--series-4"), css("--series-5"), css("--series-7")] };
   }
 
+  let hintedAt = 0;                                             // 그리기 안내를 마지막으로 보인 때
   const live = new Set();                                       // 다시 그리면서 화면에서 빠진 차트는 엔진까지 정리(메모리 · 리사이즈 감시)
   function create(host, opt = {}) {
     for (const c of live) if (!c.host.isConnected) c.destroy();
     host.innerHTML = `<div class="ch-ohlc num"></div>
       <div class="ch-wrap"><div class="ch-lw" aria-label="캔들 차트"></div>
-        <button type="button" class="btn sm ch-del" hidden>선 지우기</button><p class="ch-hint" hidden></p></div>`;
+        <button type="button" class="btn sm ch-del" hidden>🗑 선 지우기</button><p class="ch-hint" hidden></p></div>`;
     const box = host.querySelector(".ch-lw"), ohlc = host.querySelector(".ch-ohlc"), delBtn = host.querySelector(".ch-del"), hint = host.querySelector(".ch-hint");
     box.style.height = `${opt.height || 480}px`;
-    let S = { bars: [], lines: [], series: [], log: true, volume: true, tf: "1d", draw: false };
+    let S = { bars: [], lines: [], series: [], log: true, volume: true, tf: "1d", draw: false, magnet: true };
     let C = colors(), sel = null, gest = null, anchor = null, ghost = null, pending = null, lastTap = 0, quiet = false;
-    let saving = null;                                            // 저장 중인 선({id?, a, b}) — 새 데이터가 올 때까지 그 자리에 보여 준다
+    const local = new Map();                                      // 그리기 결과(저장 전): id → {a, b} | null(지움)
     const n = () => S.bars.length;
 
     const chart = LW.createChart(box, {
@@ -40,10 +43,15 @@ TR.chart = (() => {
       trackingMode: { exitMode: LW.TrackingModeExitMode.OnTouchEnd },   // 길게 눌러 본 크로스헤어는 손을 떼면 사라지고 다음 밀기는 이동
       localization: { locale: "ko-KR", priceFormatter: (p) => TR.util.price(p), timeFormatter: (t) => fmtTime(t, true) },
       crosshair: { mode: LW.CrosshairMode.Normal, vertLine: { labelBackgroundColor: C.user }, horzLine: { labelBackgroundColor: C.user } },
-      handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
-      handleScale: { mouseWheel: true, pinch: true, axisPressedMouseMove: { time: true, price: true }, axisDoubleClickReset: { time: true, price: true } },
       kineticScroll: { touch: true, mouse: false },
     });
+    const NAV = {                                                 // 보기 모드의 엔진 조작(그리기 모드에서는 끈다)
+      on: { handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
+            handleScale: { mouseWheel: true, pinch: true, axisPressedMouseMove: { time: true, price: true }, axisDoubleClickReset: { time: true, price: true } } },
+      off: { handleScroll: { mouseWheel: true, pressedMouseMove: false, horzTouchDrag: false, vertTouchDrag: false },
+             handleScale: { mouseWheel: true, pinch: false, axisPressedMouseMove: { time: true, price: true }, axisDoubleClickReset: { time: true, price: true } } },
+    };
+    chart.applyOptions(NAV.on);
     const candle = chart.addSeries(LW.CandlestickSeries, {
       upColor: C.up, downColor: C.down, wickUpColor: C.up, wickDownColor: C.down, borderVisible: false,
       priceLineColor: C.text2, priceFormat: { type: "custom", formatter: (p) => TR.util.price(p), minMove: 1e-8 },
@@ -76,21 +84,42 @@ TR.chart = (() => {
     const X = (i) => ts().logicalToCoordinate(i);
     const Y = (p) => candle.priceToCoordinate(p);
     const plotW = () => ts().width();
-    function at(pt, snap) {                                       // 화면 점 → {i(봉 번호), p(가격)}, 자석: 고가 · 저가 가까이면 붙임
+    function at(pt, snap) {                                       // 화면 점 → {i(봉 번호), p(가격)}
       const N = n(), x0 = X(0), sp = X(1) - x0;
       // 가장 가까운 봉 — 엔진의 coordinateToLogical은 올림이라 봉의 오른쪽 절반을 누르면 다음 봉이 잡힌다
       let i = sp > 0 ? Math.round((pt.x - x0) / sp) : N - 1;
       i = Math.max(0, Math.min(N - 1, i));
       let p = candle.coordinateToPrice(pt.y);
-      if (snap && S.bars[i]) {
+      if (snap && S.magnet && S.bars[i]) {                         // 자석: 그 봉의 고가(위) · 저가(아래) 중 손가락에 가까운 쪽
         const b = S.bars[i], yh = Y(b.h), yl = Y(b.l);
-        const dh = yh == null ? 1e9 : Math.abs(yh - pt.y), dl = yl == null ? 1e9 : Math.abs(yl - pt.y);
-        if (Math.min(dh, dl) <= SNAP) p = dh <= dl ? b.h : b.l;
+        p = yh == null || yl == null ? p : Math.abs(yh - pt.y) <= Math.abs(yl - pt.y) ? b.h : b.l;
       }
       return p > 0 ? { i, p } : null;
     }
     // 두 점(봉 번호 · 가격)을 지나는 선의 값 — 로그 가격에서 직선(서버 선과 같은 방식)
     const through = (a, b) => (i) => Math.exp(Math.log(a.p) + ((Math.log(b.p) - Math.log(a.p)) / (b.i - a.i || 1)) * (i - a.i));
+
+    // 그릴 선 목록: 서버 선 + 저장 전 결과(local) + 끄는 중 · 그리는 중
+    function items() {
+      const out = [];
+      for (const ln of S.lines) {
+        const id = ln.id;
+        if (id != null && local.has(id)) {
+          const e = local.get(id);
+          if (e) out.push({ ln, id, a: e.a, b: e.b, valueAt: through(e.a, e.b), start: Math.min(e.a.i, e.b.i) });
+        } else out.push({ ln, id, a: ln.a, b: ln.b, valueAt: ln.valueAt, start: ln.start });
+      }
+      for (const [id, e] of local) {
+        if (e && !S.lines.some((l) => l.id === id)) out.push({ ln: { kind: "user", width: 2.4, label: "내 빗각" }, id, a: e.a, b: e.b, valueAt: through(e.a, e.b), start: e.a.i });
+      }
+      if (gest?.edit) {
+        const k = out.findIndex((x) => x.id === gest.edit.id);
+        if (k >= 0) out[k] = { ...out[k], a: gest.edit.a, b: gest.edit.b, valueAt: through(gest.edit.a, gest.edit.b), start: Math.min(gest.edit.a.i, gest.edit.b.i) };
+      }
+      if (ghost) out.push({ ln: { kind: "user", ghost: true, width: 2 }, id: null, a: ghost.a, b: ghost.b, valueAt: through(ghost.a, ghost.b), start: Math.min(ghost.a.i, ghost.b.i) });
+      return out;
+    }
+    const editableItem = (x) => x.ln.kind === "user" && x.id != null && x.a && x.b;
 
     // ---------- 빗각 플러그인 ----------
     const lineColor = (ln) => (ln.kind === "user" ? C.user : ln.side === "sup" ? C.sup : C.res);
@@ -105,15 +134,7 @@ TR.chart = (() => {
         const axis = [];
         if (!N || !r) { this.axis = axis; return; }
         const right = r.to, left = r.from, step = Math.max(1, Math.floor((right - left) / 300));
-        const list = S.lines.map((ln) => ({ ln, valueAt: ln.valueAt, start: ln.start }));
-        for (const ed of [gest?.edit, saving?.id != null ? saving : null]) {   // 끄는 중 · 저장 중인 내 선은 새 위치로
-          if (!ed) continue;
-          const k = list.findIndex((x) => x.ln.id === ed.id);
-          if (k >= 0) list[k] = { ln: list[k].ln, valueAt: through(ed.a, ed.b), start: Math.min(ed.a.i, ed.b.i), a: ed.a, b: ed.b };
-        }
-        if (saving && saving.id == null) list.push({ ln: { kind: "user", width: 2.4 }, valueAt: through(saving.a, saving.b), start: saving.a.i, a: saving.a, b: saving.b });
-        if (ghost) list.push({ ln: { kind: "user", ghost: true, width: 2 }, valueAt: through(ghost.a, ghost.b), start: Math.min(ghost.a.i, ghost.b.i), a: ghost.a, b: ghost.b });
-        for (const x of list) {
+        for (const x of items()) {
           const sI = Math.max(x.start, left - 1), idx = [sI];
           for (let i = Math.max(0, Math.ceil(sI)); i <= Math.min(N - 1, Math.ceil(right) + 1); i += step) if (i > sI) idx.push(i);
           const fut = right + 2;
@@ -123,9 +144,9 @@ TR.chart = (() => {
             const v = x.valueAt(i), px = X(i), py = v > 0 ? Y(v) : null;
             pts.push(px == null || py == null ? null : [px, py]);
           }
-          const isSel = x.ln.id != null && x.ln.id === sel;
-          const handles = isSel ? [x.a || x.ln.a, x.b || x.ln.b].filter(Boolean).map((h) => [X(h.i), Y(h.p)]) : [];
-          this.paths.push({ ln: x.ln, pts, col: lineColor(x.ln), sel: isSel, handles });
+          const isSel = S.draw && x.id != null && x.id === sel;
+          const handles = isSel && x.a && x.b ? [x.a, x.b].map((h) => [X(h.i), Y(h.p)]) : [];
+          this.paths.push({ item: x, ln: x.ln, pts, col: lineColor(x.ln), sel: isSel, handles });
           if (x.ln.label || x.ln.ghost) {
             const iv = Math.min(Math.floor(right), N - 1), v = x.valueAt(iv);
             if (v > 0 && iv >= x.start) {
@@ -205,78 +226,95 @@ TR.chart = (() => {
       if (S.draw && anchor && !gest && param.point) { const b = at(param.point, true); ghost = b ? { a: anchor, b } : null; prim.request(); }   // PC: 두 번째 점 미리 보기
     });
 
-    // ---------- 그리기 · 고치기: 엔진보다 먼저(capture) 받아서, 우리가 맡은 동작이면 엔진에 넘기지 않는다 ----------
-    const local = (e) => { const r = box.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    // ---------- 그리기 모드: 엔진보다 먼저(capture) 받는다 ----------
+    const pos = (e) => { const r = box.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
     const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
     function segDist(p, a, b) {
       const dx = b[0] - a[0], dy = b[1] - a[1], L2 = dx * dx + dy * dy;
       const t = L2 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2)) : 0;
       return dist(p, [a[0] + t * dx, a[1] + t * dy]);
     }
-    function hitLine(pt) {                                         // 내 선 중 손가락 가까운 것(편집 가능한 것만)
+    function hitLine(pt) {                                         // 손가락 가까운 내 선
       const q = [pt.x, pt.y];
       let best = null;
       for (const p of prim.paths) {
-        if (p.ln.kind !== "user" || p.ln.id == null || !p.ln.a) continue;
+        if (!editableItem(p.item)) continue;
         for (let k = 1; k < p.pts.length; k++) {
           if (!p.pts[k - 1] || !p.pts[k]) continue;
           const d = segDist(q, p.pts[k - 1], p.pts[k]);
-          if (d <= HIT && (!best || d < best.d)) best = { d, ln: p.ln };
+          if (d <= HIT && (!best || d < best.d)) best = { d, item: p.item };
         }
       }
-      return best?.ln || null;
+      return best?.item || null;
     }
     function select(id) {
       sel = id;
-      delBtn.hidden = !id || !opt.onDelete;
+      delBtn.hidden = !(S.draw && id != null && opt.onDelete);
+      opt.onSelect?.(id);
       prim.request();
     }
-    const editable = () => S.tf === "1d" || S.tf === "1w";
+    const fingers = new Map();                                    // 그리기 모드에서 닿아 있는 손가락(두 손가락 = 이동 · 확대)
 
     function down(e) {
-      if (e.button > 0 || !n()) return;
-      const pt = local(e);
+      if (!S.draw || e.button > 0 || !n()) return;                // 보기 모드는 엔진이 다 맡는다
+      const pt = pos(e);
       if (pt.x > plotW()) return;                                  // 가격 축은 엔진(축 끌어 늘리기)
-      if (gest) { gest = null; ghost = null; prim.request(); return; }          // 두 번째 손가락 → 엔진(핀치)에 맡김
-      if (S.draw) {
-        const a = at(pt, true);
-        if (!a) return;
-        gest = { type: "draw", x0: pt.x, y0: pt.y, a, moved: false };
-      } else if (editable()) {
-        const selP = sel != null && prim.paths.find((p) => p.ln.id === sel);
-        const r = e.pointerType === "mouse" ? HANDLE : HANDLE * 1.4;
-        const h = selP ? selP.handles.findIndex((q) => q[0] != null && dist(q, [pt.x, pt.y]) <= r) : -1;
-        const ln = h >= 0 ? selP.ln : hitLine(pt);
-        if (!ln) { if (sel != null) select(null); return; }       // 빈 곳 → 엔진(이동 · 크로스헤어)
-        if (ln.id !== sel) select(ln.id);
-        gest = { type: h === 0 ? "a" : h === 1 ? "b" : "move", x0: pt.x, y0: pt.y, ln, moved: false, start: at(pt, false) };
-      } else return;
-      touch.mine = true;
       e.stopPropagation();
+      touch.mine = true;
+      fingers.set(e.pointerId, pt);
+      if (fingers.size === 2) {                                    // 두 번째 손가락: 그리던 것은 취소하고 이동 · 확대
+        const [p1, p2] = [...fingers.values()], r = ts().getVisibleLogicalRange();
+        gest = r && { type: "nav", d0: Math.max(10, Math.hypot(p1.x - p2.x, p1.y - p2.y)), m0: (p1.x + p2.x) / 2, from: r.from, w: r.to - r.from };
+        ghost = null; prim.request();
+        return;
+      }
+      if (fingers.size > 2) return;
+      const selP = sel != null && prim.paths.find((p) => p.item.id === sel);
+      const r = e.pointerType === "mouse" ? HANDLE : HANDLE * 1.4;
+      const h = selP ? selP.handles.findIndex((q) => q[0] != null && dist(q, [pt.x, pt.y]) <= r) : -1;
+      const item = h >= 0 ? selP.item : hitLine(pt);
+      if (item) {
+        if (item.id !== sel) select(item.id);
+        gest = { type: h === 0 ? "a" : h === 1 ? "b" : "move", x0: pt.x, y0: pt.y, item, moved: false, start: at(pt, false) };
+      } else {
+        const a = at(pt, true);
+        gest = a && { type: "draw", x0: pt.x, y0: pt.y, a, moved: false, hadSel: sel != null };
+      }
       window.addEventListener("pointermove", move, true);
       window.addEventListener("pointerup", up, true);
-      window.addEventListener("pointercancel", cancel, true);
+      window.addEventListener("pointercancel", up, true);
     }
     function move(e) {
+      if (!fingers.has(e.pointerId)) return;
+      const pt = pos(e);
+      fingers.set(e.pointerId, pt);
       if (!gest) return;
-      const pt = local(e);
-      gest.last = pt;                                             // 손을 뗄 때의 좌표는 기기마다 믿기 어려워 마지막 이동 위치를 쓴다
+      if (gest.type === "nav") {
+        if (fingers.size < 2) return;
+        const [p1, p2] = [...fingers.values()], d = Math.max(10, Math.hypot(p1.x - p2.x, p1.y - p2.y)), m = (p1.x + p2.x) / 2, W = plotW() || 1;
+        const w = Math.max(12, Math.min(n() * 1.5, gest.w * gest.d0 / d));
+        const L = gest.from + (gest.m0 / W) * gest.w;               // 처음 두 손가락 가운데에 있던 봉이 지금 가운데로
+        const from = L - (m / W) * w;
+        ts().setVisibleLogicalRange({ from, to: from + w });
+        return;
+      }
+      gest.last = pt;                                              // 손을 뗄 때의 좌표는 기기마다 믿기 어려워 마지막 이동 위치를 쓴다
       if (!gest.moved && Math.hypot(pt.x - gest.x0, pt.y - gest.y0) < MOVE) return;
       gest.moved = true;
       if (gest.type === "draw") {
         const b = at(pt, true);
         ghost = b && b.i !== gest.a.i ? { a: gest.a, b } : null;
       } else {
-        const ln = gest.ln;
+        const it = gest.item;
         if (gest.type === "move") {
           const cur = at(pt, false);
           if (!cur || !gest.start) return;
-          const di = cur.i - gest.start.i, r = cur.p / gest.start.p;
-          gest.edit = { id: ln.id, a: { i: ln.a.i + di, p: ln.a.p * r }, b: { i: ln.b.i + di, p: ln.b.p * r } };
+          const di = cur.i - gest.start.i, k = cur.p / gest.start.p;
+          gest.edit = { id: it.id, a: { i: it.a.i + di, p: it.a.p * k }, b: { i: it.b.i + di, p: it.b.p * k } };
         } else {
           const q = at(pt, true);
           if (!q) return;
-          gest.edit = { id: ln.id, a: gest.type === "a" ? q : ln.a, b: gest.type === "b" ? q : ln.b };
+          gest.edit = { id: it.id, a: gest.type === "a" ? q : it.a, b: gest.type === "b" ? q : it.b };
         }
       }
       prim.request();
@@ -284,7 +322,8 @@ TR.chart = (() => {
     function finish() {
       window.removeEventListener("pointermove", move, true);
       window.removeEventListener("pointerup", up, true);
-      window.removeEventListener("pointercancel", cancel, true);
+      window.removeEventListener("pointercancel", up, true);
+      fingers.clear();
       const g = gest;
       gest = null; ghost = null;
       if (pending) { const [d, k] = pending; pending = null; setData(d, k); }
@@ -292,19 +331,23 @@ TR.chart = (() => {
       return g;
     }
     function up(e) {
-      const g = finish();
-      if (!g) return;
+      if (!fingers.has(e.pointerId)) return;
       e.stopPropagation();
+      fingers.delete(e.pointerId);
+      if (gest?.type === "nav") { if (!fingers.size) finish(); return; }   // 두 손가락을 다 뗄 때까지 이동 · 확대
+      if (fingers.size) return;
+      const g = finish();
+      if (!g || e.type === "pointercancel") return;
       if (g.type === "draw") {
-        const b = g.moved ? at(g.last || local(e), true) : null;
+        const b = g.moved ? at(g.last || pos(e), true) : null;
         if (b && b.i !== g.a.i) { anchor = null; return emitDraw(g.a, b); }
         if (g.moved) { TR.util.toast("봉이 있는 곳에서 두 날짜에 걸쳐 그리세요"); return; }
-        if (!g.moved) {                                           // 탭: 첫 점 → 두 번째 점
-          if (!anchor) { anchor = g.a; hintText("두 번째 점을 누르세요 · 같은 곳을 다시 누르면 취소"); }
-          else if (g.a.i === anchor.i) { anchor = null; hintText(); }
-          else { const a = anchor; anchor = null; emitDraw(a, g.a); }
-          prim.request();
-        }
+        // 탭: 선택돼 있으면 선택만 풀고, 아니면 첫 점 → 두 번째 점
+        if (g.hadSel) { select(null); return; }
+        if (!anchor) { anchor = g.a; hintText("두 번째 점을 누르세요 · 같은 봉을 다시 누르면 취소"); }
+        else if (g.a.i === anchor.i) { anchor = null; hintText(""); }
+        else { const a = anchor; anchor = null; emitDraw(a, g.a); }
+        prim.request();
         return;
       }
       if (g.moved && g.edit) {
@@ -312,27 +355,32 @@ TR.chart = (() => {
         if (a.i === b.i) return;
         if (a.i > b.i) [a, b] = [b, a];
         if (a.i < 0 || b.i > n() - 1) { TR.util.toast("선 끝점은 차트 안의 봉에 두세요"); return; }
-        saving = { id: g.ln.id, a, b };
-        hintText("저장 중…");
+        local.set(g.item.id, { a, b });
         prim.request();
-        opt.onEdit?.(g.ln.id, a, b);
+        if (opt.onEdit?.(g.item.id, a, b) === false) { local.delete(g.item.id); prim.request(); }
       }
     }
-    function cancel() { finish(); }
-    function emitDraw(a, b) {                                     // 한 줄 그렸으면 그리기 모드를 끝내고(저장하는 몇 초 동안 또 그려지지 않게) 저장 중 표시
+    function emitDraw(a, b) {                                     // 새 선: 바로 보이고 선택된다(저장은 화면이 뒤에서 차례로)
       if (a.i > b.i) [a, b] = [b, a];
-      saving = { a, b };
-      S.draw = false; box.classList.remove("drawing");
-      hintText("저장 중…");
-      prim.request();
-      opt.onDraw?.(a, b);
+      const id = newId();
+      local.set(id, { a, b });
+      hintText("");
+      select(id);
+      if (opt.onDraw?.(a, b, id) === false) { local.delete(id); select(null); }
     }
+    delBtn.addEventListener("click", () => {
+      const id = sel;
+      if (id == null) return;
+      local.set(id, null);                                         // 저장을 기다리지 않고 바로 지운다(방금 그린 선도)
+      select(null);
+      opt.onDelete?.(id);
+    });
     // 엔진이 터치 · 마우스 호환 이벤트로도 받으므로, 우리가 맡은 제스처 동안은 그것도 막는다(세로 스크롤 포함)
-    const block = (e) => { if (gest) { e.stopPropagation(); if (e.cancelable && e.type === "touchmove") e.preventDefault(); } };
+    const block = (e) => { if (fingers.size) { e.stopPropagation(); if (e.cancelable && e.type === "touchmove") e.preventDefault(); } };
     for (const t of ["touchstart", "touchmove", "touchend", "mousedown", "mousemove", "mouseup"]) box.addEventListener(t, block, { capture: true, passive: false });
-    // 맞춤: 더블클릭 · 두 번 탭(그리기 모드 아닐 때). 탭 = 손가락 하나 · 짧게 · 거의 안 움직임 — 핀치 뒤 두 손가락을 떼는 것을 두 번 탭으로 보면 화면이 처음으로 돌아간다
-    box.addEventListener("dblclick", (e) => { if (!S.draw && local(e).x <= plotW()) { reset(); } });
-    const touch = { ids: new Set(), multi: false, t0: 0, x0: 0, y0: 0, moved: false };
+    // 맞춤: 더블클릭 · 두 번 탭(보기 모드). 탭 = 손가락 하나 · 짧게 · 거의 안 움직임 — 핀치 뒤 두 손가락을 떼는 것을 두 번 탭으로 보면 화면이 처음으로 돌아간다
+    box.addEventListener("dblclick", (e) => { if (!S.draw && pos(e).x <= plotW()) { reset(); } });
+    const touch = { ids: new Set(), multi: false, mine: false, t0: 0, x0: 0, y0: 0, moved: false };
     box.addEventListener("pointerdown", (e) => {
       if (e.pointerType === "mouse") return;
       if (!touch.ids.size) Object.assign(touch, { multi: false, mine: false, t0: performance.now(), x0: e.clientX, y0: e.clientY, moved: false });
@@ -356,11 +404,16 @@ TR.chart = (() => {
     window.addEventListener("pointerup", touchEnd, true);
     window.addEventListener("pointercancel", touchEnd, true);
     box.addEventListener("pointerdown", down, true);
-    delBtn.addEventListener("click", () => { const id = sel; select(null); if (id != null) opt.onDelete?.(id); });
 
-    const drawHint = () => (window.matchMedia("(pointer: coarse)").matches ? "시작점에서 끝점까지 끌거나 두 점을 차례로 누르세요 · 고가 · 저가 근처는 자동으로 붙습니다"
-      : "시작점에서 끝점까지 드래그하거나 두 점을 차례로 클릭 · 고가 · 저가 근처는 자동으로 붙습니다");
-    function hintText(t) { hint.hidden = !t; hint.textContent = t || ""; }
+    const drawHint = () => (window.matchMedia("(pointer: coarse)").matches
+      ? "빈 곳에서 끌면 새 빗각 · 선을 누르면 선택(손잡이 = 끝점, 선 끌기 = 통째) · 두 손가락 = 이동·확대"
+      : "빈 곳에서 드래그하면 새 빗각 · 선을 클릭하면 선택(손잡이 = 끝점, 선 끌기 = 통째) · 휠 = 확대, 축 끌기 = 이동");
+    let hintTimer = 0;
+    function hintText(t, ms = 0) {                                // ms: 그만큼 뒤에 저절로 숨김(차트 아래쪽을 오래 가리지 않게)
+      clearTimeout(hintTimer);
+      hint.hidden = !t; hint.textContent = t || "";
+      if (t && ms) hintTimer = setTimeout(() => { hint.hidden = true; }, ms);
+    }
 
     // ---------- 데이터 ----------
     function setData(d, keepView) {
@@ -387,11 +440,15 @@ TR.chart = (() => {
       for (let k = S.series.length; k < mas.length; k++) { mas[k].setData([]); mas[k].applyOptions({ visible: false }); }
       chart.applyOptions({ layout: { background: { type: "solid", color: C.bg }, textColor: C.axis }, grid: { vertLines: { color: C.grid }, horzLines: { color: C.grid } } });
       candle.applyOptions({ upColor: C.up, downColor: C.down, wickUpColor: C.up, wickDownColor: C.down, priceLineColor: C.text2 });
-      if (sel != null && !S.lines.some((l) => l.id === sel)) select(null);
+      // 저장 전 결과 중 새 데이터에 이미 반영된 것은 정리(지운 선이 없어졌거나, 옮긴 · 새 선의 끝점이 같으면)
+      for (const [id, e] of local) {
+        const ln = S.lines.find((l) => l.id === id);
+        if (e === null ? !ln : ln && ln.a && Math.abs(ln.a.i - e.a.i) < 0.5 && Math.abs(ln.b.i - e.b.i) < 0.5 && Math.abs(ln.a.p / e.a.p - 1) < 1e-6 && Math.abs(ln.b.p / e.b.p - 1) < 1e-6) local.delete(id);
+      }
+      if (sel != null && !items().some((x) => x.id === sel)) select(null);
       if (!keepView || !hadBars) reset();
       quiet = false;
       anchor = null;
-      if (saving) { saving = null; hintText(S.draw ? drawHint() : ""); }
       showOhlc(n() - 1);
       prim.request();
     }
@@ -400,15 +457,20 @@ TR.chart = (() => {
       host,
       setData,
       setDraw(on) {
-        S.draw = on; anchor = null; ghost = null;
-        if (on) select(null);
-        box.classList.toggle("drawing", on);
-        hintText(on ? drawHint() : "");
+        S.draw = !!on; anchor = null; ghost = null;
+        chart.applyOptions(on ? NAV.off : NAV.on);
+        if (!on) select(null);
+        box.classList.toggle("drawing", !!on);
+        if (on && Date.now() - hintedAt > 60000) { hintedAt = Date.now(); hintText(drawHint(), 6000); }   // 저장 뒤 다시 그릴 때마다 뜨지 않게 1분에 한 번
+        else if (!on) hintText("");
         prim.request();
       },
+      setMagnet(on) { S.magnet = !!on; },
+      select(id) { if (live.has(api) && S.draw && (id == null || items().some((x) => x.id === id))) select(id); },
       reset() { if (live.has(api)) reset(); },
-      debug: () => ({ n: n(), sel, draw: S.draw, range: ts().getVisibleLogicalRange(), paths: prim.paths.map((p) => ({ id: p.ln.id ?? null, kind: p.ln.kind, pts: p.pts })) }),   // 자동 시험용(읽기 전용)
       setView(v) { if (live.has(api) && v && v.width > 0) ts().setVisibleLogicalRange({ from: v.right - v.width, to: v.right }); },
+      debug: () => ({ n: n(), sel, draw: S.draw, magnet: S.magnet, range: ts().getVisibleLogicalRange(),
+                      paths: prim.paths.map((p) => ({ id: p.item.id ?? null, kind: p.ln.kind, a: p.item.a || null, b: p.item.b || null, pts: p.pts })) }),   // 자동 시험용(읽기 전용)
       destroy() {
         if (!live.delete(api)) return;
         finish();

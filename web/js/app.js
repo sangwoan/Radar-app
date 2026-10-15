@@ -47,7 +47,8 @@
   TR.header = () => S.data && header();
 
   let pendingRender = false;
-  const editing = () => { const a = document.activeElement; return (a && main.contains(a) && /^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)) || !!main.querySelector("form[data-dirty]"); };
+  const editing = () => { const a = document.activeElement; return (a && main.contains(a) && /^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)) || !!main.querySelector("form[data-dirty]")
+    || (!!S.drawSym && location.hash === `#chart/${encodeURIComponent(S.drawSym)}`); };   // 빗각 그리기 모드 중에는 1분 새로고침으로 차트를 다시 그리지 않는다
   // 백그라운드 스캔으로 새 결과가 왔을 때: 입력 중이면 머리글만 바꾸고 화면은 입력이 끝난 뒤에
   function quietRender() { if (editing()) { pendingRender = true; header(); } else render(); }
   main.addEventListener("focusout", () => setTimeout(() => { if (pendingRender && !editing()) render(); }, 400));

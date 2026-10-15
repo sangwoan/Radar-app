@@ -7,8 +7,10 @@ TR.modules.detail = (el, D, route) => {
   if (!items.length) { el.innerHTML = `<p class="empty fatal">아직 스캔 결과가 없습니다.</p>`; return; }
   const bySym = Object.fromEntries(items.map((it) => [it.sym, it]));
   const st = Object.assign({ tf: "1d", ma: true, vol: true, log: true, weak: false }, load("tr-detail", {}), { draw: false });
+  const magnet = () => load("tr-magnet", true) !== false;
   const last = load("tr-last-sym", null);
   const sym = bySym[route.arg] ? route.arg : bySym[last] ? last : items[0].sym;
+  st.draw = TR.store.drawSym === sym && (st.tf === "1d" || st.tf === "1w");   // 그리기 모드: 저장 · 새로고침으로 화면을 다시 그려도 이어진다
   save("tr-last-sym", sym);
   const TFS = [["15m", "15분"], ["1h", "1시간"], ["4h", "4시간"], ["1d", "일봉"], ["1w", "주봉"]];
   if (!TFS.some(([k]) => k === st.tf)) st.tf = "1d";
@@ -83,11 +85,12 @@ TR.modules.detail = (el, D, route) => {
   function applyChart(keepView) {
     if (!cur) return;
     const bars = cur.bars, dd = cur.daily.d, dIdx = dailyIndex(bars, dd, cur.tf), D_ = mapper(dIdx);
-    const lines = it.lines.filter((x) => x.status !== "expired" && (st.weak || x.alertable || x.kind === "user"))
+    const lines = it.lines.filter((x) => x.kind === "user" || (x.status !== "expired" && (st.weak || x.alertable)))   // 내 선은 기한이 지나도 늘 그린다(안 보이면 고치거나 지울 수 없음)
       .map((x) => chartLine(x, dd, dIdx, D_)).filter(Boolean);
     const closes = bars.map((b) => b.c);
     const series = st.ma ? [20, 60, 120, 200].map((p) => ({ vals: TR.ta.sma(closes, p) })) : [];
-    chart.setData({ bars, lines, series, log: st.log, volume: st.vol, tf: cur.tf, draw: st.draw }, keepView);
+    chart.setData({ bars, lines, series, log: st.log, volume: st.vol, tf: cur.tf }, keepView);
+    if (st.draw && TR.store.drawSel) chart.select(TR.store.drawSel);       // 저장 뒤 다시 그려도 고른 선은 그대로
     const saved = TR.store.chartView;
     if (!keepView && saved && saved.key === `${sym}:${cur.tf}`) chart.setView(saved.v);
   }
@@ -167,15 +170,18 @@ TR.modules.detail = (el, D, route) => {
             ${tvUrl ? `<a class="btn sm dt-tv" href="${esc(tvUrl)}" target="_blank" rel="noopener noreferrer" title="TradingView에서 열기">TradingView ↗</a>` : ""}
           </div>
           <div class="seg seg-full" role="group" aria-label="시간 단위">${TFS.map(([k, l]) => `<button type="button" data-tf="${k}" aria-pressed="${st.tf === k}">${l}</button>`).join("")}</div>
-          <div class="bar scroll-x dt-tools">
-            <button type="button" class="btn sm${st.draw ? " on" : ""}" data-draw aria-pressed="${st.draw}"${canDraw ? "" : " disabled title=\"빗각 그리기는 일봉·주봉에서\""}>✏️ ${st.draw ? "그리는 중" : "빗각 그리기"}</button>
-            ${mine.length ? `<button type="button" class="btn sm" data-clear>내 빗각 지우기 ${mine.length}</button>` : ""}
+          ${st.draw ? `<div class="bar scroll-x dt-tools drawbar" role="toolbar" aria-label="그리기 도구">
+            <span class="drawbar-t">✏️ 그리기 모드</span>
+            <button type="button" class="btn sm${magnet() ? " on" : ""}" data-magnet aria-pressed="${magnet()}" title="고가(위) · 저가(아래)에 붙기">🧲 자석 ${magnet() ? "켬" : "끔"}</button>
+            ${mine.length ? `<button type="button" class="btn sm" data-clear>모두 지우기 ${mine.length}</button>` : ""}
+            <button type="button" class="btn sm primary" data-draw aria-pressed="true">✓ 완료</button>
+          </div>` : `<div class="bar scroll-x dt-tools">
+            <button type="button" class="btn sm" data-draw aria-pressed="false"${canDraw ? "" : " disabled title=\"빗각 그리기는 일봉·주봉에서\""}>✏️ 그리기 모드</button>
             ${tog("log", "로그", st.log)}${tog("ma", "이평", st.ma)}${tog("vol", "거래량", st.vol)}${tog("weak", "약한 선", st.weak)}
             <button type="button" class="btn sm" data-fit title="화면 맞춤(더블클릭·두 번 탭과 같음)">⟲ 맞춤</button>
-          </div>
-          ${st.draw ? `<p class="drawhint">차트에서 시작점과 끝점을 차례로 ${isMobile() ? "탭" : "클릭"}하세요(그리는 중에도 드래그로 이동 가능). 선은 오른쪽으로 연장되고 저장되어 알림 대상이 됩니다.</p>` : ""}
+          </div>`}
           <div class="chart-box"></div>
-          ${helpSeen < 3 ? `<p class="hint ch-help">${isMobile() ? "두 손가락으로 확대·축소 · 좌우로 밀어 이동 · 가격 축을 위아래로 끌면 세로 확대 · 두 번 탭하면 맞춤 · 내 빗각을 누르면 끝점 옮기기·지우기" : "휠로 확대·축소 · 드래그로 이동 · 가격·시간 축을 끌어 늘리기 · 더블클릭으로 맞춤 · 내 빗각을 클릭하면 끝점 옮기기·지우기"}${canDraw ? "" : " · 빗각 그리기는 일봉·주봉에서"}</p>` : ""}
+          ${helpSeen < 3 ? `<p class="hint ch-help">${isMobile() ? "두 손가락으로 확대·축소 · 좌우로 밀어 이동 · 가격 축을 위아래로 끌면 세로 확대 · 두 번 탭하면 맞춤 · 빗각은 '그리기 모드'에서" : "휠로 확대·축소 · 드래그로 이동 · 가격·시간 축을 끌어 늘리기 · 더블클릭으로 맞춤 · 빗각은 '그리기 모드'에서"}${canDraw ? "" : " · 빗각 그리기는 일봉·주봉에서"}</p>` : ""}
           <div class="legend"><span><i class="lg lg-sup"></i>지지 빗각</span><span><i class="lg lg-res"></i>저항 빗각</span><span><i class="lg lg-sup dash"></i>역할 전환(리테스트 대기)</span><span><i class="lg lg-user"></i>내 빗각</span>
             ${st.ma ? `<span><i class="lg lg-ma20"></i>MA20</span><span><i class="lg lg-ma60"></i>MA60</span><span><i class="lg lg-ma120"></i>MA120</span><span><i class="lg lg-ma200"></i>MA200</span>` : ""}</div>
         </div>
@@ -217,33 +223,44 @@ TR.modules.detail = (el, D, route) => {
     chart = TR.chart.create(el.querySelector(".chart-box"), {
       height: isMobile() ? 380 : 520,
       onView: (v) => { if (cur) TR.store.chartView = { key: `${sym}:${cur.tf}`, v }; },       // 15분마다 새로 그려도 보던 범위 유지
-      onDraw: async (a, b) => {
+      // 그리기 결과는 차트에 바로 보이고, 저장은 lineOp가 차례로 한다(false = 저장할 수 없는 선 → 차트가 되돌림)
+      onDraw: (a, b, id) => {
         const ln = userLine(a, b);
-        if (ln) await saveLines([...mine, ln]);
+        if (!ln) return false;
+        lineOp((list) => [...list, { id, ...ln }], "save");
+        return true;
       },
-      onEdit: async (id, a, b) => {                                 // 내 선 끝점 · 통째 이동
+      onEdit: (id, a, b) => {                                       // 내 선 끝점 · 통째 이동
         const ln = userLine(a, b);
-        if (ln) await saveLines(mine.map((u) => (u.id === id ? { ...u, ...ln } : u)));
+        if (!ln) return false;
+        lineOp((list) => list.map((u) => (u.id === id ? { ...u, ...ln } : u)), "save");
+        return true;
       },
-      onDelete: (id) => saveLines(mine.filter((u) => u.id !== id)),
+      onDelete: (id) => lineOp((list) => list.filter((u) => u.id !== id), "delete"),
+      onSelect: (id) => { TR.store.drawSel = id; },
     });
     chart.setDraw(st.draw);
+    chart.setMagnet(magnet());
     if (cur) applyChart(false);
     loadChart(false);
 
     el.querySelectorAll("[data-tf]").forEach((b) => b.addEventListener("click", () => {
-      st.tf = b.dataset.tf; if (!(st.tf === "1d" || st.tf === "1w")) st.draw = false; persist(); TR.store.busy = st.draw; page();
+      st.tf = b.dataset.tf; if (!(st.tf === "1d" || st.tf === "1w")) setDraw(false); persist(); page();
     }));
     el.querySelectorAll("[data-t]").forEach((b) => b.addEventListener("click", () => {
       st[b.dataset.t] = !st[b.dataset.t]; persist();
       b.classList.toggle("on", st[b.dataset.t]); b.setAttribute("aria-pressed", st[b.dataset.t]);
       applyChart(true);
     }));
-    el.querySelector("[data-fit]").addEventListener("click", () => chart.reset());
-    el.querySelector("[data-draw]").addEventListener("click", () => { st.draw = !st.draw; TR.store.busy = st.draw; persist(); page(); });
+    el.querySelector("[data-fit]")?.addEventListener("click", () => chart.reset());     // 그리기 모드 도구 줄에는 없음
+    el.querySelector("[data-draw]").addEventListener("click", () => { setDraw(!st.draw); page(); });
+    el.querySelector("[data-magnet]")?.addEventListener("click", (e) => {
+      const on = !magnet(); save("tr-magnet", on); chart.setMagnet(on);
+      e.currentTarget.classList.toggle("on", on); e.currentTarget.setAttribute("aria-pressed", on); e.currentTarget.textContent = `🧲 자석 ${on ? "켬" : "끔"}`;
+    });
     el.querySelector("[data-pick]").addEventListener("change", (e) => { location.hash = `#chart/${encodeURIComponent(e.target.value)}`; });
-    el.querySelector("[data-clear]")?.addEventListener("click", () => { if (confirm(`${it.name}의 내 빗각 ${mine.length}개를 모두 지울까요?`)) saveLines([]); });
-    el.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => saveLines(mine.filter((u) => u.id !== b.dataset.del))));
+    el.querySelector("[data-clear]")?.addEventListener("click", () => { if (confirm(`${it.name}의 내 빗각 ${mine.length}개를 모두 지울까요?`)) lineOp(() => [], "delete"); });
+    el.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => lineOp((list) => list.filter((u) => u.id !== b.dataset.del), "delete")));
     el.querySelectorAll("[data-star]").forEach((b) => b.addEventListener("click", () => TR.toggleFav(b.dataset.star, b)));
     const dq = el.querySelector("[data-dq]");
     dq?.addEventListener("input", () => { save("tr-detail-q", dq.value); el.querySelector(".dl-list").innerHTML = sideList(); });
@@ -273,14 +290,33 @@ TR.modules.detail = (el, D, route) => {
     box.querySelector("[data-nr]").addEventListener("click", () => { box.querySelector(".box-h .muted").textContent = "불러오는 중…"; loadNews(true); });
   }
 
-  async function saveLines(list) {
-    try {
-      await TR.api.post("/api/lines", { sym, lines: list });
-      st.draw = false; TR.store.busy = false; persist();
-      await TR.reload();
-      toast(list.length ? "내 빗각을 저장했습니다 · 다음 스캔부터 알림 대상" : "내 빗각을 지웠습니다");
-    } catch (e) { toast(`저장 실패: ${e.message}`); }
+  // 그리기 모드 켜고 끄기 — 종목 하나에만(다른 종목 · 장중 봉으로 가면 꺼짐). 켜 있는 동안 1분 새로고침은 화면을 다시 그리지 않는다(app.js editing)
+  function setDraw(on) {
+    st.draw = !!on;
+    TR.store.drawSym = on ? sym : null;
+    if (!on) TR.store.drawSel = null;
   }
-  TR.store.busy = st.draw;
+  // 내 빗각 저장: 바뀐 목록을 차례로 서버(폰은 폰 엔진)에 보낸다. 앞 저장이 끝나기 전에 그리고 · 옮기고 · 지워도 순서대로 반영되고,
+  // 다 끝나면 한 번만 다시 불러온다(그동안 차트는 결과를 바로 보여 줌). 목록은 종목마다 TR.store.lineQ에.
+  function lineOp(fn, kind) {
+    const Q = (TR.store.lineQ = TR.store.lineQ || {});
+    const q = (Q[sym] = Q[sym] || { n: 0, chain: Promise.resolve(), list: null });
+    if (!q.n) q.list = (D.lines[sym] || []).slice();
+    q.list = fn(q.list);
+    q.kind = kind;
+    const snap = q.list;
+    q.n++;
+    q.chain = q.chain
+      .then(() => TR.api.post("/api/lines", { sym, lines: snap }))
+      .catch((e) => { q.error = e; })
+      .then(async () => {
+        if (--q.n) return;
+        const err = q.error;
+        q.error = null;
+        try { await TR.reload(); } catch { /* 다음 새로고침에 */ }
+        toast(err ? `저장 실패: ${err.message}` : q.kind === "delete" ? "내 빗각을 지웠습니다" : "내 빗각을 저장했습니다 · 다음 스캔부터 알림 대상");
+      });
+  }
+  if (!st.draw && TR.store.drawSym === sym) setDraw(false);       // 일봉 · 주봉이 아니면 그리기 모드를 끈다
   page();
 };
