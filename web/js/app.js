@@ -150,6 +150,8 @@
     TR.setTheme((document.documentElement.dataset.theme || (mq.matches ? "dark" : "light")) === "dark" ? "light" : "dark");
   });
   if (TR.native.available) { syncBars(); mq.addEventListener("change", syncBars); }
+  // '시스템' 테마일 때 폰 · 맥이 다크 모드로 바뀌면 화면을 다시 그린다 — 차트(캔버스)는 그릴 때 색을 읽으므로 그대로면 예전 색이 남는다
+  mq.addEventListener("change", () => { if (!document.documentElement.dataset.theme && S.data) quietRender(); });
   let lastPage = route().page;
   window.addEventListener("hashchange", () => {
     const p = route().page;

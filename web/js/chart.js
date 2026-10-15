@@ -77,8 +77,9 @@ TR.chart = (() => {
     const Y = (p) => candle.priceToCoordinate(p);
     const plotW = () => ts().width();
     function at(pt, snap) {                                       // 화면 점 → {i(봉 번호), p(가격)}, 자석: 고가 · 저가 가까이면 붙임
-      const N = n();
-      let i = Math.round(ts().coordinateToLogical(pt.x) ?? N - 1);
+      const N = n(), x0 = X(0), sp = X(1) - x0;
+      // 가장 가까운 봉 — 엔진의 coordinateToLogical은 올림이라 봉의 오른쪽 절반을 누르면 다음 봉이 잡힌다
+      let i = sp > 0 ? Math.round((pt.x - x0) / sp) : N - 1;
       i = Math.max(0, Math.min(N - 1, i));
       let p = candle.coordinateToPrice(pt.y);
       if (snap && S.bars[i]) {
@@ -334,7 +335,7 @@ TR.chart = (() => {
     const touch = { ids: new Set(), multi: false, t0: 0, x0: 0, y0: 0, moved: false };
     box.addEventListener("pointerdown", (e) => {
       if (e.pointerType === "mouse") return;
-      if (!touch.ids.size) Object.assign(touch, { multi: false, t0: performance.now(), x0: e.clientX, y0: e.clientY, moved: false });
+      if (!touch.ids.size) Object.assign(touch, { multi: false, mine: false, t0: performance.now(), x0: e.clientX, y0: e.clientY, moved: false });
       else touch.multi = true;
       touch.ids.add(e.pointerId);
     }, true);
@@ -385,6 +386,7 @@ TR.chart = (() => {
       });
       for (let k = S.series.length; k < mas.length; k++) { mas[k].setData([]); mas[k].applyOptions({ visible: false }); }
       chart.applyOptions({ layout: { background: { type: "solid", color: C.bg }, textColor: C.axis }, grid: { vertLines: { color: C.grid }, horzLines: { color: C.grid } } });
+      candle.applyOptions({ upColor: C.up, downColor: C.down, wickUpColor: C.up, wickDownColor: C.down, priceLineColor: C.text2 });
       if (sel != null && !S.lines.some((l) => l.id === sel)) select(null);
       if (!keepView || !hadBars) reset();
       quiet = false;
@@ -405,6 +407,7 @@ TR.chart = (() => {
         prim.request();
       },
       reset() { if (live.has(api)) reset(); },
+      debug: () => ({ n: n(), sel, draw: S.draw, range: ts().getVisibleLogicalRange(), paths: prim.paths.map((p) => ({ id: p.ln.id ?? null, kind: p.ln.kind, pts: p.pts })) }),   // 자동 시험용(읽기 전용)
       setView(v) { if (live.has(api) && v && v.width > 0) ts().setVisibleLogicalRange({ from: v.right - v.width, to: v.right }); },
       destroy() {
         if (!live.delete(api)) return;
@@ -419,5 +422,5 @@ TR.chart = (() => {
     return api;
   }
 
-  return { create };
+  return { create, current: () => [...live].reverse().find((c) => c.host.isConnected) || null };   // current: 지금 화면의 차트(자동 시험용)
 })();
