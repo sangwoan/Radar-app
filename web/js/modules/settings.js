@@ -84,7 +84,7 @@ TR.modules.settings = (el, D, route) => {
     <details class="box" open>
       <summary class="box-h">📱 이 폰 ${okPill(nat?.notifications && nat?.battery_unrestricted && (!A.bg_exact || nat?.exact_allowed), "준비됨", "확인 필요")}</summary>
       <p class="hint" style="margin-top:.4rem">맥 없이 이 폰이 직접 시세를 받고 빗각을 계산해 알림을 보냅니다. 화면을 꺼 두어도 정해 둔 주기마다 점검합니다.</p>
-      <dl class="kv">
+      <dl class="kv mid">
         <dt>알림 권한</dt><dd>${okPill(nat?.notifications, "허용됨", "꺼짐")} ${nat?.notifications ? "" : `<button type="button" class="btn sm" data-n="notif">허용하기</button>`}</dd>
         <dt>배터리</dt><dd>${okPill(nat?.battery_unrestricted, "제한 없음", "제한됨")} ${nat?.battery_unrestricted ? "" : `<button type="button" class="btn sm" data-n="battery">제한 풀기</button>`}</dd>
         ${A.bg_exact ? `<dt>정확한 알람</dt><dd>${okPill(nat?.exact_allowed, "허용됨", "필요")} ${nat?.exact_allowed ? "" : `<button type="button" class="btn sm" data-n="exact">허용하기</button>`}</dd>` : ""}

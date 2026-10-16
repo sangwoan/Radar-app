@@ -226,7 +226,8 @@ TR.chart = (() => {
       const b = S.bars[i], p = S.bars[i - 1];
       if (!b) { ohlc.textContent = ""; return; }
       const ch = p ? (b.c / p.c - 1) * 100 : 0, f = (v) => TR.util.price(v);
-      ohlc.innerHTML = `<span class="muted">${fmtTime(timeOf(b), true)}</span> 시 ${f(b.o)} 고 ${f(b.h)} 저 ${f(b.l)} 종 <b>${f(b.c)}</b> <span class="${ch >= 0 ? "up" : "down"}">${ch >= 0 ? "+" : ""}${ch.toFixed(2)}%</span>`;
+      const when = fmtTime(timeOf(b), true);                      // 폰(좁은 차트): 연도를 빼서 등락률이 잘리지 않게
+      ohlc.innerHTML = `<span class="muted">${box.clientWidth < 500 ? when.replace(/^\d{4}-/, "") : when}</span> 시 ${f(b.o)} 고 ${f(b.h)} 저 ${f(b.l)} 종 <b>${f(b.c)}</b> <span class="${ch >= 0 ? "up" : "down"}">${ch >= 0 ? "+" : ""}${ch.toFixed(2)}%</span>`;
     }
     chart.subscribeCrosshairMove((param) => {
       const N = n();
@@ -441,7 +442,7 @@ TR.chart = (() => {
     box.addEventListener("pointerdown", down, true);
 
     const drawHint = () => (coarse()
-      ? "끌어서 십자선을 옮기고 톡 = 점 찍기(시작 → 끝) · 선 톡 = 고르기(손잡이 = 끝점, 선 끌기 = 통째) · 두 손가락 = 이동·확대"
+      ? "끌어서 십자선 이동 · 톡 = 점(시작 → 끝) · 선 톡 = 고르기 · 두 손가락 = 이동·확대"
       : "빈 곳에서 드래그하면 새 빗각 · 선을 클릭하면 선택(손잡이 = 끝점, 선 끌기 = 통째) · 휠 = 확대, 축 끌기 = 이동");
     let hintTimer = 0;
     function hintText(t, ms = 0) {                                // ms: 그만큼 뒤에 저절로 숨김(차트 아래쪽을 오래 가리지 않게)

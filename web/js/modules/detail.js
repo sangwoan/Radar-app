@@ -176,12 +176,12 @@ TR.modules.detail = (el, D, route) => {
             ${mine.length ? `<button type="button" class="btn sm" data-clear>모두 지우기 ${mine.length}</button>` : ""}
             <button type="button" class="btn sm primary" data-draw aria-pressed="true">✓ 완료</button>
           </div>` : `<div class="bar scroll-x dt-tools">
-            <button type="button" class="btn sm" data-draw aria-pressed="false"${canDraw ? "" : " disabled title=\"빗각 그리기는 일봉·주봉에서\""}>✏️ 그리기 모드</button>
+            <button type="button" class="btn sm" data-draw aria-pressed="false"${canDraw ? "" : " disabled title=\"빗각 그리기는 일봉·주봉에서\""} title="빗각 그리기 모드">✏️ 그리기</button>
             ${tog("log", "로그", st.log)}${tog("ma", "이평", st.ma)}${tog("vol", "거래량", st.vol)}${tog("weak", "약한 선", st.weak)}
             <button type="button" class="btn sm" data-fit title="화면 맞춤(더블클릭·두 번 탭과 같음)">⟲ 맞춤</button>
           </div>`}
           <div class="chart-box"></div>
-          ${helpSeen < 3 ? `<p class="hint ch-help">${isMobile() ? "두 손가락으로 확대·축소 · 좌우로 밀어 이동 · 가격 축을 위아래로 끌면 세로 확대 · 두 번 탭하면 맞춤 · 빗각은 '그리기 모드'에서" : "휠로 확대·축소 · 드래그로 이동 · 가격·시간 축을 끌어 늘리기 · 더블클릭으로 맞춤 · 빗각은 '그리기 모드'에서"}${canDraw ? "" : " · 빗각 그리기는 일봉·주봉에서"}</p>` : ""}
+          ${helpSeen < 3 && !st.draw ? `<p class="hint ch-help">${isMobile() ? "두 손가락으로 확대·축소 · 좌우로 밀어 이동 · 가격 축을 위아래로 끌면 세로 확대 · 두 번 탭하면 맞춤 · 빗각은 '그리기 모드'에서" : "휠로 확대·축소 · 드래그로 이동 · 가격·시간 축을 끌어 늘리기 · 더블클릭으로 맞춤 · 빗각은 '그리기 모드'에서"}${canDraw ? "" : " · 빗각 그리기는 일봉·주봉에서"}</p>` : ""}
           <div class="legend"><span><i class="lg lg-sup"></i>지지 빗각</span><span><i class="lg lg-res"></i>저항 빗각</span><span><i class="lg lg-sup dash"></i>역할 전환(리테스트 대기)</span><span><i class="lg lg-user"></i>내 빗각</span>
             ${st.ma ? `<span><i class="lg lg-ma20"></i>MA20</span><span><i class="lg lg-ma60"></i>MA60</span><span><i class="lg lg-ma120"></i>MA120</span><span><i class="lg lg-ma200"></i>MA200</span>` : ""}</div>
         </div>
@@ -221,7 +221,7 @@ TR.modules.detail = (el, D, route) => {
     }
     chart?.destroy();
     chart = TR.chart.create(el.querySelector(".chart-box"), {
-      height: isMobile() ? 380 : 520,
+      height: isMobile() ? Math.round(Math.min(560, Math.max(340, innerHeight * 0.52))) : 520,   // 폰: 화면 높이의 절반쯤(큰 폰에서 차트가 작지 않게)
       onView: (v) => { if (cur) TR.store.chartView = { key: `${sym}:${cur.tf}`, v }; },       // 15분마다 새로 그려도 보던 범위 유지
       // 그리기 결과는 차트에 바로 보이고, 저장은 lineOp가 차례로 한다(false = 저장할 수 없는 선 → 차트가 되돌림)
       onDraw: (a, b, id) => {

@@ -138,7 +138,7 @@ TR.modules.grid = (el, D) => {
         <div class="bar scroll-x">
           ${seg("group", [["all", "전체"], ["fav", "★ 관심"], ...groups.map((g) => [g.id, GROUP[g.id] || g.label])], "g")}
         </div>
-        <p class="summary chips-sum" role="group" aria-label="상태로 거르기">
+        <p class="summary chips-sum scroll-x" role="group" aria-label="상태로 거르기">
           ${chip(3, "st-3", "터치", `유효한 빗각에 봉이 닿음(선 ±${esc(String(D.alerts.zone_atr ?? 0.5))} ATR)`)}${chip("pen", "st-3", "이탈·돌파 시도", "장중에 선 너머 0.5 ATR 넘게 들어감(종가 미확정)")}${chip("rt", "st-2", "리테스트", "이탈·돌파했던 선에 반대편에서 다시 닿음")}${chip(2, "st-2", "근접", "선까지 1 ATR 안")}${chip(1, "st-1", "접근", "선까지 2 ATR 안")}
           <button type="button" class="chipbtn ftog" data-ftog aria-expanded="${st.more}">${extra ? `정렬·필터 ${extra}` : "정렬·필터"} ${st.more ? "▴" : "▾"}</button>
         </p>
