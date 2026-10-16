@@ -19,7 +19,8 @@ TR.chart = (() => {
              ma: [css("--series-1"), css("--series-4"), css("--series-5"), css("--series-7")] };
   }
 
-  let hintedAt = 0;                                             // 그리기 안내를 마지막으로 보인 때
+  let hintedAt = 0, lastCur = null;                             // 그리기 안내를 마지막으로 보인 때 · 손가락 커서의 마지막 자리
+  const coarse = () => window.matchMedia("(pointer: coarse)").matches;                                             // 그리기 안내를 마지막으로 보인 때
   const live = new Set();                                       // 다시 그리면서 화면에서 빠진 차트는 엔진까지 정리(메모리 · 리사이즈 감시)
   function create(host, opt = {}) {
     for (const c of live) if (!c.host.isConnected) c.destroy();
@@ -180,6 +181,13 @@ TR.chart = (() => {
           }
         }
         if (anchor) { const x = X(anchor.i), y = Y(anchor.p); if (x != null && y != null) { g.fillStyle = C.user; g.beginPath(); g.arc(x, y, 5, 0, 7); g.fill(); } }
+        if (S.draw && cur) {                                        // 손가락 커서: 자석이 붙은 자리에 고리
+          const q = at(cur, true), x = q && X(q.i), y = q && Y(q.p);
+          if (x != null && y != null) {
+            g.strokeStyle = C.user; g.lineWidth = 2; g.beginPath(); g.arc(x, y, 9, 0, 7); g.stroke();
+            g.fillStyle = C.user; g.beginPath(); g.arc(x, y, 2.5, 0, 7); g.fill();
+          }
+        }
         g.font = `bold 10.5px ${C.font}`; g.textAlign = "right"; g.textBaseline = "alphabetic";
         for (const lb of this.labels) {
           g.lineWidth = 3; g.strokeStyle = C.bg; g.strokeText(lb.text, lb.x, lb.y);
@@ -223,7 +231,7 @@ TR.chart = (() => {
     chart.subscribeCrosshairMove((param) => {
       const N = n();
       showOhlc(param.logical == null ? N - 1 : Math.max(0, Math.min(N - 1, Math.round(param.logical))));
-      if (S.draw && anchor && !gest && param.point) { const b = at(param.point, true); ghost = b ? { a: anchor, b } : null; prim.request(); }   // PC: 두 번째 점 미리 보기
+      if (S.draw && anchor && !gest && !cur && param.point) { const b = at(param.point, true); ghost = b ? { a: anchor, b } : null; prim.request(); }   // PC: 두 번째 점 미리 보기
     });
 
     // ---------- 그리기 모드: 엔진보다 먼저(capture) 받는다 ----------
@@ -254,6 +262,18 @@ TR.chart = (() => {
       prim.request();
     }
     const fingers = new Map();                                    // 그리기 모드에서 닿아 있는 손가락(두 손가락 = 이동 · 확대)
+    // 손가락 그리기는 트레이딩뷰 휴대폰처럼 '십자선 커서'로 한다: 끌면 커서가 손가락이 움직인 만큼 따라오고(손가락이 점을 가리지 않음),
+    // 톡 누르면 커서 자리에 점이 찍힌다(시작점 → 끝점). 닿는 순간 점이 생기지 않는다. 마우스는 누른 자리에 바로.
+    let cur = null;                                               // 커서(차트 안 화면 좌표) — 손가락 그리기 모드에서만
+    const clampCur = (q) => ({ x: Math.max(4, Math.min(plotW() - 4, q.x)), y: Math.max(4, Math.min(box.clientHeight - 30, q.y)) });
+    function showCursor() {                                       // 커서 자리(자석 적용)를 엔진 십자선으로도 보여 준다(축에 가격 · 날짜)
+      if (!cur || !S.draw || !n()) { chart.clearCrosshairPosition(); return; }
+      const q = at(cur, true);
+      if (q && S.times?.[q.i] != null) chart.setCrosshairPosition(q.p, S.times[q.i], candle);
+      if (anchor && q) ghost = q.i !== anchor.i ? { a: anchor, b: q } : null;
+      lastCur = cur;
+      prim.request();
+    }
 
     function down(e) {
       if (!S.draw || e.button > 0 || !n()) return;                // 보기 모드는 엔진이 다 맡는다
@@ -262,24 +282,26 @@ TR.chart = (() => {
       e.stopPropagation();
       touch.mine = true;
       fingers.set(e.pointerId, pt);
-      if (fingers.size === 2) {                                    // 두 번째 손가락: 그리던 것은 취소하고 이동 · 확대
+      if (fingers.size === 2) {                                    // 두 번째 손가락: 하던 것은 취소하고 이동 · 확대
         const [p1, p2] = [...fingers.values()], r = ts().getVisibleLogicalRange();
         gest = r && { type: "nav", d0: Math.max(10, Math.hypot(p1.x - p2.x, p1.y - p2.y)), m0: (p1.x + p2.x) / 2, from: r.from, w: r.to - r.from };
-        ghost = null; prim.request();
+        prim.request();
         return;
       }
       if (fingers.size > 2) return;
+      const mouse = e.pointerType === "mouse";
       const selP = sel != null && prim.paths.find((p) => p.item.id === sel);
-      const r = e.pointerType === "mouse" ? HANDLE : HANDLE * 1.4;
+      const r = mouse ? HANDLE : HANDLE * 1.4;
       const h = selP ? selP.handles.findIndex((q) => q[0] != null && dist(q, [pt.x, pt.y]) <= r) : -1;
-      const item = h >= 0 ? selP.item : hitLine(pt);
-      if (item) {
-        if (item.id !== sel) select(item.id);
-        gest = { type: h === 0 ? "a" : h === 1 ? "b" : "move", x0: pt.x, y0: pt.y, item, moved: false, start: at(pt, false) };
-      } else {
-        const a = at(pt, true);
-        gest = a && { type: "draw", x0: pt.x, y0: pt.y, a, moved: false, hadSel: sel != null };
-      }
+      const hit = h >= 0 ? selP.item : hitLine(pt);
+      const base = { x0: pt.x, y0: pt.y, moved: false, hadSel: sel != null };
+      if (h >= 0) gest = { ...base, type: h === 0 ? "a" : "b", item: hit, h0: { x: selP.handles[h][0], y: selP.handles[h][1] } };   // 손잡이: 손가락이 움직인 만큼(가리지 않게)
+      else if (hit && (hit.id === sel || mouse)) {                  // 고른 선(마우스는 아무 선) 끌기 = 통째 이동
+        if (hit.id !== sel) select(hit.id);
+        gest = { ...base, type: "move", item: hit, start: at(pt, false) };
+      } else if (hit) gest = { ...base, type: "pick", item: hit, cur0: cur || pt };   // 안 고른 선: 톡 = 고르기, 끌기 = 커서 이동
+      else if (mouse) { const a0 = at(pt, true); gest = a0 && { ...base, type: "draw", a: a0 }; }
+      else gest = { ...base, type: "cursor", cur0: cur || pt };
       window.addEventListener("pointermove", move, true);
       window.addEventListener("pointerup", up, true);
       window.addEventListener("pointercancel", up, true);
@@ -296,23 +318,26 @@ TR.chart = (() => {
         const L = gest.from + (gest.m0 / W) * gest.w;               // 처음 두 손가락 가운데에 있던 봉이 지금 가운데로
         const from = L - (m / W) * w;
         ts().setVisibleLogicalRange({ from, to: from + w });
+        showCursor();
         return;
       }
       gest.last = pt;                                              // 손을 뗄 때의 좌표는 기기마다 믿기 어려워 마지막 이동 위치를 쓴다
-      if (!gest.moved && Math.hypot(pt.x - gest.x0, pt.y - gest.y0) < MOVE) return;
+      const dx = pt.x - gest.x0, dy = pt.y - gest.y0;
+      if (!gest.moved && Math.hypot(dx, dy) < MOVE) return;
       gest.moved = true;
+      if (gest.type === "cursor" || gest.type === "pick") { cur = clampCur({ x: gest.cur0.x + dx, y: gest.cur0.y + dy }); showCursor(); return; }
       if (gest.type === "draw") {
-        const b = at(pt, true);
-        ghost = b && b.i !== gest.a.i ? { a: gest.a, b } : null;
+        const b2 = at(pt, true);
+        ghost = b2 && b2.i !== gest.a.i ? { a: gest.a, b: b2 } : null;
       } else {
         const it = gest.item;
         if (gest.type === "move") {
-          const cur = at(pt, false);
-          if (!cur || !gest.start) return;
-          const di = cur.i - gest.start.i, k = cur.p / gest.start.p;
+          const c = at(pt, false);
+          if (!c || !gest.start) return;
+          const di = c.i - gest.start.i, k = c.p / gest.start.p;
           gest.edit = { id: it.id, a: { i: it.a.i + di, p: it.a.p * k }, b: { i: it.b.i + di, p: it.b.p * k } };
         } else {
-          const q = at(pt, true);
+          const q = at(e.pointerType === "mouse" ? pt : { x: gest.h0.x + dx, y: gest.h0.y + dy }, true);
           if (!q) return;
           gest.edit = { id: it.id, a: gest.type === "a" ? q : it.a, b: gest.type === "b" ? q : it.b };
         }
@@ -325,10 +350,18 @@ TR.chart = (() => {
       window.removeEventListener("pointercancel", up, true);
       fingers.clear();
       const g = gest;
-      gest = null; ghost = null;
+      gest = null;
+      if (!cur) ghost = null;
       if (pending) { const [d, k] = pending; pending = null; setData(d, k); }
       prim.request();
       return g;
+    }
+    function placePoint(q) {                                       // 점 찍기: 첫 점 → 둘째 점이면 선
+      if (!q) return;
+      if (!anchor) { anchor = q; hintText("끌어서 십자선을 끝점으로 옮긴 뒤 톡 누르세요 · 같은 봉에서 다시 누르면 취소"); }
+      else if (q.i === anchor.i) { anchor = null; ghost = null; hintText(""); }
+      else { const a = anchor; anchor = null; ghost = null; emitDraw(a, q); }
+      prim.request();
     }
     function up(e) {
       if (!fingers.has(e.pointerId)) return;
@@ -338,17 +371,19 @@ TR.chart = (() => {
       if (fingers.size) return;
       const g = finish();
       if (!g || e.type === "pointercancel") return;
-      if (g.type === "draw") {
-        const b = g.moved ? at(g.last || pos(e), true) : null;
-        if (b && b.i !== g.a.i) { anchor = null; return emitDraw(g.a, b); }
+      if (g.type === "cursor" || g.type === "pick") {
+        if (g.moved) return;                                       // 커서만 옮김
+        if (g.type === "pick") return select(g.item.id);           // 톡 = 선 고르기
+        if (g.hadSel && !anchor) return select(null);              // 톡 = 선택 풀기
+        if (!cur) { cur = clampCur({ x: g.x0, y: g.y0 }); showCursor(); return; }   // 커서가 없으면 처음 톡은 커서만 놓는다
+        return placePoint(at(cur, true));
+      }
+      if (g.type === "draw") {                                     // 마우스
+        const b2 = g.moved ? at(g.last || pos(e), true) : null;
+        if (b2 && b2.i !== g.a.i) { anchor = null; return emitDraw(g.a, b2); }
         if (g.moved) { TR.util.toast("봉이 있는 곳에서 두 날짜에 걸쳐 그리세요"); return; }
-        // 탭: 선택돼 있으면 선택만 풀고, 아니면 첫 점 → 두 번째 점
-        if (g.hadSel) { select(null); return; }
-        if (!anchor) { anchor = g.a; hintText("두 번째 점을 누르세요 · 같은 봉을 다시 누르면 취소"); }
-        else if (g.a.i === anchor.i) { anchor = null; hintText(""); }
-        else { const a = anchor; anchor = null; emitDraw(a, g.a); }
-        prim.request();
-        return;
+        if (g.hadSel && !anchor) return select(null);
+        return placePoint(g.a);
       }
       if (g.moved && g.edit) {
         let { a, b } = g.edit;
@@ -405,8 +440,8 @@ TR.chart = (() => {
     window.addEventListener("pointercancel", touchEnd, true);
     box.addEventListener("pointerdown", down, true);
 
-    const drawHint = () => (window.matchMedia("(pointer: coarse)").matches
-      ? "빈 곳에서 끌면 새 빗각 · 선을 누르면 선택(손잡이 = 끝점, 선 끌기 = 통째) · 두 손가락 = 이동·확대"
+    const drawHint = () => (coarse()
+      ? "끌어서 십자선을 옮기고 톡 = 점 찍기(시작 → 끝) · 선 톡 = 고르기(손잡이 = 끝점, 선 끌기 = 통째) · 두 손가락 = 이동·확대"
       : "빈 곳에서 드래그하면 새 빗각 · 선을 클릭하면 선택(손잡이 = 끝점, 선 끌기 = 통째) · 휠 = 확대, 축 끌기 = 이동");
     let hintTimer = 0;
     function hintText(t, ms = 0) {                                // ms: 그만큼 뒤에 저절로 숨김(차트 아래쪽을 오래 가리지 않게)
@@ -428,6 +463,7 @@ TR.chart = (() => {
       S.bars.forEach((b, i) => { const t = timeOf(b); if (t > last) { times.push(t); keep.push(i); last = t; } });
       if (keep.length !== S.bars.length) S = { ...S, bars: keep.map((i) => S.bars[i]) };   // 시각이 겹치는 봉은 버림(엔진은 증가하는 시각만 받음)
       quiet = !keepView;
+      S.times = times;
       candle.setData(S.bars.map((b, i) => ({ time: times[i], open: b.o, high: b.h, low: b.l, close: b.c })));
       const showVol = S.volume && S.bars.some((b) => b.v);
       vol.setData(showVol ? S.bars.map((b, i) => ({ time: times[i], value: b.v || 0, color: b.c >= b.o ? `${C.up}73` : `${C.down}73` })) : []);
@@ -450,6 +486,7 @@ TR.chart = (() => {
       quiet = false;
       anchor = null;
       showOhlc(n() - 1);
+      if (S.draw && cur) showCursor();
       prim.request();
     }
 
@@ -458,6 +495,9 @@ TR.chart = (() => {
       setData,
       setDraw(on) {
         S.draw = !!on; anchor = null; ghost = null;
+        // 손가락 기기는 커서를 띄운다(지난번 자리 또는 차트 가운데) — 저장 뒤 다시 그려도 그 자리에
+        cur = on && coarse() ? (lastCur || { x: (plotW() || box.clientWidth * 0.8) * 0.55, y: box.clientHeight * 0.45 }) : null;
+        if (on && cur) setTimeout(showCursor, 0); else chart.clearCrosshairPosition();
         chart.applyOptions(on ? NAV.off : NAV.on);
         if (!on) select(null);
         box.classList.toggle("drawing", !!on);
@@ -469,7 +509,7 @@ TR.chart = (() => {
       select(id) { if (live.has(api) && S.draw && (id == null || items().some((x) => x.id === id))) select(id); },
       reset() { if (live.has(api)) reset(); },
       setView(v) { if (live.has(api) && v && v.width > 0) ts().setVisibleLogicalRange({ from: v.right - v.width, to: v.right }); },
-      debug: () => ({ n: n(), sel, draw: S.draw, magnet: S.magnet, range: ts().getVisibleLogicalRange(),
+      debug: () => ({ n: n(), sel, draw: S.draw, magnet: S.magnet, cur, anchor, curAt: cur && at(cur, true), range: ts().getVisibleLogicalRange(),
                       paths: prim.paths.map((p) => ({ id: p.item.id ?? null, kind: p.ln.kind, a: p.item.a || null, b: p.item.b || null, pts: p.pts })) }),   // 자동 시험용(읽기 전용)
       destroy() {
         if (!live.delete(api)) return;

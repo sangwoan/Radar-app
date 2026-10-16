@@ -58,6 +58,20 @@ TR.util = (() => {
     t.textContent = msg; t.classList.add("show");
     clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), ms);
   }
+  // 확인 창 — 브라우저 confirm()은 안드로이드 앱 웹뷰에서 뜨지 않고 늘 '취소'가 된다(그래서 '모두 지우기'가 안 됐다). 결과는 Promise<boolean>
+  function ask(msg, ok = "확인", danger = true) {
+    return new Promise((done) => {
+      const w = document.createElement("div");
+      w.className = "ask"; w.setAttribute("role", "dialog"); w.setAttribute("aria-modal", "true");
+      w.innerHTML = `<div class="ask-box"><p>${esc(msg)}</p><div class="row"><button type="button" class="btn" data-no>취소</button><button type="button" class="btn ${danger ? "danger" : "primary"}" data-yes>${esc(ok)}</button></div></div>`;
+      const end = (v) => { w.remove(); done(v); };
+      w.addEventListener("click", (e) => { if (e.target === w) end(false); });
+      w.querySelector("[data-no]").addEventListener("click", () => end(false));
+      w.querySelector("[data-yes]").addEventListener("click", () => end(true));
+      document.body.appendChild(w);
+      w.querySelector("[data-yes]").focus();
+    });
+  }
   const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
   const isMobile = () => matchMedia("(max-width: 767px)").matches;
@@ -67,7 +81,7 @@ TR.util = (() => {
     const io = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { io.unobserve(e.target); draw(e.target); } }), { rootMargin: "300px 0px" });
     els.forEach((el) => io.observe(el));
   }
-  return { esc, num, price, decimalsOf, sgn, atr, hm, ago, STAGE, GROUP, lineWord, roleText, stageLabel, idxOfDate, barsOf, toast, load, save, isMobile, lazy };
+  return { esc, num, price, decimalsOf, sgn, atr, hm, ago, STAGE, GROUP, lineWord, roleText, stageLabel, idxOfDate, barsOf, toast, ask, load, save, isMobile, lazy };
 })();
 
 // 화면 단계 유지: 근접 · 터치까지 들어온 선은 접근 구간을 완전히 벗어날 때(단계 0)까지 그 단계로 보여 준다.

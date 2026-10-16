@@ -219,10 +219,10 @@ TR.modules.settings = (el, D, route) => {
     catch (e) { toast(e.message, 5000); }
     finally { if (btn) btn.disabled = false; }
   };
-  el.querySelectorAll("[data-k]").forEach((b) => b.addEventListener("click", () => {
+  el.querySelectorAll("[data-k]").forEach((b) => b.addEventListener("click", async () => {
     const a = b.dataset.k;
     if (a === "test") run(b, () => TR.api.post("/api/kakao/test"), "테스트 메시지를 보냈습니다. 카카오톡 '나와의 채팅'을 확인하세요.");
-    if (a === "disconnect" && confirm("카카오 연결을 해제할까요? 토큰이 키체인에서 삭제됩니다.")) run(b, () => TR.api.post("/api/kakao/disconnect"), "연결을 해제했습니다");
+    if (a === "disconnect" && await TR.util.ask("카카오 연결을 해제할까요? 토큰이 키체인에서 삭제됩니다.", "해제")) run(b, () => TR.api.post("/api/kakao/disconnect"), "연결을 해제했습니다");
     if (a === "scan") run(b, () => TR.api.post("/api/scan", { all: true }), (r) => `스캔 완료 · ${r.seconds}s`);
     if (a === "mac") run(b, () => TR.api.post("/api/notify/test-mac"), "맥 알림을 보냈습니다 (안 보이면 시스템 설정 → 알림에서 '스크립트 편집기' 허용)");
     if (a === "universe") run(b, () => TR.api.post("/api/universe"), (r) => r.message);
@@ -279,7 +279,7 @@ TR.modules.settings = (el, D, route) => {
     catch (e) { toast(e.message); ev.currentTarget.disabled = false; }
   });
   el.querySelector("[data-rotate]")?.addEventListener("click", async (ev) => {
-    if (!confirm("접속 키를 바꾸면 이미 연결한 휴대폰은 QR로 다시 연결해야 합니다. 바꿀까요?")) return;
+    if (!(await TR.util.ask("접속 키를 바꾸면 이미 연결한 휴대폰은 QR로 다시 연결해야 합니다. 바꿀까요?", "바꾸기"))) return;
     ev.currentTarget.disabled = true;
     try { await TR.api.post("/api/remote", { on: true, rotate: true }); toast("새 접속 키로 재시작 중…"); waitServer(); } catch (e) { toast(e.message); }
   });
@@ -318,7 +318,7 @@ TR.modules.settings = (el, D, route) => {
       b.disabled = false;
     });
     qrs.querySelector("[data-serve-off]")?.addEventListener("click", async () => {
-      if (!confirm("HTTPS 주소를 끌까요? 휴대폰에 설치한 앱은 다시 켤 때까지 열리지 않습니다.")) return;
+      if (!(await TR.util.ask("HTTPS 주소를 끌까요? 휴대폰에 설치한 앱은 다시 켤 때까지 열리지 않습니다.", "끄기"))) return;
       try { const r = await TR.api.post("/api/tailscale/serve", { on: false }, 60000); drawNet({ ...n, ts: r.tailscale }); } catch (e) { toast(e.message); }
     });
   }
@@ -361,7 +361,7 @@ TR.modules.settings = (el, D, route) => {
     const f = Object.fromEntries(new FormData(e.target));
     run(e.submitter, () => TR.api.post("/api/watchlist", { action: "add", ...f }), `${f.name || f.sym} 추가 완료`);
   });
-  el.querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", () => {
-    if (confirm(`${b.dataset.rm}를 목록에서 뺄까요?`)) run(b, () => TR.api.post("/api/watchlist", { action: "remove", sym: b.dataset.rm }), "뺐습니다");
+  el.querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", async () => {
+    if (await TR.util.ask(`${b.dataset.rm}를 목록에서 뺄까요?`, "빼기")) run(b, () => TR.api.post("/api/watchlist", { action: "remove", sym: b.dataset.rm }), "뺐습니다");
   }));
 };

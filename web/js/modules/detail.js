@@ -259,7 +259,7 @@ TR.modules.detail = (el, D, route) => {
       e.currentTarget.classList.toggle("on", on); e.currentTarget.setAttribute("aria-pressed", on); e.currentTarget.textContent = `🧲 자석 ${on ? "켬" : "끔"}`;
     });
     el.querySelector("[data-pick]").addEventListener("change", (e) => { location.hash = `#chart/${encodeURIComponent(e.target.value)}`; });
-    el.querySelector("[data-clear]")?.addEventListener("click", () => { if (confirm(`${it.name}의 내 빗각 ${mine.length}개를 모두 지울까요?`)) lineOp(() => [], "delete"); });
+    el.querySelector("[data-clear]")?.addEventListener("click", async () => { if (await TR.util.ask(`${it.name}의 내 빗각 ${mine.length}개를 모두 지울까요?`, "모두 지우기")) lineOp(() => [], "delete"); });
     el.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => lineOp((list) => list.filter((u) => u.id !== b.dataset.del), "delete")));
     el.querySelectorAll("[data-star]").forEach((b) => b.addEventListener("click", () => TR.toggleFav(b.dataset.star, b)));
     const dq = el.querySelector("[data-dq]");
