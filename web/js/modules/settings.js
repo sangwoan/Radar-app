@@ -187,6 +187,20 @@ TR.modules.settings = (el, D, route) => {
       <p class="hint">✎ = 직접 추가한 종목(자동 갱신에도 유지). 자동 종목을 빼면 다음 갱신 때도 다시 넣지 않습니다.</p>
     </details>`;
 
+  // 반도체 탭: Daily Market Radar gist 주소(이 기기에만)
+  const semiUrl = TR.semi?.url() || "";
+  const semiBox = `
+    <details class="box"${semiUrl ? "" : " open"}>
+      <summary class="box-h">📈 반도체 탭 ${semiUrl ? `<span class="pill ok">연결됨</span>` : `<span class="pill">연결 안 됨</span>`}</summary>
+      <form class="form semi-url" data-form="semi">
+        <label for="semi-set-url">Daily Market Radar gist 주소</label>
+        <input id="semi-set-url" name="url" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"
+               placeholder="https://gist.githubusercontent.com/…/raw/radar-bundle.json" value="${esc(semiUrl)}">
+        <div class="row"><button type="submit" class="btn primary">저장</button>${semiUrl ? `<button type="button" class="btn" data-semi-clear>연결 끊기</button>` : ""}</div>
+      </form>
+      <p class="hint">맥의 <code>python3 scripts/publish.py --setup</code>이 알려 주는 주소입니다. 이 기기에만 저장되고 배포 파일에는 들어가지 않습니다.</p>
+    </details>`;
+
   const theme = TR.themeMode?.() || "system";
   const themeBox = `
     <div class="box themebox"><p class="box-h">🎨 화면 테마</p>
@@ -208,7 +222,7 @@ TR.modules.settings = (el, D, route) => {
       <div class="row"><button type="button" class="btn" data-k="scan">지금 스캔 (전 종목)</button>${local && !phone ? `<button type="button" class="btn" data-k="mac">맥 알림 테스트</button>` : ""}</div>
     </details>`;
 
-  el.innerHTML = `<section class="panel settings">${phone ? phoneAppBox : phoneBox + apkBox + kakaoBox}${pushBox}${lineBox}${uniBox}${themeBox}${sysBox}
+  el.innerHTML = `<section class="panel settings">${phone ? phoneAppBox : phoneBox + apkBox + kakaoBox}${pushBox}${lineBox}${uniBox}${semiBox}${themeBox}${sysBox}
     <p class="hint">차트 엔진: <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a> · Apache-2.0 (js/vendor)</p></section>
     <div class="savebar" hidden role="region" aria-label="저장하지 않은 변경"><span>저장하지 않은 변경이 있어요</span><button type="button" class="btn primary" data-savebar>저장</button></div>`;
 
@@ -250,10 +264,23 @@ TR.modules.settings = (el, D, route) => {
   // 저장 안 한 변경: 알림 · 빗각 기준 폼을 바꾸면 아래에 '저장' 막대(맨 아래 저장 버튼을 놓치지 않게). 저장하면 화면을 새로 그려 사라진다
   const bar = el.querySelector(".savebar");
   const dirty = (f) => { f.dataset.dirty = "1"; bar.hidden = false; };
-  el.querySelectorAll('form[data-form="push"], form[data-form="line"]').forEach((f) => { f.addEventListener("input", () => dirty(f)); f.addEventListener("change", () => dirty(f)); });
+  el.querySelectorAll('form[data-form="push"], form[data-form="line"], form[data-form="semi"]').forEach((f) => { f.addEventListener("input", () => dirty(f)); f.addEventListener("change", () => dirty(f)); });
   bar.querySelector("[data-savebar]").addEventListener("click", () => {
     const f = el.querySelector("form[data-dirty]");
     f?.requestSubmit(f.querySelector('button[type="submit"]'));
+  });
+  el.querySelector('[data-form="semi"]')?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try { TR.semi.setUrl(new FormData(e.target).get("url")); } catch (err) { return toast(err.message); }
+    delete e.target.dataset.dirty;
+    toast(TR.semi.url() ? "반도체 탭 주소를 저장했습니다" : "반도체 탭 연결을 끊었습니다");
+    TR.render();
+  });
+  el.querySelector("[data-semi-clear]")?.addEventListener("click", async () => {
+    if (!(await TR.util.ask("반도체 탭 연결을 끊을까요? (이 기기의 주소만 지웁니다)", "연결 끊기"))) return;
+    TR.semi.setUrl("");
+    toast("반도체 탭 연결을 끊었습니다");
+    TR.render();
   });
   // 알림 강도 빠른 선택 → 아래 종류 체크를 맞춤
   el.querySelectorAll("[data-strength]").forEach((b) => b.addEventListener("click", () => {

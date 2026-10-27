@@ -1,4 +1,4 @@
-// 앱 뼈대: 데이터 로드, 화면 전환(#radar · #chart/SYM · #volume · #alerts · #settings), 머리글 상태, 1분마다 새 스캔 확인.
+// 앱 뼈대: 데이터 로드, 화면 전환(#radar · #chart/SYM · #volume · #semi · #alerts · #settings), 머리글 상태, 1분마다 새 스캔 확인.
 (() => {
   const { esc, hm, toast, load, save } = TR.util;
   const SEEN = "tr-alerts-seen", PUSHED = new Set(["phone", "kakao", "mac", "digest", "queued"]);
@@ -6,8 +6,8 @@
   TR.markAlertsSeen = () => { const last = S.data?.log?.[0]?.at; if (last && last > TR.alertsSeen()) save(SEEN, last); if (S.data) header(); };
   const S = (TR.store = { data: null, busy: false });
   const main = document.getElementById("main");
-  const PAGES = { radar: "grid", chart: "detail", volume: "volume", alerts: "alerts", settings: "settings" };
-  const TITLES = { radar: "레이더", chart: "차트", volume: "거래량", alerts: "알림", settings: "설정" };
+  const PAGES = { radar: "grid", chart: "detail", volume: "volume", semi: "semi", alerts: "alerts", settings: "settings" };
+  const TITLES = { radar: "레이더", chart: "차트", volume: "거래량", semi: "반도체", alerts: "알림", settings: "설정" };
 
   function route() {
     const h = location.hash.replace(/^#/, "");

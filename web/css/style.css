@@ -92,7 +92,7 @@ button, input, select { font: inherit; color: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ---------- bottom nav (mobile) ---------- */
-.bottomnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(5, 1fr);
+.bottomnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
   background: color-mix(in srgb, var(--card) 94%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
 .bottomnav a { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; height: var(--nav-h); color: var(--muted); font-size: 0.68rem; font-weight: 600; }
@@ -490,3 +490,111 @@ details.box.crit .box-h .muted { font-weight: 600; }
   summary.box-h { min-height: 2.5rem; }
   details.more > summary { padding: 0.55rem 0; }
 }
+
+/* ---------- 반도체 탭(Daily Market Radar 데이터) ---------- */
+.semi-head { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.semi-head .semi-acts { margin-left: auto; }
+.semi-subs { margin-bottom: 0.7rem; }
+.semi-body { display: grid; gap: 0.7rem; grid-template-columns: minmax(0, 1fr); }
+.semi-foot { margin-top: 0.9rem; }
+.sm-empty { font-size: 0.82rem; padding: 0.3rem 0; }
+.semi-url { display: grid; gap: 0.4rem; }
+.semi-url label { font-size: 0.8rem; font-weight: 700; }
+.semi-url input { width: 100%; }
+.steps { padding-left: 1.2rem; margin: 0.4rem 0 0; list-style: decimal; }
+.steps li { margin: 0.2rem 0; }
+@media (min-width: 1200px) { .semi-body.two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.semi-err { color: var(--warn-text); background: var(--warn-bg); border-radius: 0.4rem; padding: 0.35rem 0.55rem; font-size: 0.82rem; }
+.sm-brief { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; font-size: 0.86rem; line-height: 1.45; }
+.sm-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+@media (min-width: 900px) { .sm-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.sm-kpi { border: 1px solid var(--border); border-radius: 0.8rem; padding: 0.65rem 0.7rem; background: var(--card); min-width: 0; }
+.sm-kpi-l { font-size: 0.76rem; color: var(--text-2); font-weight: 600; }
+.sm-kpi-v { font-size: 1.05rem; font-weight: 700; margin-top: 0.15rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.35rem; }
+.sm-kpi-v .sm-chg { font-size: 0.78rem; }
+.sm-kpi-s { font-size: 0.74rem; margin-top: 0.15rem; }
+.sm-grp { font-size: 0.74rem; font-weight: 700; color: var(--muted); margin: 0.6rem 0 0.15rem; }
+.sm-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 0 1.2rem; }
+.sm-groups .sm-grp { margin-top: 0.4rem; }
+.sm-list { display: grid; }
+.sm-row { display: grid; grid-template-columns: minmax(0, 1fr) auto 5.6rem 3.6rem; align-items: center; gap: 0.5rem; padding: 0.3rem 0.15rem; border-bottom: 1px solid var(--line); font-size: 0.84rem; }
+.sm-row:last-child { border-bottom: 0; }
+.sm-row.hot { background: color-mix(in srgb, var(--st2) 8%, transparent); border-radius: 0.35rem; }
+.sm-nm { min-width: 0; min-height: 2.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.1rem 0.3rem; word-break: keep-all; }
+.sm-nm .ext { font-size: 0.74rem; }
+.sm-px, .sm-chg { text-align: right; white-space: nowrap; }
+.sm-spark { width: 3.6rem; height: 1.3rem; fill: none; stroke: var(--text-2); stroke-width: 1.3; opacity: 0.75; }   /* 1개월 추세 — 오늘 등락 색과 헷갈리지 않게 중립색 */
+@media (max-width: 380px) { .sm-row { grid-template-columns: minmax(0, 1fr) auto 5.2rem; } .sm-row .sm-spark { display: none; } }
+/* 반도체 · 메모리 */
+.sig { display: inline-flex; align-items: center; gap: 0.15rem; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+.sig b { font-size: 0.62rem; }
+.sig-expand { color: var(--up); } .sig-slow { color: var(--down); } .sig-neutral { color: var(--muted); }
+.cy-now { font-size: 1.15rem; font-weight: 800; }
+.cy-gauge { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; margin: 0.45rem 0; }
+.cy-gauge span { text-align: center; font-size: 0.72rem; padding: 0.3rem 0.1rem; border-radius: 0.35rem; background: var(--card); color: var(--muted); border: 1px solid var(--border); }
+.cy-gauge span.on { background: var(--st2); border-color: var(--st2); color: #fff; font-weight: 800; }
+.cy-text { font-size: 0.84rem; margin-bottom: 0.4rem; }
+.cy-split { margin-bottom: 0.3rem; }
+.cy-steps { margin: 0.2rem 0 0; padding: 0; display: grid; gap: 0.15rem; font-size: 0.82rem; }
+.cy-steps li { display: flex; gap: 0.4rem; color: var(--muted); }
+.cy-steps li.on { color: var(--text); font-weight: 700; } .cy-steps li.on .cy-dot { color: var(--st2); }
+.cy-cards { display: grid; gap: 0.35rem; }
+.cy-card { border: 1px solid var(--border); border-radius: 0.55rem; background: var(--card); padding: 0.1rem 0.6rem; }
+.cy-card summary { display: flex; align-items: center; gap: 0.4rem; min-height: 2.4rem; cursor: pointer; list-style: none; font-size: 0.84rem; }
+.cy-card summary::-webkit-details-marker { display: none; }
+.cy-card .cy-name { flex: 1 1 auto; min-width: 0; }
+.cy-card .cy-val { font-weight: 700; }
+.cy-card[open] { padding-bottom: 0.5rem; }
+.cy-card .sm-spark { width: 100%; height: 1.6rem; }
+.cy-meta, .cy-note, .cy-rule { font-size: 0.76rem; margin-top: 0.2rem; }
+.pb-ratios { display: grid; gap: 0.4rem; margin-bottom: 0.5rem; }
+.pb-ratio { border: 1px solid var(--border); border-radius: 0.55rem; background: var(--card); padding: 0.5rem 0.6rem; font-size: 0.84rem; }
+.pb-ratio .sm-spark { width: 7rem; }
+.pb-note { margin-top: 0.2rem; }
+.pb-head, .pb-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); gap: 0.5rem; align-items: start; }
+.pb-head { font-size: 0.72rem; font-weight: 700; padding: 0 0.15rem 0.2rem; border-bottom: 1px solid var(--border); }
+.pb-head span:not(:first-child), .pb-spot, .pb-ct { text-align: right; }
+.pb-row { padding: 0.4rem 0.15rem; border-bottom: 1px solid var(--line); font-size: 0.84rem; }
+.pb-row:last-child { border-bottom: 0; }
+.pb-row small { display: block; font-size: 0.74rem; color: var(--text-2); margin-top: 0.1rem; }
+.pb-cad { font-size: 0.66rem; font-weight: 700; margin-left: 0.2rem; padding: 0 0.25rem; border: 1px solid currentColor; border-radius: 0.25rem; color: var(--muted); }
+.pb-stale { color: var(--warn-text); }
+.ol-trajs { display: grid; gap: 0.35rem; }
+.ol-traj { font-size: 0.84rem; display: grid; gap: 0.1rem; }
+.ol-subj { font-weight: 700; }
+.ol-chips { line-height: 1.8; }
+.sm-news { display: grid; gap: 0.55rem; }
+.sm-news > li { border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; font-size: 0.86rem; line-height: 1.4; }
+.sm-news > li:last-child { border-bottom: 0; }
+.sm-news a { color: var(--text); }
+.sm-meta { font-size: 0.74rem; margin-top: 0.15rem; }
+.ol-fig summary { cursor: pointer; font-size: 0.8rem; min-height: 2.1rem; display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
+.more-mk { margin-left: auto; font-size: 0.72rem; color: var(--accent-text); font-weight: 600; }
+.ol-fig[open] .more-mk { visibility: hidden; }
+.cy-card summary::after { content: "▾"; color: var(--muted); font-size: 0.72rem; }
+.cy-card[open] summary::after { content: "▴"; }
+/* 반도체 · 뉴스 · 일정 */
+.sm-cos { margin-bottom: 0.45rem; }
+.chipbtn.on { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent); font-weight: 700; }
+.sm-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; margin-bottom: 0.55rem; }
+.sm-tags { display: flex; gap: 0.3rem; align-items: center; margin-bottom: 0.15rem; }
+.sm-score { color: var(--st2); font-size: 0.6rem; letter-spacing: 1px; }
+.sm-rel summary { font-size: 0.78rem; color: var(--accent-text); cursor: pointer; padding: 0.35rem 0; }
+.sm-rel ul { padding-left: 0.9rem; display: grid; gap: 0.3rem; font-size: 0.8rem; }
+.sm-cal { display: grid; }
+.sm-cal li { display: grid; grid-template-columns: 3.6rem minmax(0, 1fr); gap: 0.5rem; padding: 0.45rem 0.15rem; border-bottom: 1px solid var(--line); font-size: 0.86rem; }
+.sm-cal li:last-child { border-bottom: 0; }
+.sm-cal li.today .sm-dd { background: var(--st2); color: #fff; }
+.sm-dd { font-size: 0.74rem; font-weight: 800; text-align: center; align-self: start; padding: 0.15rem 0; border-radius: 0.35rem; background: var(--card); border: 1px solid var(--border); }
+.sm-ev .sm-meta { display: block; }
+.sm-star { color: var(--star); font-size: 0.7rem; }
+.sm-exp { display: grid; gap: 0.55rem; }
+.sm-exp li { border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; }
+.sm-exp li:last-child { border-bottom: 0; }
+.sm-exp-m { display: flex; flex-wrap: wrap; gap: 0.2rem 0.9rem; font-size: 0.84rem; margin: 0.15rem 0; }
+.sm-tw { display: grid; }
+.sm-tw li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 0.6rem; align-items: baseline; padding: 0.35rem 0.1rem; border-bottom: 1px solid var(--line); font-size: 0.82rem; }
+.sm-tw li:last-child { border-bottom: 0; }
+.sm-tw .num { text-align: right; white-space: nowrap; }
+.sm-capex { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.6rem; margin-bottom: 0.4rem; font-size: 0.9rem; }
+@media (max-width: 420px) { .sm-tw li { grid-template-columns: minmax(0, 1fr) auto auto; } .sm-tw li > :nth-child(3) { display: none; } }
