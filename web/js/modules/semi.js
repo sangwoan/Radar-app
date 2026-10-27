@@ -1,8 +1,8 @@
-// 반도체: 형제 프로젝트 Daily Market Radar(DMR)의 반도체 정보를 폰에서 본다(읽기 전용). 데이터는 TR.semi(js/semi.js)가 받은 묶음.
+// 반도체: Daily Market Radar(DMR)의 반도체 정보를 이 앱이 직접 모아 보여 준다(읽기 전용). 데이터는 TR.semi(js/semi.js) → /api/semi.
 //  아래 탭: 요약(브리프 · KPI · 시세) · 메모리(가격판 · 사이클 · 전망) · 뉴스(기업 집중 · 업계) · 일정(일정 · 수출 · 대만 월매출 · capex)
 //  바깥 링크(뉴스 원문)는 앱에서 폰 브라우저로 연다(app.js의 바깥 링크 처리). 모든 바깥 글은 esc()를 거친다.
 TR.modules.semi = (el) => {
-  const { esc, load, save, toast } = TR.util;
+  const { esc, load, save } = TR.util;
   const st = Object.assign({ sub: "sum", co: "skhynix", coTab: "top", newsTag: "semis" }, load("tr-semi", {}));
   const SUBS = [["sum", "요약"], ["mem", "메모리"], ["news", "뉴스"], ["cal", "일정·지표"]];
   const keep = () => save("tr-semi", st);
@@ -22,70 +22,61 @@ TR.modules.semi = (el) => {
   // ---------- 섹션: js/modules/semi_view.js(TR.semiView.sum · mem · news · cal · bind) ----------
   const S = TR.semiView;
 
-  // ---------- 설정 안 됨 ----------
-  function setup(msg = "") {
-    return `<section class="panel semi">
-      <div class="box">${H("📈 반도체 — Daily Market Radar 연결")}
-        <p class="hint" style="margin-top:0">맥의 Daily Market Radar가 매일 올리는 데이터 묶음(비밀 gist)을 이 폰이 받아 보여 줍니다. 주소는 이 기기에만 저장됩니다.</p>
-        <form class="form semi-url" data-form="semi-url">
-          <label for="semi-url">gist 주소</label>
-          <input id="semi-url" name="url" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"
-                 placeholder="https://gist.githubusercontent.com/…/raw/radar-bundle.json" value="${esc(TR.semi.url())}">
-          ${msg ? `<p class="semi-err" role="alert">${esc(msg)}</p>` : ""}
-          <div class="row"><button type="submit" class="btn primary">연결</button></div>
-        </form>
-        <details class="more"><summary>주소는 어디서 얻나요?</summary>
-          <ol class="hint steps">
-            <li>GitHub에서 <b>gist 권한만</b> 있는 토큰을 만든다</li>
-            <li>맥 터미널(Daily Market Radar 폴더): <code>python3 scripts/keystore.py set GITHUB_TOKEN</code></li>
-            <li><code>python3 scripts/publish.py --setup</code> → 나오는 주소(<code>config/settings.json</code>의 <code>remote.bundle_url</code>)를 여기에 붙여 넣기</li>
-            <li>그 뒤로는 맥 에이전트의 매일 09:00 업데이트가 gist도 새로 고친다(맥이 꺼져 있던 날은 마지막 데이터)</li>
-          </ol></details>
-      </div></section>`;
-  }
-
-  // ---------- 머리 줄: 데이터 시각 · 신선도 · 새로 받기 ----------
+  // ---------- 머리 줄: 데이터 시각 · 신선도 · 일부 출처 실패 · 새로 받기 ----------
   function head() {
     const b = res.bundle, upd = b?.data?.meta?.updated_at || b?.built_at;
     const hours = upd ? (Date.now() - Date.parse(upd)) / 3600000 : null;
-    const stale = hours != null && hours > 30;
-    const checks = b?.data?.meta?.checks;
+    const failed = Object.entries(b?.data?.meta?.modules || {}).filter(([, v]) => v.status === "error").map(([k]) => NAMES[k] || k);
     return `<div class="semi-head">
-      <span class="clock">DMR ${upd ? `${fmtDate(upd)} 기준` : "—"}</span>
-      ${stale ? `<span class="pill warn" title="맥의 Daily Market Radar 에이전트가 최근에 돌지 않았습니다">${hours > 48 ? `${Math.floor(hours / 24)}일 전 데이터` : "어제 데이터"}</span>` : ""}
-      ${checks?.errors ? `<span class="pill warn" title="DMR 자체 점검">점검 오류 ${checks.errors}</span>` : ""}
+      <span class="clock">${upd ? `${fmtDate(upd)} 기준` : "—"}</span>
+      ${res.running ? `<span class="pill" data-semi-running>새로 받는 중…</span>`
+        : hours != null && hours > 2 ? `<span class="pill warn">${hours >= 48 ? `${Math.floor(hours / 24)}일 전` : `${Math.floor(hours)}시간 전`} 데이터</span>` : ""}
+      ${failed.length ? `<span class="pill warn" title="${esc(failed.join(" · "))}">일부 출처 실패 ${failed.length}</span>` : ""}
       ${res.error ? `<span class="pill warn" title="${esc(res.error)}">받기 실패 · 보관본</span>` : ""}
-      <span class="semi-acts"><button type="button" class="btn sm" data-semi-refresh title="gist에서 다시 받기">↻ 새로 받기</button></span>
+      <span class="semi-acts"><button type="button" class="btn sm" data-semi-refresh title="지금 새로 받기"${res.running ? " disabled" : ""}>↻ 새로 받기</button></span>
     </div>`;
   }
+  const NAMES = { snapshot: "시세", news: "업계 뉴스", consensus: "컨센서스", calendar: "일정", memory: "메모리 가격", cycle: "사이클",
+    company: "기업 뉴스", outlook: "가격 전망", capex: "설비투자", twrev: "대만 월매출", exports: "수출 속보", brief: "브리프" };
 
-  function page(msg) {
-    if (!res.configured || msg) return setup(msg);
-    if (!res.bundle) return setup(`데이터를 받지 못했습니다: ${res.error || "알 수 없는 오류"}`);
+  function page() {
+    if (!res.bundle) {
+      return `<section class="panel semi"><div class="box">${H("📈 반도체")}
+        ${res.running ? `<p class="empty" data-semi-running>처음 데이터를 모으는 중입니다… (보통 30초~1분)</p>`
+          : `<p class="semi-err" role="alert">데이터를 모으지 못했습니다: ${esc(res.error || "알 수 없는 오류")}</p>
+             <div class="row"><button type="button" class="btn primary" data-semi-refresh>다시 시도</button></div>`}
+        <p class="hint">시세 · 메모리 가격 · 사이클 지표 · 뉴스 · 일정을 이 ${TR.api.mode === "local" ? "폰이" : "맥이"} 직접 모읍니다(30분마다 새로).</p></div></section>`;
+    }
     const seg = `<div class="seg seg-full semi-subs" role="group" aria-label="반도체 화면">${SUBS.map(([k, l]) => `<button type="button" data-sub="${k}" aria-pressed="${st.sub === k}">${l}</button>`).join("")}</div>`;
     return `<section class="panel semi">${head()}${seg}<div class="semi-body" data-sub-body>${safe(SUBS.find((s) => s[0] === st.sub)?.[1] || "", () => S[st.sub](ctx()))}</div>
-      <p class="hint semi-foot">출처: Daily Market Radar(맥) · 시세 Yahoo · 메모리 DRAMeXchange · 전망 TrendForce · 뉴스 각 언론사(제목 · 링크만). 개인 참고용.</p></section>`;
+      <p class="hint semi-foot">출처: 시세 Yahoo · 메모리 DRAMeXchange · 전망 TrendForce · 실적 Nasdaq(Zacks) · 설비투자 SEC · 대만 TWSE/TPEx · 뉴스 각 언론사(제목 · 링크만). 규칙은 Daily Market Radar와 같음. 개인 참고용.</p></section>`;
   }
 
-  function draw(msg = "") {
-    el.innerHTML = page(msg);
-    el.querySelector('[data-form="semi-url"]')?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try { TR.semi.setUrl(new FormData(e.target).get("url")); }
-      catch (err) { return draw(err.message); }
-      el.innerHTML = `<p class="empty">반도체 데이터를 받는 중…</p>`;
-      res = await TR.semi.load(true);
-      if (res.bundle) toast("반도체 데이터를 연결했습니다");
-      draw();
-    });
-    el.querySelector("[data-semi-refresh]")?.addEventListener("click", async (e) => {
+  function draw() {
+    el.innerHTML = page();
+    el.querySelectorAll("[data-semi-refresh]").forEach((btn) => btn.addEventListener("click", async (e) => {
       e.currentTarget.disabled = true;
       res = await TR.semi.load(true);
-      toast(res.error ? `받기 실패: ${res.error}` : "새로 받았습니다");
       draw();
-    });
+      poll();
+    }));
     el.querySelectorAll("[data-sub]").forEach((b) => b.addEventListener("click", () => { st.sub = b.dataset.sub; keep(); draw(); window.scrollTo(0, 0); }));
-    S.bind(el, { ...ctx(), draw });                                  // 섹션별 조작(회사 토글 등)
+    if (res.bundle) S.bind(el, { ...ctx(), draw });                  // 섹션별 조작(회사 토글 등)
+  }
+
+  // 모으는 중이면 몇 초마다 다시 묻고, 끝나면(또는 묶음이 바뀌면) 다시 그린다
+  let timer = null;
+  function poll() {
+    clearTimeout(timer);
+    if (!res?.running) return;
+    timer = setTimeout(async () => {
+      if (!here()) return;
+      const before = res;
+      res = await TR.semi.load();
+      if (!here()) return;
+      if (before.bundle?.built_at !== res.bundle?.built_at || before.running !== res.running || before.error !== res.error) draw();
+      poll();
+    }, 4000);
   }
 
   // 메모리에 있으면 바로 그리고(1분 새로고침에도 깜빡이지 않게), 오래됐으면 뒤에서 받아 바뀐 경우에만 다시 그린다
@@ -96,6 +87,7 @@ TR.modules.semi = (el) => {
     const before = res;
     res = await TR.semi.load();
     if (!here()) return;                                           // 그동안 다른 화면으로 갔으면 그리지 않음
-    if (!before || before.bundle?.built_at !== res.bundle?.built_at || before.error !== res.error) draw();
+    if (!before || before.bundle?.built_at !== res.bundle?.built_at || before.error !== res.error || before.running !== res.running) draw();
+    poll();
   })();
 };

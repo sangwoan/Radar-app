@@ -1,0 +1,9 @@
+{
+  "_readme": "TrendForce 발표 기준 고정거래가 수기 입력. 제품별로 월별 가격(series)과 분기 상승률(quarterly: 실적 actual / 전망 forecast, 단위 %)을 넣는다. price 단위는 USD. 개인용 참고 데이터로만 사용.",
+  "_example": {
+    "product": "DDR4 8Gb", "label": "DDR4 8Gb 고정가", "unit": "USD", "source": "TrendForce",
+    "series": [ { "month": "2026-08", "price": 25.0 } ],
+    "quarterly": [ { "quarter": "2Q", "low": 58, "high": 63, "type": "actual" }, { "quarter": "3Q", "low": 13, "high": 18, "type": "forecast" } ]
+  },
+  "items": []
+}

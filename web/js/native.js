@@ -24,7 +24,8 @@
   TR.native = {
     available: !!N,
     background: !!(N && N.isBackground && N.isBackground()),
-    http: (url, ms) => call((id) => N.http(id, url, ms | 0)).then((p) => parse(p, { status: 0, body: "" })),
+    http: (url, ms, headers) => call((id) => (headers && N.httpH ? N.httpH(id, url, ms | 0, JSON.stringify(headers)) : N.http(id, url, ms | 0))).then((p) => parse(p, { status: 0, body: "" })),
+    headers: !!(N && N.httpH),                                       // 헤더를 붙여 부를 수 있는 앱인가(4.13~, 옛 앱은 헤더 없이 부름)
     notify: (title, body, sym) => { if (N) N.notify(String(title), String(body), sym || ""); },
     schedule: (minutes, exact) => { if (N) N.schedule(minutes | 0, !!exact); },
     status: () => (N ? parse(N.status(), null) : null),           // {notifications, battery_unrestricted, exact_allowed, version, interval, exact, mode, next_run}
@@ -43,19 +44,21 @@
     bootOk: () => { if (N && N.bootOk) N.bootOk(); },
   };
 
-  async function text(url, ms = 20000) {
+  // headers: 반도체 수집기만 쓴다(SEC User-Agent · Nasdaq Origin/Referer). 앱 = 네이티브 httpH, 맥 시험 = 프록시가 허용 헤더만 넘김, 노드 = fetch
+  async function text(url, ms = 20000, headers = null) {
     if (TR.native.available) {
-      const r = await TR.native.http(url, ms);
+      const r = await TR.native.http(url, ms, headers);
       if (!r.status || r.status >= 400) throw new Error(`HTTP ${r.status || "실패"}`);
       return r.body;
     }
     const c = new AbortController(), h = setTimeout(() => c.abort(), ms);
     try {
       const viaProxy = typeof window !== "undefined" && TR.http.proxy;
-      const res = await fetch(viaProxy ? `/api/proxy?url=${encodeURIComponent(url)}` : url, viaProxy ? { signal: c.signal, headers: { "X-TR": "1" } } : { signal: c.signal, headers: { "User-Agent": "Mozilla/5.0" } });
+      const res = await fetch(viaProxy ? `/api/proxy?url=${encodeURIComponent(url)}${headers ? `&h=${encodeURIComponent(JSON.stringify(headers))}` : ""}` : url,
+        viaProxy ? { signal: c.signal, headers: { "X-TR": "1" } } : { signal: c.signal, headers: { "User-Agent": "Mozilla/5.0", ...(headers || {}) } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.text();
     } finally { clearTimeout(h); }
   }
-  TR.http = { proxy: false, text, json: async (url, ms) => JSON.parse(await text(url, ms)) };
+  TR.http = { proxy: false, text, json: async (url, ms, headers) => JSON.parse(await text(url, ms, headers)) };
 })(typeof window !== "undefined" ? window : globalThis);

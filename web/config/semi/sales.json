@@ -1,0 +1,565 @@
+{
+  "_readme": "영업 페이지(#sales) 설정. 모두 공개 데이터만 쓴다(내부 자료는 private 폴더 — scripts/private.py). customers: 실적 일정·차트 E 마커 대상(Nasdaq/Zacks, tickers.json에 있는 종목은 컨센서스 결과를 재사용). capex: SEC XBRL(무료·키 불필요) 현금흐름표 유형자산 취득액 — 분기값은 회계연도 누적값의 차로 계산. twrev: 대만 증권거래소(TWSE)·장외시장(TPEx) 월매출 공개 API. name은 API의 회사명과 같아야 수집한다(코드 오기 방지). trendforce: 보도자료 목록에서 제목에 메모리 키워드가 있는 글만 읽고 가격 % 수치를 추출한다. exports: 관세청·산업부 수출 속보 보도 제목 검색어. intel: 고객사 동향·HBM 경쟁·통상 뉴스 주제(require 단어가 제목에 모두 군별로 하나 이상 있어야 수집, tags로 회사 표시). dart: 공시 감시 회사(종목코드). DART_API_KEY가 있으면 OpenDART 목록 API, 없으면 DART 오늘 공시 RSS(최근 50건)만. regulation: 미 연방관보(Federal Register) 검색 — 제목이 title_match에 맞는 문서만.",
+  "customers": [
+    {
+      "sym": "MSFT",
+      "name": "마이크로소프트",
+      "seg": "클라우드"
+    },
+    {
+      "sym": "GOOGL",
+      "name": "알파벳",
+      "seg": "클라우드"
+    },
+    {
+      "sym": "AMZN",
+      "name": "아마존",
+      "seg": "클라우드"
+    },
+    {
+      "sym": "META",
+      "name": "메타",
+      "seg": "클라우드"
+    },
+    {
+      "sym": "ORCL",
+      "name": "오라클",
+      "seg": "클라우드"
+    },
+    {
+      "sym": "NVDA",
+      "name": "엔비디아",
+      "seg": "AI 가속기"
+    },
+    {
+      "sym": "AMD",
+      "name": "AMD",
+      "seg": "AI 가속기"
+    },
+    {
+      "sym": "AVGO",
+      "name": "브로드컴",
+      "seg": "AI 가속기"
+    },
+    {
+      "sym": "DELL",
+      "name": "델",
+      "seg": "서버·PC"
+    },
+    {
+      "sym": "HPE",
+      "name": "HPE",
+      "seg": "서버"
+    },
+    {
+      "sym": "SMCI",
+      "name": "슈퍼마이크로",
+      "seg": "서버"
+    },
+    {
+      "sym": "HPQ",
+      "name": "HP",
+      "seg": "PC"
+    },
+    {
+      "sym": "AAPL",
+      "name": "애플",
+      "seg": "모바일·PC"
+    },
+    {
+      "sym": "QCOM",
+      "name": "퀄컴",
+      "seg": "모바일 AP"
+    }
+  ],
+  "capex": {
+    "user_agent": "DailyMarketRadar/1.0 (personal research tool)",
+    "big4": [
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "META"
+    ],
+    "companies": [
+      {
+        "id": "MSFT",
+        "name": "마이크로소프트",
+        "cik": 789019,
+        "concepts": [
+          "PaymentsToAcquirePropertyPlantAndEquipment"
+        ],
+        "note": "회계연도 7월 시작 · 금융리스 제외"
+      },
+      {
+        "id": "GOOGL",
+        "name": "알파벳",
+        "cik": 1652044,
+        "concepts": [
+          "PaymentsToAcquirePropertyPlantAndEquipment"
+        ]
+      },
+      {
+        "id": "AMZN",
+        "name": "아마존",
+        "cik": 1018724,
+        "concepts": [
+          "PaymentsToAcquireProductiveAssets",
+          "PaymentsToAcquirePropertyPlantAndEquipment"
+        ],
+        "note": "총 취득액(매각·인센티브 차감 전)"
+      },
+      {
+        "id": "META",
+        "name": "메타",
+        "cik": 1326801,
+        "concepts": [
+          "PaymentsToAcquirePropertyPlantAndEquipment"
+        ]
+      },
+      {
+        "id": "ORCL",
+        "name": "오라클",
+        "cik": 1341439,
+        "concepts": [
+          "PaymentsToAcquirePropertyPlantAndEquipment"
+        ],
+        "note": "회계연도 6월 시작 → 분기가 2·5·8·11월에 끝나 합계에서 제외"
+      }
+    ]
+  },
+  "twrev": {
+    "groups": [
+      {
+        "id": "odm",
+        "label": "AI 서버 ODM",
+        "companies": [
+          {
+            "code": "2382",
+            "market": "twse",
+            "name": "廣達",
+            "ko": "콴타"
+          },
+          {
+            "code": "6669",
+            "market": "twse",
+            "name": "緯穎",
+            "ko": "위윈"
+          },
+          {
+            "code": "2317",
+            "market": "twse",
+            "name": "鴻海",
+            "ko": "폭스콘"
+          },
+          {
+            "code": "3231",
+            "market": "twse",
+            "name": "緯創",
+            "ko": "위스트론"
+          },
+          {
+            "code": "2356",
+            "market": "twse",
+            "name": "英業達",
+            "ko": "인벤텍"
+          },
+          {
+            "code": "2376",
+            "market": "twse",
+            "name": "技嘉",
+            "ko": "기가바이트"
+          }
+        ]
+      },
+      {
+        "id": "pc",
+        "label": "PC 브랜드",
+        "companies": [
+          {
+            "code": "2357",
+            "market": "twse",
+            "name": "華碩",
+            "ko": "에이수스"
+          },
+          {
+            "code": "2353",
+            "market": "twse",
+            "name": "宏碁",
+            "ko": "에이서"
+          }
+        ]
+      },
+      {
+        "id": "memory",
+        "label": "메모리·모듈·컨트롤러",
+        "companies": [
+          {
+            "code": "2408",
+            "market": "twse",
+            "name": "南亞科",
+            "ko": "난야"
+          },
+          {
+            "code": "2344",
+            "market": "twse",
+            "name": "華邦電",
+            "ko": "윈본드"
+          },
+          {
+            "code": "3260",
+            "market": "tpex",
+            "name": "威剛",
+            "ko": "에이데이터"
+          },
+          {
+            "code": "8299",
+            "market": "tpex",
+            "name": "群聯",
+            "ko": "파이슨"
+          }
+        ]
+      },
+      {
+        "id": "foundry",
+        "label": "파운드리·패키징",
+        "companies": [
+          {
+            "code": "2330",
+            "market": "twse",
+            "name": "台積電",
+            "ko": "TSMC"
+          },
+          {
+            "code": "3711",
+            "market": "twse",
+            "name": "日月光投控",
+            "ko": "ASE"
+          }
+        ]
+      }
+    ]
+  },
+  "trendforce": {
+    "pages": 6,
+    "title_match": "DRAM|NAND|HBM|Memory|SSD|Flash",
+    "show_days": 75,
+    "keep_days": 400
+  },
+  "exports": {
+    "days": 75,
+    "keep": 6,
+    "queries": [
+      "반도체 수출 관세청 1~20일",
+      "반도체 수출 관세청 1~10일",
+      "반도체 수출 초순",
+      "반도체 수출 중순",
+      "수출입동향 반도체 수출 월"
+    ]
+  },
+  "intel": {
+    "days": 7,
+    "per_topic": 20,
+    "topics": [
+      {
+        "id": "customers",
+        "label": "고객사 동향",
+        "require": [
+          [
+            "메모리",
+            "D램",
+            "디램",
+            "DRAM",
+            "HBM",
+            "낸드",
+            "NAND",
+            "SSD",
+            "memory",
+            "Memory",
+            "LPDDR"
+          ],
+          [
+            "장기계약",
+            "장기 계약",
+            "LTA",
+            "선급",
+            "물량",
+            "공급",
+            "조달",
+            "구매",
+            "가격",
+            "부담",
+            "인상",
+            "부족",
+            "확보",
+            "재고",
+            "long-term",
+            "prepay",
+            "supply",
+            "shortage",
+            "allocation",
+            "price",
+            "cost",
+            "contract",
+            "procure",
+            "inventory"
+          ]
+        ],
+        "require_any_tag": true,
+        "tags": {
+          "애플": [
+            "애플",
+            "Apple"
+          ],
+          "델": [
+            "델 ",
+            "Dell"
+          ],
+          "HP": [
+            "HP",
+            "에이치피"
+          ],
+          "레노버": [
+            "레노버",
+            "Lenovo"
+          ],
+          "샤오미": [
+            "샤오미",
+            "Xiaomi"
+          ],
+          "엔비디아": [
+            "엔비디아",
+            "Nvidia",
+            "NVIDIA"
+          ],
+          "AMD": [
+            "AMD"
+          ],
+          "구글": [
+            "구글",
+            "Google",
+            "알파벳"
+          ],
+          "아마존": [
+            "아마존",
+            "Amazon",
+            "AWS"
+          ],
+          "마이크로소프트": [
+            "마이크로소프트",
+            "Microsoft",
+            "MS "
+          ],
+          "메타": [
+            "메타",
+            "Meta "
+          ],
+          "오픈AI": [
+            "오픈AI",
+            "OpenAI"
+          ],
+          "앤트로픽": [
+            "앤트로픽",
+            "앤스로픽",
+            "Anthropic"
+          ],
+          "알리바바": [
+            "알리바바",
+            "Alibaba"
+          ],
+          "텐센트": [
+            "텐센트",
+            "Tencent"
+          ],
+          "바이트댄스": [
+            "바이트댄스",
+            "ByteDance"
+          ],
+          "오라클": [
+            "오라클",
+            "Oracle"
+          ]
+        },
+        "exclude": "주가|목표주가|특징주|[Ss]tock|[Ss]hares|price target|ETF|Price Forecast|매수",
+        "feeds": [
+          "메모리 장기계약 OR 메모리 선급금 OR D램 물량 확보 when:7d",
+          "메모리 가격 부담 스마트폰 OR PC OR 서버 when:7d",
+          "(애플 OR 델 OR 레노버 OR 샤오미 OR 엔비디아) 메모리 공급 when:7d",
+          "EN:(DRAM OR \"memory chip\" OR HBM) (\"long-term\" OR LTA OR prepay OR shortage OR allocation) (Apple OR Dell OR Lenovo OR Xiaomi OR Nvidia OR Alibaba OR ByteDance OR Microsoft OR Google OR Amazon OR Meta) when:7d",
+          "EN:(Apple OR Dell OR HP OR Lenovo OR Xiaomi) \"memory costs\" OR \"memory prices\" when:7d"
+        ]
+      },
+      {
+        "id": "hbm",
+        "label": "HBM 경쟁",
+        "require": [
+          [
+            "HBM"
+          ]
+        ],
+        "tags": {
+          "SK하이닉스": [
+            "하이닉스",
+            "SK hynix",
+            "SK Hynix",
+            "닉스"
+          ],
+          "삼성전자": [
+            "삼성",
+            "Samsung",
+            "삼전"
+          ],
+          "마이크론": [
+            "마이크론",
+            "Micron"
+          ],
+          "CXMT": [
+            "CXMT",
+            "창신"
+          ]
+        },
+        "exclude": "주가|목표주가|특징주|[Ss]tock|[Ss]hares|price target|ETF|Price Forecast|매수|ETF",
+        "feeds": [
+          "HBM4 퀄 OR HBM4 인증 OR HBM4 공급 when:7d",
+          "HBM 점유율 when:7d",
+          "HBM 엔비디아 공급 루빈 when:7d",
+          "EN:\"HBM4\" (qualification OR supply OR Nvidia OR Rubin OR share) when:7d",
+          "EN:HBM market share SK hynix Samsung Micron when:7d"
+        ]
+      },
+      {
+        "id": "trade",
+        "label": "통상·규제",
+        "require": [
+          [
+            "반도체",
+            "칩",
+            "D램",
+            "메모리",
+            "semiconductor",
+            "chip",
+            "Chip",
+            "HBM",
+            "DRAM"
+          ],
+          [
+            "수출통제",
+            "수출 통제",
+            "관세",
+            "232",
+            "VEU",
+            "검증된 최종사용자",
+            "엔티티",
+            "제재",
+            "규제",
+            "export control",
+            "Export Control",
+            "tariff",
+            "Tariff",
+            "Section 232",
+            "VEU",
+            "Entity List",
+            "sanction",
+            "ban"
+          ]
+        ],
+        "exclude": "주가|목표주가|특징주|[Ss]tock|[Ss]hares|price target|ETF|매수|관세청",
+        "feeds": [
+          "반도체 수출통제 when:14d",
+          "반도체 관세 when:14d",
+          "VEU 반도체 중국 공장 when:30d",
+          "EN:chip export controls when:14d",
+          "EN:semiconductor tariffs Section 232 when:14d"
+        ],
+        "days": 14
+      }
+    ]
+  },
+  "dart": {
+    "days": 30,
+    "companies": [
+      {
+        "stock_code": "000660",
+        "name": "SK하이닉스"
+      },
+      {
+        "stock_code": "005930",
+        "name": "삼성전자"
+      },
+      {
+        "stock_code": "042700",
+        "name": "한미반도체"
+      },
+      {
+        "stock_code": "402340",
+        "name": "SK스퀘어"
+      }
+    ],
+    "tags": [
+      [
+        "잠정실적",
+        "영업\\(잠정\\)실적|잠정"
+      ],
+      [
+        "공급계약",
+        "단일판매|공급계약"
+      ],
+      [
+        "투자",
+        "시설투자|신규시설|타법인주식|유형자산"
+      ],
+      [
+        "IR",
+        "기업설명회"
+      ],
+      [
+        "해명",
+        "풍문|해명|조회공시"
+      ],
+      [
+        "주주환원",
+        "배당|자기주식|소각"
+      ],
+      [
+        "정기보고",
+        "사업보고서|반기보고서|분기보고서"
+      ],
+      [
+        "지분",
+        "대량보유|임원ㆍ주요주주|최대주주"
+      ]
+    ]
+  },
+  "regulation": {
+    "days": 730,
+    "keep": 10,
+    "queries": [
+      {
+        "label": "BIS",
+        "params": [
+          [
+            "conditions[agencies][]",
+            "industry-and-security-bureau"
+          ],
+          [
+            "conditions[term]",
+            "semiconductor"
+          ]
+        ]
+      },
+      {
+        "label": "대통령",
+        "params": [
+          [
+            "conditions[type][]",
+            "PRESDOCU"
+          ],
+          [
+            "conditions[term]",
+            "semiconductor"
+          ]
+        ]
+      }
+    ],
+    "title_match": "Semiconduct|Polysilicon|Integrated Circuit|Advanced Computing|Entity List|Validated End-User|Export Administration|Artificial Intelligence|Foreign-Produced Direct Product|Section 232|Reciprocal Tariff|Chip"
+  }
+}

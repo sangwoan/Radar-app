@@ -187,18 +187,21 @@ TR.modules.settings = (el, D, route) => {
       <p class="hint">✎ = 직접 추가한 종목(자동 갱신에도 유지). 자동 종목을 빼면 다음 갱신 때도 다시 넣지 않습니다.</p>
     </details>`;
 
-  // 반도체 탭: Daily Market Radar gist 주소(이 기기에만)
-  const semiUrl = TR.semi?.url() || "";
+  // 반도체 탭: 데이터 출처 키(맥 = 키체인 · 폰 앱 = 이 기기). 이 맥에서는 폰 앱에 붙여 넣을 글/QR을 보여 준다.
   const semiBox = `
-    <details class="box"${semiUrl ? "" : " open"}>
-      <summary class="box-h">📈 반도체 탭 ${semiUrl ? `<span class="pill ok">연결됨</span>` : `<span class="pill">연결 안 됨</span>`}</summary>
-      <form class="form semi-url" data-form="semi">
-        <label for="semi-set-url">Daily Market Radar gist 주소</label>
-        <input id="semi-set-url" name="url" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"
-               placeholder="https://gist.githubusercontent.com/…/raw/radar-bundle.json" value="${esc(semiUrl)}">
-        <div class="row"><button type="submit" class="btn primary">저장</button>${semiUrl ? `<button type="button" class="btn" data-semi-clear>연결 끊기</button>` : ""}</div>
-      </form>
-      <p class="hint">맥의 <code>python3 scripts/publish.py --setup</code>이 알려 주는 주소입니다. 이 기기에만 저장되고 배포 파일에는 들어가지 않습니다.</p>
+    <details class="box" data-semi-box>
+      <summary class="box-h">📈 반도체 탭 · 데이터 키 <span class="pill" data-semi-pill>확인 중</span></summary>
+      <dl class="kv" data-semi-names><dt>키</dt><dd class="muted">확인 중…</dd></dl>
+      ${phone ? `<form class="form" data-form="semi-keys">
+          <label for="semi-keys">맥에서 받은 키 글</label>
+          <textarea id="semi-keys" name="text" rows="3" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="RADARKEYS1:F=…;N=…"></textarea>
+          <div class="row"><button type="submit" class="btn primary">키 저장</button><button type="button" class="btn" data-semi-keys-clear>이 폰의 키 지우기</button></div>
+        </form>
+        <p class="hint">맥 Radar → 설정 → 이 칸의 <b>폰 앱으로 보낼 키 보기</b>에서 글을 복사하거나 QR을 폰 카메라로 읽어 붙여 넣습니다. 키는 이 폰에만 저장됩니다.</p>`
+      : local ? `<div class="row"><button type="button" class="btn" data-semi-export>폰 앱으로 보낼 키 보기</button></div><div data-semi-export-out></div>
+        <p class="hint">Radar 키체인 → Daily Market Radar 키체인(<code>daily-market-radar</code>) → DMR 폴더 <code>.env</code> 순서로 찾습니다.</p>`
+      : `<p class="hint">키는 맥(키체인)에 있고 반도체 데이터도 맥이 모읍니다.</p>`}
+      <p class="hint">키가 없어도 대부분 동작합니다. FRED 키가 있으면 사이클의 물가 · 생산 · 수주 · 재고 지표를 API로 받고(없으면 공개 CSV), Finnhub 키는 야후가 실패할 때 대신 씁니다. GitHub 토큰 · gist · Anthropic 키는 반도체 수집에 쓰지 않아 옮기지 않습니다.</p>
     </details>`;
 
   const theme = TR.themeMode?.() || "system";
@@ -264,23 +267,54 @@ TR.modules.settings = (el, D, route) => {
   // 저장 안 한 변경: 알림 · 빗각 기준 폼을 바꾸면 아래에 '저장' 막대(맨 아래 저장 버튼을 놓치지 않게). 저장하면 화면을 새로 그려 사라진다
   const bar = el.querySelector(".savebar");
   const dirty = (f) => { f.dataset.dirty = "1"; bar.hidden = false; };
-  el.querySelectorAll('form[data-form="push"], form[data-form="line"], form[data-form="semi"]').forEach((f) => { f.addEventListener("input", () => dirty(f)); f.addEventListener("change", () => dirty(f)); });
+  el.querySelectorAll('form[data-form="push"], form[data-form="line"]').forEach((f) => { f.addEventListener("input", () => dirty(f)); f.addEventListener("change", () => dirty(f)); });
   bar.querySelector("[data-savebar]").addEventListener("click", () => {
     const f = el.querySelector("form[data-dirty]");
     f?.requestSubmit(f.querySelector('button[type="submit"]'));
   });
-  el.querySelector('[data-form="semi"]')?.addEventListener("submit", async (e) => {
+  // 반도체 탭 키: 이름별 있음/없음(값은 보이지 않음) → 폰 앱은 붙여 넣기, 이 맥은 내보내기(글 + QR)
+  const SEMI_KEYS = { FRED_API_KEY: "FRED", FINNHUB_API_KEY: "Finnhub", EIA_API_KEY: "EIA", DART_API_KEY: "OpenDART" };
+  const SRC = { env: "환경변수", radar: "Radar 키체인", dmr: "DMR 키체인", "dmr-env": "DMR .env", device: "이 폰" };
+  const semiNames = (r) => {
+    const box = el.querySelector("[data-semi-names]"), pill = el.querySelector("[data-semi-pill]");
+    if (!box) return;
+    const n = Object.values(r.names || {}).filter(Boolean).length;
+    box.innerHTML = Object.entries(SEMI_KEYS).map(([k, label]) => `<dt>${label}</dt><dd>${r.names?.[k] ? `<span class="up">있음</span> <span class="muted">${esc(SRC[r.sources?.[k]] || "")}</span>` : `<span class="muted">없음</span>`}</dd>`).join("");
+    pill.textContent = `키 ${n}/${Object.keys(SEMI_KEYS).length}`;
+    pill.className = `pill${n ? " ok" : ""}`;
+  };
+  if (el.querySelector("[data-semi-box]")) TR.semi.keys.status().then(semiNames).catch((e) => { const b = el.querySelector("[data-semi-names]"); if (b) b.innerHTML = `<dt>키</dt><dd class="muted">${esc(e.message)}</dd>`; });
+  el.querySelector('[data-form="semi-keys"]')?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    try { TR.semi.setUrl(new FormData(e.target).get("url")); } catch (err) { return toast(err.message); }
-    delete e.target.dataset.dirty;
-    toast(TR.semi.url() ? "반도체 탭 주소를 저장했습니다" : "반도체 탭 연결을 끊었습니다");
-    TR.render();
+    const f = e.target;
+    try {
+      semiNames(await TR.semi.keys.save({ text: new FormData(f).get("text") }));
+      f.reset();
+      delete f.dataset.dirty;
+      toast("키를 저장했습니다. 반도체 데이터를 새로 모읍니다");
+    } catch (err) { toast(err.message); }
   });
-  el.querySelector("[data-semi-clear]")?.addEventListener("click", async () => {
-    if (!(await TR.util.ask("반도체 탭 연결을 끊을까요? (이 기기의 주소만 지웁니다)", "연결 끊기"))) return;
-    TR.semi.setUrl("");
-    toast("반도체 탭 연결을 끊었습니다");
-    TR.render();
+  el.querySelector('[data-form="semi-keys"]')?.addEventListener("input", (e) => dirty(e.currentTarget));
+  el.querySelector("[data-semi-keys-clear]")?.addEventListener("click", async () => {
+    if (!(await TR.util.ask("이 폰에 저장한 반도체 데이터 키를 지울까요?", "지우기"))) return;
+    try { semiNames(await TR.semi.keys.save({ clear: true })); toast("키를 지웠습니다"); } catch (err) { toast(err.message); }
+  });
+  el.querySelector("[data-semi-export]")?.addEventListener("click", async (e) => {
+    const out = el.querySelector("[data-semi-export-out]"), btn = e.currentTarget;
+    btn.disabled = true;
+    try {
+      const r = await TR.semi.keys.exportText();
+      semiNames(r);
+      if (!Object.values(r.names || {}).some(Boolean)) { out.innerHTML = `<p class="muted">옮길 키가 없습니다.</p>`; return; }
+      let qr = "";
+      try { qr = TR.qr.svg(r.text, 200); } catch { qr = ""; }
+      out.innerHTML = `<p class="warnmsg">비밀값입니다 — 화면을 남에게 보이거나 공유 채널에 올리지 마세요.</p>
+        <textarea class="code" rows="3" readonly data-semi-export-text>${esc(r.text)}</textarea>
+        <div class="row"><button type="button" class="btn" data-semi-copy>글 복사</button><button type="button" class="btn" data-semi-hide>닫기</button></div>
+        ${qr ? `<figure class="qr-card">${qr}<figcaption class="muted">폰 카메라로 읽어 글을 복사 → 폰 앱 설정의 이 칸에 붙여 넣기</figcaption></figure>` : ""}`;
+      out.querySelector("[data-semi-copy]").addEventListener("click", () => navigator.clipboard?.writeText(r.text).then(() => toast("키 글을 복사했습니다(비밀값)")));
+      out.querySelector("[data-semi-hide]").addEventListener("click", () => { out.innerHTML = ""; });
+    } catch (err) { out.innerHTML = `<p class="warnmsg">${esc(err.message)}</p>`; } finally { btn.disabled = false; }
   });
   // 알림 강도 빠른 선택 → 아래 종류 체크를 맞춤
   el.querySelectorAll("[data-strength]").forEach((b) => b.addEventListener("click", () => {

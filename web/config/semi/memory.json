@@ -1,0 +1,70 @@
+{
+  "_readme": "메모리 가격 수집 대상 (DRAMeXchange 공개 페이지, 2026-09-28 확인). product는 화면·settings.kpis에서 쓰는 이름, contract_name은 DRAMeXchange 고정거래가 품목명, spot_name은 현물가 표의 품목명. 공개 고정가는 월 1회(월말) 갱신되며 회원 공개보다 늦을 수 있다. 개인 참고용. trend_spot: 분석 페이지 현물가 추이 차트 대상(매일 누적, 과거분은 DRAMeXchange 회원 전용이라 소급 불가).",
+  "products": [
+    {
+      "product": "DDR4 8Gb",
+      "label": "DDR4 8Gb 고정가",
+      "contract_name": "DDR4 8Gb 1Gx8",
+      "spot_name": "DDR4 8Gb (1Gx8) 3200"
+    },
+    {
+      "product": "DDR4 16Gb",
+      "label": "DDR4 16Gb 고정가",
+      "contract_name": "DDR4 16Gb 2Gx8",
+      "spot_name": "DDR4 16Gb (2Gx8) 3200"
+    },
+    {
+      "product": "DDR5 16Gb",
+      "label": "DDR5 16Gb 현물가",
+      "contract_name": null,
+      "spot_name": "DDR5 16Gb (2Gx8) 4800/5600"
+    },
+    {
+      "product": "NAND 128Gb MLC",
+      "label": "NAND 128Gb MLC 고정가",
+      "contract_name": "NAND 128Gb 16Gx8 Speedns",
+      "spot_name": null,
+      "wafer_name": "512Gb TLC"
+    }
+  ],
+  "_board_readme": "영업 페이지 가격판. spot = 현물가 표 품목명, contract = 고정거래가 품목명(같은 이름이 DRAMeXchange에 있어야 함). premium=true는 현물과 고정가가 같은 규격일 때만 현물 프리미엄을 계산한다. ratios: 두 현물가의 비율(같은 날짜 값끼리만).",
+  "board": [
+    { "seg": "서버", "rows": [
+      { "label": "DDR5 RDIMM 32GB", "kind": "모듈", "spot": "DDR5 RDIMM 32GB 4800/5600" },
+      { "label": "DDR5 16Gb", "kind": "칩", "spot": "DDR5 16Gb (2Gx8) 4800/5600" }
+    ] },
+    { "seg": "PC", "rows": [
+      { "label": "DDR5 SO-DIMM 8GB", "kind": "모듈", "contract": "DDR5 8GB SO-DIMM" },
+      { "label": "DDR5 UDIMM 16GB", "kind": "모듈", "spot": "DDR5 UDIMM 16GB 4800/5600" },
+      { "label": "DDR4 SO-DIMM 16GB", "kind": "모듈", "contract": "DDR4 16GB SO-DIMM" },
+      { "label": "DDR4 UDIMM 16GB", "kind": "모듈", "spot": "DDR4 UDIMM 16GB 3200" }
+    ] },
+    { "seg": "범용 칩", "rows": [
+      { "label": "DDR4 16Gb", "kind": "칩", "spot": "DDR4 16Gb (2Gx8) 3200", "contract": "DDR4 16Gb 2Gx8", "premium": true },
+      { "label": "DDR4 8Gb", "kind": "칩", "spot": "DDR4 8Gb (1Gx8) 3200", "contract": "DDR4 8Gb 1Gx8", "premium": true },
+      { "label": "DDR3 4Gb", "kind": "칩", "spot": "DDR3 4Gb 512Mx8 1600/1866" }
+    ] },
+    { "seg": "그래픽", "rows": [
+      { "label": "GDDR6 8Gb", "kind": "칩", "spot": "GDDR6 8Gb" },
+      { "label": "GDDR5 8Gb", "kind": "칩", "spot": "GDDR5 8Gb" }
+    ] },
+    { "seg": "NAND", "rows": [
+      { "label": "512Gb TLC", "kind": "웨이퍼", "spot": "512Gb TLC" },
+      { "label": "256Gb TLC", "kind": "웨이퍼", "spot": "256Gb TLC" },
+      { "label": "128Gb MLC", "kind": "칩", "contract": "NAND 128Gb 16Gx8 Speedns" },
+      { "label": "MLC 64Gb", "kind": "칩", "spot": "MLC 64Gb 8GBx8" }
+    ] }
+  ],
+  "ratios": [
+    { "id": "ddr4_ddr5", "label": "DDR4 16Gb ÷ DDR5 16Gb 현물", "a": "DDR4 16Gb (2Gx8) 3200", "b": "DDR5 16Gb (2Gx8) 4800/5600",
+      "note": "1배를 넘으면 구형 DDR4가 신형 DDR5보다 비싸다는 뜻(단종·감산으로 DDR4 공급이 줄어든 영향)" }
+  ],
+  "trend_spot": [
+    "DDR5 16Gb (2Gx8) 4800/5600",
+    "DDR4 16Gb (2Gx8) 3200",
+    "DDR4 8Gb (1Gx8) 3200",
+    "512Gb TLC",
+    "256Gb TLC",
+    "MLC 64Gb 8GBx8"
+  ]
+}

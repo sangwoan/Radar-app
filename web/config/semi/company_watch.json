@@ -1,0 +1,946 @@
+{
+  "_readme": "기업 집중 뉴스. 회사를 추가하려면 companies에 항목을 하나 더 넣는다(화면 상단 토글에 자동으로 생김). exclude_match: 제목에 이게 있으면 제외(계열사 혼동 방지). max_items는 회사별. match: 제목에 이 중 하나가 있어야 수집(공식 뉴스룸은 예외). exclude_title / exclude_sources: 기술적 분석 자동 기사·교육·강연·학생 대상 기사·저품질 집계 사이트 제외. 분류(categories)는 위에서부터 먼저 맞는 것 하나. business=true인 분류가 기본 탭 '사업·전략'에 모인다(주가 잡음 제외). 제목·링크·출처·시각만 저장. Google News RSS는 개인용으로만 사용. focus: 이 회사 기사 중 '관심 분야'(예: 삼성전자의 메모리·반도체) 키워드 — 화면 토글로 그 분야만 볼 수 있고(기본 켜짐), 수집 때 관심 분야 기사를 keep_max건까지 먼저 남기고 나머지는 keep_other건만 남긴다. categories[].not: 이 단어가 있으면 그 분류로 보지 않는다(예: '공정' ≠ '공정위'). min_items: 자체 점검이 '기사 적음' 경고를 띄우는 기준(기본 5).",
+  "max_age_days": 5,
+  "max_items": 80,
+  "companies": [
+    {
+      "id": "skhynix",
+      "name": "SK하이닉스",
+      "match": [
+        "하이닉스",
+        "hynix",
+        "Hynix",
+        "HYNIX",
+        "솔리다임",
+        "Solidigm"
+      ],
+      "feeds": [
+        {
+          "id": "newsroom_ko",
+          "name": "SK하이닉스 뉴스룸",
+          "url": "https://news.skhynix.co.kr/feed/",
+          "official": true
+        },
+        {
+          "id": "newsroom_en",
+          "name": "SK hynix Newsroom",
+          "url": "https://news.skhynix.com/feed/",
+          "official": true
+        },
+        {
+          "id": "gnews_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "gnews_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=%22SK%20hynix%22&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ]
+    },
+    {
+      "id": "samsung",
+      "name": "삼성전자",
+      "match": [
+        "삼성전자",
+        "삼전",
+        "Samsung Electronics",
+        "Samsung",
+        "삼성 "
+      ],
+      "exclude_match": [
+        "삼성바이오",
+        "삼성물산",
+        "삼성중공업",
+        "삼성SDI",
+        "삼성생명",
+        "삼성화재",
+        "삼성증권",
+        "삼성카드",
+        "삼성전기",
+        "삼성SDS",
+        "삼성E&A",
+        "삼성엔지니어링",
+        "Samsung Biologics",
+        "Samsung C&T",
+        "Samsung Heavy",
+        "Samsung SDI",
+        "Samsung Life",
+        "Samsung Fire",
+        "Samsung Securities",
+        "Samsung Electro-Mechanics",
+        "Samsung SDS",
+        "Samsung E&A"
+      ],
+      "feeds": [
+        {
+          "id": "sec_newsroom_ko",
+          "name": "삼성전자 뉴스룸",
+          "url": "https://news.samsung.com/kr/feed",
+          "official": true
+        },
+        {
+          "id": "sec_newsroom_en",
+          "name": "Samsung Newsroom",
+          "url": "https://news.samsung.com/global/feed",
+          "official": true
+        },
+        {
+          "id": "sec_gnews_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "sec_gnews_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=%22Samsung%20Electronics%22&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        },
+        {
+          "id": "sec_gnews_semi_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90%20%EB%B0%98%EB%8F%84%EC%B2%B4&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "sec_gnews_semi_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=%22Samsung%22%20%28chip%20OR%20foundry%20OR%20HBM%20OR%20memory%20OR%20semiconductor%29&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "focus": {
+        "label": "메모리·반도체만",
+        "keep_other": 6,
+        "match": [
+          "메모리",
+          "D램",
+          "디램",
+          "DRAM",
+          "HBM",
+          "낸드",
+          "NAND",
+          "반도체",
+          "파운드리",
+          "foundry",
+          "Foundry",
+          "칩",
+          "chip",
+          "Chip",
+          "웨이퍼",
+          "wafer",
+          "평택",
+          "테일러",
+          "Taylor",
+          "SSD",
+          "DS부문",
+          "DS 부문",
+          "memory",
+          "Memory",
+          "semiconductor",
+          "Semiconductor",
+          "엑시노스",
+          "Exynos",
+          "LPDDR",
+          "GDDR",
+          "CXL",
+          "2나노",
+          "2nm",
+          "전영현",
+          "기흥",
+          "화성캠퍼스",
+          "패키징",
+          "packaging",
+          "SK하이닉스",
+          "하이닉스",
+          "SK hynix",
+          "SK Hynix",
+          "삼전닉스",
+          "마이크론",
+          "Micron",
+          "텍사스",
+          "Texas",
+          "팹",
+          "fab",
+          "설비투자",
+          "시설투자",
+          "EUV",
+          "공정기술",
+          "공정 기술",
+          "미세공정",
+          "nm 공정"
+        ]
+      }
+    },
+    {
+      "id": "micron",
+      "name": "마이크론",
+      "match": [
+        "마이크론",
+        "Micron"
+      ],
+      "feeds": [
+        {
+          "id": "mu_gnews_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%A0&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "mu_gnews_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=%22Micron%22%20%28memory%20OR%20DRAM%20OR%20HBM%20OR%20NAND%20OR%20chip%20OR%20fab%20OR%20plant%29&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ]
+    },
+    {
+      "id": "cxmt",
+      "name": "CXMT",
+      "match": [
+        "CXMT",
+        "창신메모리",
+        "창신 메모리",
+        "ChangXin",
+        "长鑫",
+        "長鑫"
+      ],
+      "min_items": 2,
+      "feeds": [
+        {
+          "id": "cx_gnews_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=CXMT%20OR%20%EC%B0%BD%EC%8B%A0%EB%A9%94%EB%AA%A8%EB%A6%AC&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "cx_gnews_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=CXMT%20OR%20%22ChangXin%20Memory%22&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "id": "market",
+      "label": "실적·주가",
+      "business": false,
+      "_note": "증권사 리포트·목표가는 다른 키워드보다 먼저 실적·주가로",
+      "keywords": [
+        "목표가",
+        "목표주가",
+        "투자의견",
+        "특징주",
+        "證",
+        "증권",
+        "리포트",
+        "ETF",
+        "price target",
+        "upgrade",
+        "downgrade",
+        "rating",
+        "Wolfe"
+      ]
+    },
+    {
+      "id": "fab",
+      "label": "투자·공장",
+      "business": true,
+      "keywords": [
+        "공장",
+        "팹",
+        "증설",
+        "착공",
+        "준공",
+        "건설",
+        "용인",
+        "청주",
+        "M15X",
+        "M16",
+        "인디애나",
+        "Indiana",
+        "클러스터",
+        "생산거점",
+        "생산기지",
+        "생산라인",
+        "설비투자",
+        "시설투자",
+        "투자 계획",
+        "조 투자",
+        "plant",
+        "factory",
+        "construction",
+        "facility",
+        "production base",
+        "memory production",
+        "investment plan",
+        "capex",
+        "짓는다",
+        "건립",
+        "생산 검토",
+        "chip production",
+        "production in the US",
+        "US production",
+        "U.S. production",
+        "평택",
+        "Pyeongtaek",
+        "테일러",
+        "Taylor",
+        "기흥",
+        "화성캠퍼스",
+        "fab ",
+        " fab",
+        "fabs",
+        "Fab ",
+        "아이다호",
+        "Idaho",
+        "히로시마",
+        "Hiroshima",
+        "허페이",
+        "Hefei"
+      ]
+    },
+    {
+      "id": "esg",
+      "label": "ESG·인사·노사",
+      "business": false,
+      "keywords": [
+        "사회적가치",
+        "상생",
+        "ESG",
+        "기부",
+        "봉사",
+        "탄소",
+        "친환경",
+        "장학",
+        "해커톤",
+        "육아휴직",
+        "parental leave",
+        "sustainab",
+        "채용",
+        "성과급",
+        "bonus",
+        "타운홀",
+        "town hall",
+        "노조",
+        "union",
+        "파업",
+        "strike",
+        "임금",
+        "wage"
+      ]
+    },
+    {
+      "id": "consumer",
+      "label": "모바일·가전",
+      "business": false,
+      "keywords": [
+        "갤럭시",
+        "Galaxy",
+        "폴더블",
+        "스마트폰",
+        "smartphone",
+        "TV",
+        "가전",
+        "비스포크",
+        "Bespoke",
+        "냉장고",
+        "세탁기",
+        "에어컨",
+        "구독",
+        "subscription",
+        "사이니지",
+        "signage",
+        "워치",
+        "버즈",
+        "태블릿",
+        "모니터",
+        "오디세이",
+        "SmartThings",
+        "스마트싱스",
+        "TV Plus",
+        "appliance",
+        "서비스"
+      ]
+    },
+    {
+      "id": "tech",
+      "label": "기술·제품",
+      "business": true,
+      "keywords": [
+        "HBM",
+        "D램",
+        "DRAM",
+        "낸드",
+        "NAND",
+        "eSSD",
+        "SSD",
+        "양산",
+        "개발",
+        "세계 최초",
+        "CXL",
+        "공정",
+        "적층",
+        "패키징",
+        "신제품",
+        "mass production",
+        "develop",
+        "unveil",
+        "launch",
+        "packaging",
+        "sample",
+        "파운드리",
+        "foundry",
+        "2나노",
+        "2nm",
+        "3나노",
+        "GAA",
+        "엑시노스",
+        "Exynos",
+        "퀄",
+        "qualification",
+        "HBM3E",
+        "LPDDR",
+        "GDDR"
+      ],
+      "not": [
+        "공정위",
+        "공정거래",
+        "불공정",
+        "공정성"
+      ]
+    },
+    {
+      "id": "partner",
+      "label": "고객·협력",
+      "business": true,
+      "keywords": [
+        "엔비디아",
+        "Nvidia",
+        "NVIDIA",
+        "공급 계약",
+        "공급",
+        "계약",
+        "파트너",
+        "MOU",
+        "AMD",
+        "구글",
+        "브로드컴",
+        "Broadcom",
+        "마이크로소프트",
+        "오픈AI",
+        "OpenAI",
+        "supply",
+        "deal",
+        "partnership",
+        "agreement",
+        "협력 강화",
+        "협력 확대",
+        "파트너상",
+        "공동 개발"
+      ]
+    },
+    {
+      "id": "group",
+      "label": "자회사·M&A",
+      "business": true,
+      "keywords": [
+        "솔리다임",
+        "Solidigm",
+        "인수",
+        "합병",
+        "상장",
+        "IPO",
+        "지분",
+        "stake",
+        "acquisition",
+        "merger"
+      ]
+    },
+    {
+      "id": "market",
+      "label": "실적·주가",
+      "business": false,
+      "keywords": [
+        "실적",
+        "영업이익",
+        "영업익",
+        "매출",
+        "주가",
+        "시총",
+        "시가총액",
+        "목표가",
+        "목표주가",
+        "신고가",
+        "투자의견",
+        "특징주",
+        "증시",
+        "코스피",
+        "KOSPI",
+        "외인",
+        "외국인",
+        "보유율",
+        "ETF",
+        "배당",
+        "소각",
+        "약세",
+        "강세",
+        "급등",
+        "급락",
+        "하락",
+        "상승",
+        "잭팟",
+        "earnings",
+        "profit",
+        "revenue",
+        "shares",
+        "stock",
+        "market cap",
+        "rally",
+        "slump",
+        "fall",
+        "drop",
+        "sliding",
+        "surge",
+        "trading",
+        "investors"
+      ]
+    },
+    {
+      "id": "strategy",
+      "label": "전략·비전",
+      "business": true,
+      "keywords": [
+        "비전",
+        "전략",
+        "로드맵",
+        "경영",
+        "사장",
+        "CEO",
+        "곽노정",
+        "최태원",
+        "포럼",
+        "forum",
+        "vision",
+        "strategy",
+        "roadmap",
+        "조직개편",
+        "인사",
+        "지배구조",
+        "방향성",
+        "이재용",
+        "전영현",
+        "노태문",
+        "한종희",
+        "DS부문",
+        "사업부장",
+        "회장"
+      ]
+    }
+  ],
+  "exclude_title": "fibonacci|live levels|\\bdoji\\b|most read|technical analysis|price prediction|주가 전망 \\d|오늘의 운세|\\[포토\\]|배운다|배우는|교육|강연|특강|강의|수업|공대생|대학생|고교생|학생|캠프|멘토링|인턴십|채용설명회|아카데미|academy|students?\\b|scholarship|장학|미래인재|\\[[^\\]]*CLASS\\]|클래스|교과|커리큘럼|퀴즈|체험",
+  "exclude_sources": [
+    "finance.biggo.com",
+    "MarketBeat",
+    "Stock Titan",
+    "AInvest"
+  ],
+  "concepts": {
+    "_readme": "같은 사건 묶기용 개념 사전. 여기에 더해 연도(2029)·배수(4배)·퍼센트(50%)는 제목에서 자동 추출한다. 같은 분류(또는 둘 다 사업 분류)에서 개념 2개 이상, 분류가 달라도 개념 3개 이상 겹치거나 한글 제목 글자 유사도가 높으면 한 묶음.",
+    "solidigm": [
+      "솔리다임",
+      "Solidigm"
+    ],
+    "ipo": [
+      "상장",
+      "IPO",
+      "listing",
+      "Listing"
+    ],
+    "hbm4": [
+      "HBM4"
+    ],
+    "hbm": [
+      "HBM"
+    ],
+    "nvidia": [
+      "엔비디아",
+      "Nvidia",
+      "NVIDIA"
+    ],
+    "gpu": [
+      "GPU"
+    ],
+    "china": [
+      "중국",
+      "中",
+      "China",
+      "Chinese"
+    ],
+    "us": [
+      "미국",
+      "美",
+      "US ",
+      "U.S.",
+      "United States",
+      "American"
+    ],
+    "japan": [
+      "일본",
+      "日",
+      "Japan"
+    ],
+    "production": [
+      "생산",
+      "production",
+      "fab",
+      "팹",
+      "공장",
+      "plant"
+    ],
+    "yongin": [
+      "용인",
+      "Yongin"
+    ],
+    "cheongju": [
+      "청주",
+      "M15X",
+      "Cheongju"
+    ],
+    "q3": [
+      "3분기",
+      "Q3",
+      "third quarter",
+      "3Q"
+    ],
+    "record": [
+      "최대",
+      "record",
+      "사상"
+    ],
+    "profit": [
+      "영업이익",
+      "영업익",
+      "operating profit",
+      "이익"
+    ],
+    "drop": [
+      "하락",
+      "약세",
+      "급락",
+      "휘청",
+      "↓",
+      "fall",
+      "falls",
+      "slip",
+      "slips",
+      "drop",
+      "slide",
+      "sliding",
+      "weak"
+    ],
+    "kospi": [
+      "코스피",
+      "KOSPI"
+    ],
+    "broker": [
+      "목표가",
+      "목표주가",
+      "price target",
+      "증권",
+      "證",
+      "upgrade",
+      "downgrade"
+    ],
+    "foreign": [
+      "외인",
+      "외국인",
+      "foreign"
+    ],
+    "etf": [
+      "ETF",
+      "레버리지",
+      "Leveraged"
+    ],
+    "chuseok": [
+      "추석",
+      "Chuseok"
+    ],
+    "dup_listing": [
+      "중복상장",
+      "double listing",
+      "duplicate listing"
+    ],
+    "valuation": [
+      "몸값",
+      "기업가치",
+      "valuation",
+      "조 ",
+      "billion"
+    ],
+    "foundry": [
+      "파운드리",
+      "foundry"
+    ],
+    "taylor": [
+      "테일러",
+      "Taylor"
+    ],
+    "pyeongtaek": [
+      "평택",
+      "Pyeongtaek"
+    ],
+    "node": [
+      "2나노",
+      "2nm",
+      "3나노",
+      "3nm"
+    ],
+    "qual": [
+      "퀄",
+      "qualification",
+      "품질 테스트"
+    ],
+    "dividend": [
+      "배당",
+      "dividend"
+    ],
+    "galaxy": [
+      "갤럭시",
+      "Galaxy"
+    ],
+    "subscription": [
+      "구독",
+      "subscription"
+    ],
+    "exynos": [
+      "엑시노스",
+      "Exynos"
+    ],
+    "ai": [
+      "AI"
+    ],
+    "b2b": [
+      "B2B"
+    ],
+    "trillion": [
+      "1조",
+      "W1tr",
+      "trillion",
+      "100조",
+      "W100tr"
+    ],
+    "tsmc": [
+      "TSMC"
+    ],
+    "award": [
+      "파트너상",
+      "수상",
+      "award"
+    ],
+    "qualcomm": [
+      "퀄컴",
+      "Qualcomm"
+    ],
+    "asml": [
+      "ASML"
+    ],
+    "micron": [
+      "마이크론",
+      "Micron"
+    ],
+    "rnd": [
+      "R&D",
+      "연구개발",
+      "개발비"
+    ],
+    "supplier": [
+      "협력사",
+      "파트너스데이",
+      "Partners Day",
+      "supplier"
+    ],
+    "invest": [
+      "투자",
+      "투입",
+      "invest",
+      "Invest"
+    ],
+    "logistics": [
+      "물류",
+      "logistics"
+    ],
+    "ai_infra": [
+      "AI 인프라",
+      "AI infrastructure",
+      "AI Infrastructure"
+    ],
+    "usd_billion": [
+      "10억 달러",
+      "1 billion",
+      "USD 1 Billion",
+      "$1 billion",
+      "1.4조",
+      "$1B",
+      "$1 B",
+      "US$1 billion"
+    ]
+  },
+  "importance": {
+    "_readme": "중요도 점수 = 분류 + 공식 + 보도 범위 + 출처 신뢰도 + 최신성 + 사실성 − 의견성. 사업 분류는 min_score 이상, 그 외(실적·주가·모바일·가전·ESG·기타)는 min_score_other 이상이면서 keep_max_other건까지만. 회사별 합계 keep_max건, 점수순. 기본 탭 '주요'는 상위 top_n건.",
+    "min_score": 6,
+    "keep_max": 25,
+    "top_n": 10,
+    "category": {
+      "fab": 5,
+      "tech": 4,
+      "strategy": 4,
+      "partner": 4,
+      "group": 3,
+      "consumer": 1,
+      "market": 1,
+      "esg": 1,
+      "other": 0
+    },
+    "official_business": 3,
+    "official_other": 1,
+    "coverage": [
+      [
+        10,
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "recency_hours": [
+      [
+        12,
+        2
+      ],
+      [
+        24,
+        1
+      ],
+      [
+        48,
+        0
+      ],
+      [
+        72,
+        -1
+      ],
+      [
+        100000,
+        -2
+      ]
+    ],
+    "fact_bonus": 1,
+    "opinion_penalty": -2,
+    "fact_pattern": "착공|준공|양산|계약|체결|출시|공개|발표|확정|승인|합의|수주|선정|돌파|\\d+(\\.\\d+)?\\s?(조|억|만|%|나노|단|nm|GB|Gb)|\\$\\s?\\d|\\d+\\s?(billion|million|trillion)|signs|announces|launches|begins|unveils|wins|approves",
+    "opinion_pattern": "칼럼|사설|기고|오피니언|\\[시론\\]|\\[데스크|\\[기자수첩|opinion|editorial|column|\\?$|？$|\\?\\s*[-–—]|why is .* stock|can .* become",
+    "source_tier_a": [
+      "연합뉴스",
+      "Yonhap",
+      "Reuters",
+      "Bloomberg",
+      "Nikkei",
+      "WSJ",
+      "Wall Street Journal",
+      "Financial Times",
+      "CNBC",
+      "한국경제",
+      "매일경제",
+      "조선비즈",
+      "Chosunbiz",
+      "조선일보",
+      "중앙일보",
+      "동아일보",
+      "서울경제",
+      "Seoul Economic Daily",
+      "전자신문",
+      "디일렉",
+      "The Elec",
+      "머니투데이",
+      "이데일리",
+      "연합인포맥스",
+      "The Korea Herald",
+      "Korea JoongAng Daily",
+      "The Korea Economic Daily",
+      "KED Global",
+      "Korea Times",
+      "헤럴드경제",
+      "아시아경제",
+      "파이낸셜뉴스",
+      "뉴시스",
+      "뉴스1",
+      "지디넷코리아",
+      "ZDNet",
+      "디지털데일리",
+      "비즈니스포스트",
+      "Businesskorea",
+      "딜사이트",
+      "Tom's Hardware",
+      "DigiTimes",
+      "EE Times",
+      "TrendForce",
+      "DatacenterDynamics",
+      "The Information",
+      "블로터",
+      "SK하이닉스 뉴스룸",
+      "SK hynix Newsroom",
+      "삼성전자 뉴스룸",
+      "Samsung Newsroom"
+    ],
+    "source_tier_c": [
+      "토큰포스트",
+      "콕스뉴스",
+      "Stocktwits",
+      "Seeking Alpha",
+      "Investing.com",
+      "UA.NEWS",
+      "sammyguru",
+      "weeklypeople",
+      "AD HOC NEWS",
+      "스포츠조선",
+      "starnewskorea",
+      "라이센스뉴스",
+      "marketscreener",
+      "Benzinga",
+      "Zacks",
+      "TipRanks",
+      "Motley Fool",
+      "InvestorPlace",
+      "24/7 Wall St",
+      "Simply Wall St",
+      "GuruFocus",
+      "Nasdaq",
+      "Insider Monkey",
+      "TradingView",
+      "현대일보",
+      "브레이크뉴스",
+      "이지경제"
+    ],
+    "source_tier_points": {
+      "a": 2,
+      "c": -2
+    },
+    "min_score_other": 9,
+    "keep_max_other": 5
+  }
+}

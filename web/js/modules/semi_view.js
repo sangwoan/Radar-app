@@ -139,7 +139,7 @@ TR.semiView = (() => {
     return `<div class="box">${c.H("💾 메모리 가격판", `DRAMeXchange 공개 시세 · USD · 최신 ${latest ? md(latest) : "—"}`)}
       ${ratios ? `<div class="pb-ratios">${ratios}</div>` : ""}
       ${bd.length ? `<div class="pb-head muted"><span>품목</span><span>현물</span><span>고정가</span></div>${bd.map((g) => `<p class="sm-grp">${esc(g.seg)}</p><ul class="pb-list">${g.rows.map(row).join("")}</ul>`).join("")}` : c.empty("가격 데이터가 없습니다.")}
-      <p class="hint">현물 = 세션 평균(주 = 주간 시세). 1개월은 DMR이 매일 쌓은 기록과 비교(기록이 없으면 —). 고정가 = 공개분(회원 공개보다 한 달가량 늦음). 프리미엄 = 현물 ÷ 고정가 − 1(같은 규격만).</p></div>`;
+      <p class="hint">현물 = 세션 평균(주 = 주간 시세). 1개월은 매일 쌓은 기록과 비교(기록이 없으면 —). 고정가 = 공개분(회원 공개보다 한 달가량 늦음). 프리미엄 = 현물 ÷ 고정가 − 1(같은 규격만).</p></div>`;
   }
 
   function outlook(c) {

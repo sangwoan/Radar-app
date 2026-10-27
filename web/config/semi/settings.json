@@ -1,0 +1,83 @@
+{
+  "timezone": "Asia/Seoul",
+  "color_convention": "kr",
+  "highlight_pct": 2,
+  "kpis": [
+    {
+      "type": "ticker",
+      "id": "SKHYNIX"
+    },
+    {
+      "type": "ticker",
+      "id": "KOSPI"
+    },
+    {
+      "type": "memory",
+      "product": "DDR4 8Gb"
+    },
+    {
+      "type": "memory",
+      "product": "NAND 128Gb MLC"
+    }
+  ],
+  "news_tabs": [
+    {
+      "id": "all",
+      "label": "전체"
+    },
+    {
+      "id": "semis",
+      "label": "반도체"
+    },
+    {
+      "id": "ai",
+      "label": "AI"
+    },
+    {
+      "id": "datacenter",
+      "label": "데이터센터"
+    },
+    {
+      "id": "energy",
+      "label": "에너지"
+    },
+    {
+      "id": "policy",
+      "label": "정책"
+    }
+  ],
+  "tag_labels": {
+    "semis": "반도체",
+    "ai": "AI",
+    "datacenter": "데이터센터",
+    "energy": "에너지",
+    "policy": "정책",
+    "macro": "매크로",
+    "earnings": "실적"
+  },
+  "mobile_snapshot_limit": 8,
+  "market_holidays": {
+    "_readme": "장 상태(개장 전/장중/마감/휴장) 판정용. 매년 말에 다음 해 목록을 추가한다(자체 점검이 12월에 경고). KRX는 거래소 공지로 확인할 것.",
+    "KRX": [
+      "2026-10-05",
+      "2026-10-09",
+      "2026-12-25",
+      "2026-12-31"
+    ],
+    "NYSE": [
+      "2026-11-26",
+      "2026-12-25",
+      "2027-01-01",
+      "2027-01-18",
+      "2027-02-15",
+      "2027-03-26",
+      "2027-05-31",
+      "2027-06-18",
+      "2027-07-05",
+      "2027-09-06",
+      "2027-11-25",
+      "2027-12-24"
+    ]
+  },
+  "_readme": "반도체 탭 설정 — Daily Market Radar(sangwoan/Semicon-news) config/settings.json에서 반도체 탭에 쓰는 것만 옮김(2026-10-28). 비밀값 금지."
+}

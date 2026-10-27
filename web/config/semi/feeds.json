@@ -1,0 +1,105 @@
+{
+  "_readme": "뉴스 RSS 목록 (2026-09-28 접속·최신성 확인. TrendForce RSS는 2026-07-01 이후 갱신이 멈춰 제외). 제목·링크·출처·시각만 저장하고 본문/요약문은 저장하지 않는다(저작권). topical=true면 피드 기본 태그를 붙이고, false(종합지)면 키워드 태그가 있는 기사만 수집한다. require_tags가 있으면 그 태그 중 하나가 있어야 수집. exclude는 제목 제외 정규식(대소문자 무시). 최상위 exclude_title은 모든 피드에 공통 적용(교육·강연·학생 대상 기사 제외).",
+  "max_age_hours": 72,
+  "max_items": 60,
+  "feeds": [
+    {
+      "id": "eetimes",
+      "name": "EE Times",
+      "url": "https://www.eetimes.com/feed/",
+      "lang": "en",
+      "topical": true,
+      "tags": [
+        "semis"
+      ]
+    },
+    {
+      "id": "thelec",
+      "name": "디일렉",
+      "url": "https://www.thelec.kr/rss/allArticle.xml",
+      "lang": "ko",
+      "topical": false,
+      "tags": [],
+      "exclude": "^\\[(부음|부고|인사|포토|알림|게시판|오늘의 운세)\\]|\\[(부음|부고|인사)\\]"
+    },
+    {
+      "id": "dcd",
+      "name": "DatacenterDynamics",
+      "url": "https://www.datacenterdynamics.com/en/rss/",
+      "lang": "en",
+      "topical": true,
+      "tags": [
+        "datacenter"
+      ],
+      "exclude": "^sponsored"
+    },
+    {
+      "id": "utilitydive",
+      "name": "Utility Dive",
+      "url": "https://www.utilitydive.com/feeds/news/",
+      "lang": "en",
+      "topical": true,
+      "tags": [
+        "energy"
+      ]
+    },
+    {
+      "id": "eia",
+      "name": "EIA Today in Energy",
+      "url": "https://www.eia.gov/rss/todayinenergy.xml",
+      "lang": "en",
+      "topical": true,
+      "tags": [
+        "energy"
+      ]
+    },
+    {
+      "id": "electimes",
+      "name": "전기신문",
+      "url": "https://www.electimes.com/rss/allArticle.xml",
+      "lang": "ko",
+      "topical": false,
+      "tags": [],
+      "require_tags": [
+        "energy",
+        "datacenter",
+        "semis",
+        "policy"
+      ],
+      "exclude": "^\\[(부음|부고|인사|포토|알림|게시판|오늘의 운세)\\]|\\[(부음|부고|인사)\\]"
+    },
+    {
+      "id": "tomshw",
+      "name": "Tom's Hardware",
+      "url": "https://www.tomshardware.com/feeds/all",
+      "lang": "en",
+      "topical": false,
+      "tags": [],
+      "require_tags": [
+        "semis",
+        "datacenter",
+        "policy"
+      ],
+      "exclude": "\\bdeals?\\b|\\$\\d+ off|% off|\\bsave \\$|\\bsale\\b|prime day|black friday|review\\b|best .* (for|of) 20|pok[eé]mon|\\bgame\\b|gaming"
+    },
+    {
+      "id": "zdnet_kr",
+      "name": "지디넷코리아",
+      "url": "https://feeds.feedburner.com/zdkorea",
+      "lang": "ko",
+      "topical": false,
+      "tags": [],
+      "exclude": "^\\[(부음|부고|인사|포토|알림|게시판|오늘의 운세)\\]|\\[(부음|부고|인사)\\]"
+    },
+    {
+      "id": "hankyung_it",
+      "name": "한국경제 IT",
+      "url": "https://www.hankyung.com/feed/it",
+      "lang": "ko",
+      "topical": false,
+      "tags": [],
+      "exclude": "^\\[(부음|부고|인사|포토|알림|게시판|오늘의 운세)\\]|\\[(부음|부고|인사)\\]"
+    }
+  ],
+  "exclude_title": "배운다|배우는|교육|강연|특강|강의|수업|공대생|대학생|고교생|학생|캠프|멘토링|인턴십|채용설명회|아카데미|academy|students?\\b|scholarship|장학|미래인재|\\[[^\\]]*CLASS\\]|클래스|교과|커리큘럼|퀴즈|체험"
+}

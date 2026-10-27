@@ -180,6 +180,8 @@
     if (p === "/api/ping") return { ok: true };
     if (p === "/api/bars") return TR.fetch.tf(await findItem(q.get("sym") || ""), q.get("tf") || "1d", TR.db);
     if (p === "/api/news") return TR.news.get(await findItem(q.get("sym") || ""), TR.db, q.get("force") === "1");
+    if (p === "/api/semi") return TR.semiEng.service.get(q.get("force") === "1");
+    if (p === "/api/semi/keys") return TR.semiEng.service.keyStatus();
     throw new Error("이 기능은 폰 앱에서 지원하지 않습니다");
   }
   async function post(url, body = {}) {
@@ -188,6 +190,7 @@
     if (p === "/api/config") { const cfg = await saveConfig(body); await scan({ mode: "none", notify: false }); return { ok: true, config: cfg }; }
     if (p === "/api/scan") { const r = await scan({ mode: body.all ? "all" : "active", notify: true }); if (r.busy) throw new Error("이미 스캔 중입니다. 잠시 후 다시 시도하세요."); return { ok: true, seconds: +((Date.now() - t) / 1000).toFixed(1) }; }
     if (p === "/api/lines") { const saved = await saveLines(body); await scan({ mode: "none", notify: false }); return { ok: true, lines: saved }; }
+    if (p === "/api/semi/keys") return TR.semiEng.service.saveKeys(body);
     if (p === "/api/watchlist") { const w = await editWatchlist(body); await scan({ mode: body.action === "remove" ? "none" : "active", notify: false }); return { ok: true, watchlist: w }; }
     throw new Error("이 기능은 폰 앱에서 지원하지 않습니다");
   }

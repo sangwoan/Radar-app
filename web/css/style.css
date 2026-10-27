@@ -283,6 +283,7 @@ code, .copy { font-family: var(--mono); font-size: 0.72rem; background: var(--ca
 .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; }
 .chips-in { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; }
 .form label:not(.chk):not(.segl) { display: grid; gap: 0.2rem; font-size: 0.74rem; color: var(--text-2); }
+.form textarea, textarea.code { padding: 0.45rem 0.55rem; border-radius: 0.5rem; border: 1px solid var(--border); background: var(--card); color: var(--text); font-family: var(--mono); font-size: 0.8rem; width: 100%; min-width: 0; resize: vertical; word-break: break-all; margin: 0; }
 .form input:not([type="checkbox"]):not([type="radio"]), .form select { padding: 0.45rem 0.55rem; border-radius: 0.5rem; border: 1px solid var(--border); background: var(--card); font-size: 0.86rem; min-width: 0; width: 100%; }
 .form .row { margin: 0; flex-wrap: nowrap; }
 .form .row input { width: auto; flex: 1; }
