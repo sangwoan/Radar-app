@@ -87,8 +87,9 @@
   }
   const top = (rows, n = null) => { const out = E.sortDesc(rows, (h) => [h.score, h.published_at || ""]); return n == null ? out : out.slice(0, n); };
 
-  E.mods.company = async (ctx) => {
-    const cw = E.cfg("company_watch");
+  E.mods.company = (ctx) => collectWatch(ctx, E.cfg("company_watch"), ["newsroom", "google-news"]);
+  // 회사 목록(company_watch · customer_watch 같은 모양) → 회사별 뉴스. 고객사 동향(customers.js)도 이 함수를 쓴다.
+  async function collectWatch(ctx, cw, sources) {
     const cats = (cw.categories || []).map((c) => [c.id, E.kwPattern(c.keywords), c.not && c.not.length ? E.kwPattern(c.not) : () => false]);
     const exclude = cw.exclude_title ? E.pyRe(cw.exclude_title, "i") : null;
     const badSources = new Set((cw.exclude_sources || []).map((s) => s.toLowerCase()));
@@ -143,10 +144,12 @@
     }
     const labels = new Map();
     for (const c of cw.categories || []) if (!labels.has(c.id)) labels.set(c.id, { id: c.id, label: c.label, business: c.business ?? false });
-    return ctx.envelope(items, !errors.length ? "ok" : items.length ? "partial" : "error", ["newsroom", "google-news"],
+    return ctx.envelope(items, !errors.length ? "ok" : items.length ? "partial" : "error", sources,
       errors.length ? `피드 실패: ${errors.join(", ")}` : null,
       { categories: [...labels.values(), { id: "other", label: "기타", business: false }],
-        companies: (cw.companies || []).map((c) => ({ id: c.id, name: c.name, dropped: dropped[c.id] ?? 0, min_items: c.min_items ?? 5, focus_label: (c.focus || {}).label ?? null })),
-        top_n: imp.top_n ?? 10 });
-  };
+        companies: (cw.companies || []).map((c) => ({ id: c.id, name: c.name, dropped: dropped[c.id] ?? 0, min_items: c.min_items ?? 5, focus_label: (c.focus || {}).label ?? null,
+          group: c.group ?? null, basis: c.basis ?? null, basis_url: c.basis_url ?? null })),
+        groups: cw.groups || [], top_n: imp.top_n ?? 10 });
+  }
+  E.collectWatch = collectWatch;
 })(typeof window !== "undefined" ? window : globalThis);

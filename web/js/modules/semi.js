@@ -37,7 +37,7 @@ TR.modules.semi = (el) => {
     </div>`;
   }
   const NAMES = { snapshot: "시세", news: "업계 뉴스", consensus: "컨센서스", calendar: "일정", memory: "메모리 가격", cycle: "사이클",
-    company: "기업 뉴스", outlook: "가격 전망", capex: "설비투자", twrev: "대만 월매출", exports: "수출 속보", brief: "브리프" };
+    company: "기업 뉴스", customers: "고객사 뉴스", outlook: "가격 전망", capex: "설비투자", twrev: "대만 월매출", exports: "수출 속보", brief: "브리프" };
 
   function page() {
     if (!res.bundle) {

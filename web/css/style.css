@@ -560,6 +560,27 @@ details.box.crit .box-h .muted { font-weight: 600; }
 .pb-row small { display: block; font-size: 0.74rem; color: var(--text-2); margin-top: 0.1rem; }
 .pb-cad { font-size: 0.66rem; font-weight: 700; margin-left: 0.2rem; padding: 0 0.25rem; border: 1px solid currentColor; border-radius: 0.25rem; color: var(--muted); }
 .pb-stale { color: var(--warn-text); }
+.pb-row[data-pbkey] { cursor: pointer; }
+.pb-row[aria-expanded="true"] { background: var(--hl-row); border-radius: 0.4rem; }
+.pb-open { font-size: 0.7rem; color: var(--muted); }
+.pb-chart { list-style: none; padding: 0.45rem 0.15rem 0.7rem; border-bottom: 1px solid var(--line); }
+.pbc-rng { margin-bottom: 0.3rem; }
+.pbc { margin-top: 0.45rem; }
+.pbc-h { font-size: 0.8rem; display: flex; flex-wrap: wrap; gap: 0.15rem 0.4rem; align-items: baseline; }
+.pbc-few { font-size: 0.8rem; margin-top: 0.4rem; }
+.pbc-read { font-size: 0.74rem; min-height: 1.15em; }
+.pbc-svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+.pbc-svg .ln { fill: none; stroke: var(--series-1); stroke-width: 1.7; vector-effect: non-scaling-stroke; }
+.pbc-svg.s2 .ln { stroke: var(--series-2); }
+.pbc-svg .dot, .pbc-svg .last { fill: var(--series-1); } .pbc-svg.s2 .dot, .pbc-svg.s2 .last { fill: var(--series-2); }
+.pbc-svg .grid { stroke: var(--line); stroke-width: 1; }
+.pbc-svg .ax { fill: var(--muted); font-size: 10px; font-family: var(--mono); }
+.pbc-svg line.cur { stroke: var(--text-2); stroke-dasharray: 3 3; } .pbc-svg circle.cur { fill: var(--card); stroke: var(--text); stroke-width: 1.5; }
+.sm-cugrp { margin-bottom: 0.4rem; }
+.sm-cugrp button { padding-inline: 0.3rem; min-width: 0; }
+.sm-basis { margin: 0.2rem 0 0.1rem; }
+.sm-basis-l { display: grid; gap: 0.3rem; font-size: 0.8rem; margin: 0.3rem 0; padding-left: 1rem; }
+.tg.cu { color: var(--accent-text); background: var(--accent-soft); }
 .ol-trajs { display: grid; gap: 0.35rem; }
 .ol-traj { font-size: 0.84rem; display: grid; gap: 0.1rem; }
 .ol-subj { font-weight: 700; }
@@ -576,6 +597,7 @@ details.box.crit .box-h .muted { font-weight: 600; }
 .cy-card[open] summary::after { content: "▴"; }
 /* 반도체 · 뉴스 · 일정 */
 .sm-cos { margin-bottom: 0.45rem; }
+.semi .chipbtn:not(.on) { background: var(--seg-bg); color: var(--text); border-color: var(--border); }   /* 기본 버튼 색(밝은 회색)을 쓰면 다크에서 흰 글씨가 안 보임 */
 .chipbtn.on { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent); font-weight: 700; }
 .sm-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; margin-bottom: 0.55rem; }
 .sm-tags { display: flex; gap: 0.3rem; align-items: center; margin-bottom: 0.15rem; }

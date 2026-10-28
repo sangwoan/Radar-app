@@ -3,6 +3,7 @@
   const TR = (G.TR = G.TR || {});
   const E = TR.semiEng, C = TR.core;
   const BASE = "https://www.dramexchange.com";
+  const HIST_KEEP = 400;
   const MONTHS = Object.fromEntries(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map((m, i) => [m, i + 1]));
   const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
   const sorted = (xs) => [...xs].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
@@ -173,9 +174,10 @@
       if (item.latest || item.spot) items.push(item);
     }
     const status = items.length && !errors.length ? "ok" : items.length ? "partial" : "error";
-    const trend = E.cfg("memory").trend_spot || [];
+    // 현물 추이: 추세 품목 + 가격판 품목 전부(화면에서 품목을 누르면 차트) — 품목마다 최근 HIST_KEEP개
+    const names = [...new Set([...(E.cfg("memory").trend_spot || []), ...(E.cfg("memory").board || []).flatMap((g) => g.rows.filter((r) => r.spot).map((r) => r.spot))])];
     const spotHistory = {};
-    for (const n of trend) if (h.spot[n] && Object.keys(h.spot[n]).length) spotHistory[n] = keysSorted(h.spot[n]).map((d) => [d, h.spot[n][d]]);
+    for (const n of names) if (h.spot[n] && Object.keys(h.spot[n]).length) spotHistory[n] = keysSorted(h.spot[n]).slice(-HIST_KEEP).map((d) => [d, h.spot[n][d]]);
     const contractHistory = {};
     for (const [n, v] of Object.entries(h.contract)) contractHistory[n] = keysSorted(v).map((k) => [k, v[k]]);
     return ctx.envelope(items, status, ["dramexchange", "manual"], errors.join(", ") || null,

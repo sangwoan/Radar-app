@@ -1,0 +1,963 @@
+{
+  "_readme": "고객사 동향 — SK하이닉스 메모리 영업 관점에서 알아야 할 고객사 뉴스(메모리 조달 · AI 칩 · 데이터센터 투자 · 실적 · 계약). 구조는 company_watch.json과 같고 수집 로직(scripts/semi/company.py collect_watch)도 같다. 고객사 선정 근거(basis)는 SK하이닉스 사업 · 분기보고서(10% 이상 매출처), 실적 발표, 공식 발표와 고객사 실적 발표에서 확인한 것 — 회사가 고객명을 밝히지 않은 경우 '업계 추정'으로 적는다. Google News 검색 RSS(개인용) · 제목 · 링크 · 출처 · 시각만 저장.",
+  "max_age_days": 7,
+  "max_items": 40,
+  "groups": [
+    {
+      "id": "ai",
+      "label": "AI칩"
+    },
+    {
+      "id": "cloud",
+      "label": "클라우드·AI"
+    },
+    {
+      "id": "device",
+      "label": "서버·PC·폰"
+    }
+  ],
+  "companies": [
+    {
+      "id": "nvidia",
+      "name": "엔비디아",
+      "group": "ai",
+      "match": [
+        "엔비디아",
+        "Nvidia",
+        "NVIDIA"
+      ],
+      "basis": "SK하이닉스 사업보고서: 매출 10% 이상 단일 고객 1곳(2025년 23.9%, 2026년 1분기 14.8%) — 업계는 엔비디아로 봄. 엔비디아 실적 발표(CFO): 3대 메모리 공급사로 SK하이닉스 명시",
+      "basis_url": "https://www.trendforce.com/news/2025/08/18/news-nvidia-reportedly-drives-27-of-sk-hynix-revenue-in-1h25",
+      "feeds": [
+        {
+          "id": "nvidia_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EC%97%94%EB%B9%84%EB%94%94%EC%95%84%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "nvidia_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Nvidia%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "amd",
+      "name": "AMD",
+      "group": "ai",
+      "match": [
+        "AMD"
+      ],
+      "basis": "AI 가속기(Instinct) HBM 고객. SK하이닉스 컨퍼런스콜: GPU 외 고객 다변화",
+      "feeds": [
+        {
+          "id": "amd_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=AMD%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "amd_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=AMD%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "broadcom",
+      "name": "브로드컴",
+      "group": "ai",
+      "match": [
+        "브로드컴",
+        "Broadcom"
+      ],
+      "basis": "빅테크 맞춤형 AI 칩(ASIC) 설계 — SK하이닉스 컨퍼런스콜 'ASIC 기반 고객 수요 증가'",
+      "basis_url": "https://mobile.newsis.com/view/NISX20250124_0003045314",
+      "feeds": [
+        {
+          "id": "broadcom_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EB%B8%8C%EB%A1%9C%EB%93%9C%EC%BB%B4%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "broadcom_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Broadcom%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "microsoft",
+      "name": "마이크로소프트",
+      "group": "cloud",
+      "match": [
+        "마이크로소프트",
+        "Microsoft",
+        "애저",
+        "Azure"
+      ],
+      "basis": "SK하이닉스 2026년 1분기 분기보고서: 매출 10% 이상 고객이 새로 1곳(12.4%) — 업계는 마이크로소프트 또는 구글로 봄",
+      "basis_url": "https://www.fnnews.com/news/202605151801143932",
+      "feeds": [
+        {
+          "id": "microsoft_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%86%8C%ED%94%84%ED%8A%B8%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "microsoft_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Microsoft%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "google",
+      "name": "구글",
+      "group": "cloud",
+      "match": [
+        "구글",
+        "Google",
+        "알파벳",
+        "Alphabet"
+      ],
+      "basis": "SK하이닉스 2026년 1분기 분기보고서: 매출 10% 이상 신규 고객(12.4%) 후보 · TPU(ASIC) HBM 고객",
+      "basis_url": "https://www.fnnews.com/news/202605151801143932",
+      "feeds": [
+        {
+          "id": "google_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EA%B5%AC%EA%B8%80%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "google_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Google%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "amazon",
+      "name": "아마존",
+      "group": "cloud",
+      "match": [
+        "아마존",
+        "Amazon",
+        "AWS"
+      ],
+      "basis": "최대 하이퍼스케일러(Trainium ASIC · 서버 D램) — SK하이닉스 미국 매출 비중 65~69%",
+      "basis_url": "https://sateconomy.co.kr/news/view/1065573384181917",
+      "feeds": [
+        {
+          "id": "amazon_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EC%95%84%EB%A7%88%EC%A1%B4%20AWS%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "amazon_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Amazon%20AWS%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "meta",
+      "name": "메타",
+      "group": "cloud",
+      "match": [
+        "메타",
+        "Meta"
+      ],
+      "exclude_match": [
+        "메타버스",
+        "메타데이터",
+        "Metaverse",
+        "Metal",
+        "metadata"
+      ],
+      "basis": "하이퍼스케일러(MTIA ASIC · AI 데이터센터 설비투자)",
+      "feeds": [
+        {
+          "id": "meta_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EB%A9%94%ED%83%80%20%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%8A%A4%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "meta_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Meta%20Platforms%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "oracle",
+      "name": "오라클",
+      "group": "cloud",
+      "match": [
+        "오라클",
+        "Oracle"
+      ],
+      "basis": "AI 클라우드(OCI · 스타게이트) 설비투자",
+      "feeds": [
+        {
+          "id": "oracle_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EC%98%A4%EB%9D%BC%ED%81%B4%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "oracle_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Oracle%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "openai",
+      "name": "오픈AI",
+      "group": "cloud",
+      "match": [
+        "오픈AI",
+        "OpenAI"
+      ],
+      "basis": "SK그룹 공식 발표(2025-10): 스타게이트용 HBM 공급 의향서(LOI)",
+      "basis_url": "https://eng.sk.com/news/sk-group-partners-with-openai-to-advance-global-ai-infrastructure",
+      "feeds": [
+        {
+          "id": "openai_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EC%98%A4%ED%94%88AI%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "openai_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=OpenAI%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "apple",
+      "name": "애플",
+      "group": "device",
+      "match": [
+        "애플",
+        "Apple"
+      ],
+      "basis": "모바일 · PC D램 · 낸드 고객(LPDDR)",
+      "feeds": [
+        {
+          "id": "apple_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EC%95%A0%ED%94%8C%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "apple_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Apple%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "dell",
+      "name": "델",
+      "group": "device",
+      "match": [
+        "Dell",
+        "델 테크놀로지스",
+        "델테크놀로지스"
+      ],
+      "basis": "AI 서버 · PC 고객(서버 D램 · eSSD)",
+      "feeds": [
+        {
+          "id": "dell_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%22%EB%8D%B8%20%ED%85%8C%ED%81%AC%EB%86%80%EB%A1%9C%EC%A7%80%EC%8A%A4%22%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "dell_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Dell%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "hp",
+      "name": "HP · HPE",
+      "group": "device",
+      "match": [
+        "HPE",
+        "HP ",
+        "HP,",
+        "HP's",
+        "휴렛팩커드",
+        "Hewlett"
+      ],
+      "basis": "서버(HPE) · PC(HP) 고객",
+      "feeds": [
+        {
+          "id": "hp_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=HPE%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "hp_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=%28HPE%20OR%20%22HP%20Inc%22%29%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "supermicro",
+      "name": "슈퍼마이크로",
+      "group": "device",
+      "match": [
+        "슈퍼마이크로",
+        "Supermicro",
+        "Super Micro"
+      ],
+      "basis": "AI 서버 고객(엔비디아 GPU 서버)",
+      "feeds": [
+        {
+          "id": "supermicro_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EC%8A%88%ED%8D%BC%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "supermicro_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Supermicro%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    },
+    {
+      "id": "lenovo",
+      "name": "레노버",
+      "group": "device",
+      "match": [
+        "레노버",
+        "Lenovo"
+      ],
+      "basis": "PC · 서버 · 모바일 고객",
+      "feeds": [
+        {
+          "id": "lenovo_ko",
+          "name": "Google 뉴스",
+          "url": "https://news.google.com/rss/search?q=%EB%A0%88%EB%85%B8%EB%B2%84%20%28HBM%20OR%20%EB%A9%94%EB%AA%A8%EB%A6%AC%20OR%20D%EB%9E%A8%20OR%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%BC%ED%84%B0%20OR%20%EC%84%A4%EB%B9%84%ED%88%AC%EC%9E%90%20OR%20%EC%8B%A4%EC%A0%81%20OR%20%EA%B0%80%EC%9D%B4%EB%8D%98%EC%8A%A4%20OR%20%EA%B3%B5%EA%B8%89%20OR%20%EC%B9%A9%29%20when%3A7d&hl=ko&gl=KR&ceid=KR:ko",
+          "publisher_in_title": true
+        },
+        {
+          "id": "lenovo_en",
+          "name": "Google News",
+          "url": "https://news.google.com/rss/search?q=Lenovo%20%28HBM%20OR%20memory%20OR%20DRAM%20OR%20%22data%20center%22%20OR%20capex%20OR%20earnings%20OR%20guidance%20OR%20supply%20OR%20chip%29%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+          "publisher_in_title": true
+        }
+      ],
+      "min_items": 3
+    }
+  ],
+  "categories": [
+    {
+      "id": "rating",
+      "label": "증권가·주가",
+      "business": false,
+      "_note": "목표가 · 투자의견 · 종목 추천은 다른 키워드보다 먼저 버림 — 'rating'은 'operating'에도 걸려 넣지 않음",
+      "keywords": [
+        "목표가",
+        "목표주가",
+        "투자의견",
+        "특징주",
+        "매수 추천",
+        "ETF",
+        "price target",
+        "stock to buy",
+        "stocks to buy",
+        "Buy Rating",
+        "Strong Buy",
+        "주가 전망",
+        "Motley Fool",
+        "Zacks",
+        "analyst rating",
+        "애널리스트",
+        "증권가"
+      ]
+    },
+    {
+      "id": "market",
+      "label": "주가",
+      "business": false,
+      "keywords": [
+        "주가",
+        "시총",
+        "시가총액",
+        "급등",
+        "급락",
+        "증시",
+        "프리마켓",
+        "뉴욕증시",
+        "미국증시",
+        "마감시황",
+        "장중",
+        "stock",
+        "Stock",
+        "stocks",
+        "Stocks",
+        "shares",
+        "Shares",
+        "rally",
+        "market cap",
+        "investors",
+        "Investors",
+        "Wall Street",
+        "Pre-Market",
+        "pre-market",
+        "Premarket",
+        "premarket",
+        "Futures",
+        "futures",
+        "S&P 500",
+        "Market Recap",
+        "SKHY",
+        "% 상승",
+        "% 하락",
+        "%↑",
+        "%↓",
+        "% 급등",
+        "% 급락",
+        "AI trade"
+      ],
+      "_note": "주가 · 시황 기사는 메모리 · 칩 키워드가 있어도 버림(같은 소식은 다른 매체의 사실 기사로 들어온다)"
+    },
+    {
+      "id": "memory",
+      "label": "메모리 조달",
+      "business": true,
+      "keywords": [
+        "HBM",
+        "D램",
+        "디램",
+        "DRAM",
+        "메모리",
+        "memory",
+        "Memory",
+        "낸드",
+        "NAND",
+        "SSD",
+        "LPDDR",
+        "SOCAMM",
+        "CXL",
+        "하이닉스",
+        "SK hynix",
+        "SK Hynix",
+        "마이크론",
+        "Micron",
+        "장기계약",
+        "장기 계약",
+        "LTA",
+        "선급",
+        "prepay"
+      ]
+    },
+    {
+      "id": "chip",
+      "label": "AI 칩·제품",
+      "business": true,
+      "keywords": [
+        "GPU",
+        "TPU",
+        "NPU",
+        "ASIC",
+        "가속기",
+        "accelerator",
+        "Trainium",
+        "트레이니엄",
+        "Inferentia",
+        "Maia",
+        "마이아",
+        "MTIA",
+        "Graviton",
+        "Axion",
+        "Ironwood",
+        "아이언우드",
+        "Blackwell",
+        "블랙웰",
+        "Rubin",
+        "루빈",
+        "GB200",
+        "GB300",
+        "MI350",
+        "MI355",
+        "MI400",
+        "MI450",
+        "Instinct",
+        "자체 칩",
+        "AI 칩",
+        "AI칩",
+        "custom chip",
+        "in-house chip",
+        "chip",
+        "Chip",
+        "칩 ",
+        "silicon",
+        "슈퍼칩",
+        "AI 서버",
+        "AI server",
+        "PowerEdge",
+        "M5",
+        "M4"
+      ]
+    },
+    {
+      "id": "capex",
+      "label": "투자·데이터센터",
+      "business": true,
+      "keywords": [
+        "데이터센터",
+        "데이터 센터",
+        "data center",
+        "data centre",
+        "datacenter",
+        "Data Center",
+        "설비투자",
+        "capex",
+        "CapEx",
+        "capital expenditure",
+        "기가와트",
+        "GW",
+        "gigawatt",
+        "클러스터",
+        "cluster",
+        "Stargate",
+        "스타게이트",
+        "AI 인프라",
+        "AI infrastructure",
+        "슈퍼컴퓨터",
+        "supercomputer",
+        "투자",
+        "investment",
+        "invest",
+        "spending",
+        "전력",
+        "원전",
+        "nuclear",
+        "power plant",
+        "power deal"
+      ]
+    },
+    {
+      "id": "earnings",
+      "label": "실적·가이던스",
+      "business": true,
+      "keywords": [
+        "실적",
+        "매출",
+        "영업이익",
+        "가이던스",
+        "분기",
+        "earnings",
+        "revenue",
+        "guidance",
+        "quarter",
+        "results",
+        "outlook",
+        "forecast",
+        "beats",
+        "misses"
+      ]
+    },
+    {
+      "id": "deal",
+      "label": "계약·제휴",
+      "business": true,
+      "keywords": [
+        "계약",
+        "공급",
+        "제휴",
+        "협력",
+        "파트너",
+        "MOU",
+        "인수",
+        "합병",
+        "deal",
+        "agreement",
+        "partnership",
+        "partner",
+        "contract",
+        "supply",
+        "acquire",
+        "acquisition",
+        "merger"
+      ],
+      "not": [
+        "공급망 이슈"
+      ]
+    }
+  ],
+  "exclude_title": "fibonacci|live levels|\\bdoji\\b|most read|technical analysis|price prediction|주가 전망 \\d|오늘의 운세|\\[포토\\]|배운다|배우는|교육|강연|특강|강의|수업|공대생|대학생|고교생|학생|캠프|멘토링|인턴십|채용설명회|아카데미|academy|students?\\b|scholarship|장학|미래인재|\\[[^\\]]*CLASS\\]|클래스|교과|커리큘럼|퀴즈|체험|Prime Day|프라임데이|할인|deal of the day|Black Friday|블랙프라이데이|coupon|쿠폰|리뷰|review|hands-on|게임|game|Game|ChatGPT 사용법|how to|Combo Deals|G\\.SKILL|KLEVV|Newegg|RGB|게이밍 메모리",
+  "exclude_sources": [
+    "24/7 Wall St.",
+    "AInvest",
+    "Barchart",
+    "Benzinga",
+    "BigGo Finance",
+    "FXStreet",
+    "GuruFocus",
+    "Insider Monkey",
+    "Investing.com",
+    "MarketBeat",
+    "Motley Fool",
+    "Nasdaq",
+    "Pluang",
+    "Seeking Alpha",
+    "Simply Wall St",
+    "Simply Wall St.",
+    "Simply Wall Street",
+    "Stock Titan",
+    "StocksToTrade",
+    "Technology Org",
+    "The Motley Fool",
+    "TipRanks",
+    "TradingKey",
+    "Yahoo Finance Video",
+    "finance.biggo.com",
+    "hi-Tech.ua"
+  ],
+  "concepts": {
+    "_readme": "같은 사건 묶기용 개념(제목에 2개↑ 겹치면 같은 사건). 회사 이름은 넣지 않는다(모든 기사에 있음).",
+    "hbm": [
+      "HBM",
+      "HBM3E",
+      "HBM4"
+    ],
+    "dram": [
+      "D램",
+      "DRAM",
+      "메모리",
+      "memory"
+    ],
+    "blackwell": [
+      "Blackwell",
+      "블랙웰",
+      "GB200",
+      "GB300"
+    ],
+    "rubin": [
+      "Rubin",
+      "루빈",
+      "Vera",
+      "베라"
+    ],
+    "tpu": [
+      "TPU",
+      "Ironwood",
+      "아이언우드"
+    ],
+    "trainium": [
+      "Trainium",
+      "트레이니엄"
+    ],
+    "maia": [
+      "Maia",
+      "마이아"
+    ],
+    "mi": [
+      "MI350",
+      "MI355",
+      "MI400",
+      "MI450",
+      "Instinct"
+    ],
+    "asic": [
+      "ASIC",
+      "custom chip",
+      "자체 칩",
+      "맞춤형"
+    ],
+    "dc": [
+      "데이터센터",
+      "data center",
+      "datacenter",
+      "data centre"
+    ],
+    "capex": [
+      "설비투자",
+      "capex",
+      "capital expenditure",
+      "spending"
+    ],
+    "earnings": [
+      "실적",
+      "earnings",
+      "results",
+      "매출",
+      "revenue"
+    ],
+    "guidance": [
+      "가이던스",
+      "guidance",
+      "outlook",
+      "전망"
+    ],
+    "stargate": [
+      "Stargate",
+      "스타게이트"
+    ],
+    "openai": [
+      "OpenAI",
+      "오픈AI"
+    ],
+    "anthropic": [
+      "Anthropic",
+      "앤트로픽",
+      "앤스로픽"
+    ],
+    "gw": [
+      "GW",
+      "기가와트",
+      "gigawatt"
+    ],
+    "korea": [
+      "한국",
+      "Korea",
+      "삼성",
+      "Samsung",
+      "SK"
+    ],
+    "china": [
+      "중국",
+      "China",
+      "Chinese"
+    ],
+    "export": [
+      "수출",
+      "export",
+      "관세",
+      "tariff"
+    ],
+    "server": [
+      "서버",
+      "server",
+      "Server"
+    ],
+    "pc": [
+      "PC",
+      "노트북",
+      "laptop"
+    ],
+    "iphone": [
+      "아이폰",
+      "iPhone"
+    ],
+    "price": [
+      "가격",
+      "price",
+      "prices",
+      "인상",
+      "hike"
+    ],
+    "apple_m": [
+      "M5",
+      "M6"
+    ],
+    "mac": [
+      "iMac",
+      "아이맥",
+      "MacBook",
+      "맥북"
+    ],
+    "tpu_deal": [
+      "TPU",
+      "Ironwood"
+    ],
+    "cerebras": [
+      "Cerebras",
+      "세레브라스"
+    ]
+  },
+  "importance": {
+    "_readme": "중요도 = 분류 + 보도 범위 + 출처 신뢰도 + 최신성 + 사실성 − 의견성. 사업 분류(메모리 · 칩 · 투자 · 실적 · 계약)만 남기고(min_score 이상) 증권가 · 주가 · 기타는 버린다. 고객사별 keep_max건, 화면 '주요'는 점수순 top_n건.",
+    "min_score": 5,
+    "keep_max": 12,
+    "top_n": 8,
+    "category": {
+      "memory": 6,
+      "chip": 4,
+      "capex": 4,
+      "earnings": 4,
+      "deal": 3,
+      "rating": 0,
+      "market": 0,
+      "other": 0
+    },
+    "official_business": 0,
+    "official_other": 0,
+    "coverage": [
+      [
+        10,
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "recency_hours": [
+      [
+        12,
+        2
+      ],
+      [
+        24,
+        1
+      ],
+      [
+        48,
+        0
+      ],
+      [
+        72,
+        -1
+      ],
+      [
+        100000,
+        -2
+      ]
+    ],
+    "fact_bonus": 1,
+    "opinion_penalty": -2,
+    "fact_pattern": "착공|준공|양산|계약|체결|출시|공개|발표|확정|승인|합의|수주|선정|돌파|\\d+(\\.\\d+)?\\s?(조|억|만|%|나노|단|nm|GB|Gb)|\\$\\s?\\d|\\d+\\s?(billion|million|trillion)|signs|announces|launches|begins|unveils|wins|approves",
+    "opinion_pattern": "칼럼|사설|기고|오피니언|\\[시론\\]|\\[데스크|\\[기자수첩|opinion|editorial|column|\\?$|？$|\\?\\s*[-–—]|why is .* stock|can .* become",
+    "source_tier_a": [
+      "연합뉴스",
+      "Yonhap",
+      "Reuters",
+      "Bloomberg",
+      "Nikkei",
+      "WSJ",
+      "Wall Street Journal",
+      "Financial Times",
+      "CNBC",
+      "한국경제",
+      "매일경제",
+      "조선비즈",
+      "Chosunbiz",
+      "조선일보",
+      "중앙일보",
+      "동아일보",
+      "서울경제",
+      "Seoul Economic Daily",
+      "전자신문",
+      "디일렉",
+      "The Elec",
+      "머니투데이",
+      "이데일리",
+      "연합인포맥스",
+      "The Korea Herald",
+      "Korea JoongAng Daily",
+      "The Korea Economic Daily",
+      "KED Global",
+      "Korea Times",
+      "헤럴드경제",
+      "아시아경제",
+      "파이낸셜뉴스",
+      "뉴시스",
+      "뉴스1",
+      "지디넷코리아",
+      "ZDNet",
+      "디지털데일리",
+      "비즈니스포스트",
+      "Businesskorea",
+      "딜사이트",
+      "Tom's Hardware",
+      "DigiTimes",
+      "EE Times",
+      "TrendForce",
+      "DatacenterDynamics",
+      "The Information",
+      "블로터",
+      "SK하이닉스 뉴스룸",
+      "SK hynix Newsroom",
+      "삼성전자 뉴스룸",
+      "Samsung Newsroom"
+    ],
+    "source_tier_c": [
+      "토큰포스트",
+      "콕스뉴스",
+      "Stocktwits",
+      "Seeking Alpha",
+      "Investing.com",
+      "UA.NEWS",
+      "sammyguru",
+      "weeklypeople",
+      "AD HOC NEWS",
+      "스포츠조선",
+      "starnewskorea",
+      "라이센스뉴스",
+      "marketscreener",
+      "Benzinga",
+      "Zacks",
+      "TipRanks",
+      "Motley Fool",
+      "InvestorPlace",
+      "24/7 Wall St",
+      "Simply Wall St",
+      "GuruFocus",
+      "Nasdaq",
+      "Insider Monkey",
+      "TradingView",
+      "현대일보",
+      "브레이크뉴스",
+      "이지경제"
+    ],
+    "source_tier_points": {
+      "a": 2,
+      "c": -2
+    },
+    "min_score_other": 999,
+    "keep_max_other": 0
+  }
+}

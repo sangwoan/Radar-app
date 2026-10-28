@@ -3,7 +3,7 @@
 (function (G) {
   const TR = (G.TR = G.TR || {});
   const E = TR.semiEng;
-  E.MODULES = ["snapshot", "news", "consensus", "calendar", "memory", "cycle", "company", "outlook", "capex", "twrev", "exports", "brief"];
+  E.MODULES = ["snapshot", "news", "consensus", "calendar", "memory", "cycle", "company", "customers", "outlook", "capex", "twrev", "exports", "brief"];
 
   E.run = async ({ net, now, store, keys = {}, only = null, log = null }) => {
     const ctx = E.makeCtx({ net, now, store, results: {}, keys });

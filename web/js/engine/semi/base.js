@@ -43,7 +43,7 @@
   // 설정(config/semi/*.json): 앱 = 같은 출처에서 받기, 노드 = 시험이 E.cfgData를 채운다
   E.cfgData = E.cfgData || {};
   const cfg = (name) => E.cfgData[name] || {};
-  const CFG_NAMES = ["settings", "tickers", "memory", "feeds", "keywords", "company_watch", "sales", "events", "memory_prices"];
+  const CFG_NAMES = ["settings", "tickers", "memory", "feeds", "keywords", "company_watch", "customer_watch", "sales", "events", "memory_prices"];
   async function loadCfg(base = "./config/semi/") {
     await Promise.all(CFG_NAMES.filter((n) => !E.cfgData[n]).map(async (n) => {
       const r = await fetch(`${base}${n}.json`, { cache: "no-store" });

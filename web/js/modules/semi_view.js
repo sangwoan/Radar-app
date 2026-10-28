@@ -128,18 +128,59 @@ TR.semiView = (() => {
         ${r.m1 != null ? `<span class="muted">· 한 달 전(${md(r.m1_from)}) ${num(r.m1, 2)}배</span>` : ""}</p>${spark((r.series || []).map((q) => q[1]), 120, 22)}
         ${r.note ? `<p class="hint pb-note">${esc(r.note)}</p>` : ""}</div>`).join("");
     const row = (r) => {
-      const sp = r.spot, ct = r.contract;
-      return `<li class="pb-row">
-        <span class="pb-item">${esc(r.label)} <span class="tg">${esc(r.kind || "")}</span></span>
+      const sp = r.spot, ct = r.contract, open = c.st.pb === r.label;
+      return `<li class="pb-row" data-pbkey="${esc(r.label)}" role="button" tabindex="0" aria-expanded="${open}" title="눌러서 가격 추이">
+        <span class="pb-item">${esc(r.label)} <span class="tg">${esc(r.kind || "")}</span> <span class="pb-open" aria-hidden="true">${open ? "▴" : "▾"}</span></span>
         <span class="pb-spot num">${sp ? `${usd(sp.price)}${sp.cadence === "주간" ? `<span class="pb-cad" title="주간 시세">주</span>` : ""}` : `<span class="muted">—</span>`}
           ${sp ? `<small>1개월 ${pc(sp.m1)}${sp.stale ? ` <span class="pb-stale" title="원 출처 기준일이 오래됨">⚠ ${md(sp.as_of)}</span>` : ""}</small>` : ""}</span>
-        <span class="pb-ct num">${ct ? `${usd(ct.price)} <span class="muted">${Number(ct.month.slice(5))}월</span><small>MoM ${pc(ct.mom)}${r.premium != null ? ` · 프리미엄 ${pc(r.premium, 0)}` : ""}</small>` : `<span class="muted">—</span>`}</span></li>`;
+        <span class="pb-ct num">${ct ? `${usd(ct.price)} <span class="muted">${Number(ct.month.slice(5))}월</span><small>MoM ${pc(ct.mom)}${r.premium != null ? ` · 프리미엄 ${pc(r.premium, 0)}` : ""}</small>` : `<span class="muted">—</span>`}</span></li>${open ? c.safe("가격 추이", () => pbChart(c, r)) : ""}`;
     };
     const latest = bd.flatMap((g) => g.rows).map((r) => r.spot?.as_of).filter(Boolean).sort().pop();
     return `<div class="box">${c.H("💾 메모리 가격판", `DRAMeXchange 공개 시세 · USD · 최신 ${latest ? md(latest) : "—"}`)}
       ${ratios ? `<div class="pb-ratios">${ratios}</div>` : ""}
       ${bd.length ? `<div class="pb-head muted"><span>품목</span><span>현물</span><span>고정가</span></div>${bd.map((g) => `<p class="sm-grp">${esc(g.seg)}</p><ul class="pb-list">${g.rows.map(row).join("")}</ul>`).join("")}` : c.empty("가격 데이터가 없습니다.")}
-      <p class="hint">현물 = 세션 평균(주 = 주간 시세). 1개월은 매일 쌓은 기록과 비교(기록이 없으면 —). 고정가 = 공개분(회원 공개보다 한 달가량 늦음). 프리미엄 = 현물 ÷ 고정가 − 1(같은 규격만).</p></div>`;
+      <p class="hint">품목을 누르면 현물 · 고정가 추이 차트. 현물 = 세션 평균(주 = 주간 시세). 1개월은 매일 쌓은 기록과 비교(기록이 없으면 —). 고정가 = 공개분(회원 공개보다 한 달가량 늦음). 프리미엄 = 현물 ÷ 고정가 − 1(같은 규격만).</p></div>`;
+  }
+
+
+  // ---------- 가격판 품목 추이(누르면 펼침): 현물 · 고정가는 단위 · 규격이 다를 수 있어 따로 그린다 ----------
+  const RANGES = [["1m", "1개월", 31], ["3m", "3개월", 92], ["1y", "1년", 366], ["all", "전체", 1e5]];
+  const monthEnd = (ym) => { const [y, m] = ym.split("-").map(Number); return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); };
+  const tOf = (d) => Date.parse(`${d}T00:00:00Z`);
+  function lineChart(pts, cls) {
+    const W = 340, H = 120, L = 4, R = 54, T = 8, B = 18, n = pts.length;
+    const t0 = tOf(pts[0][0]), t1 = Math.max(tOf(pts[n - 1][0]), t0 + 864e5);
+    let lo = Math.min(...pts.map((p) => p[1])), hi = Math.max(...pts.map((p) => p[1]));
+    const pad = (hi - lo || Math.abs(hi) * 0.05 || 1) * 0.08; lo -= pad; hi += pad;
+    const X = (d) => L + ((tOf(d) - t0) / (t1 - t0)) * (W - L - R), Y = (v) => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+    const line = pts.map(([d, v], i) => `${i ? "L" : "M"}${X(d).toFixed(1)},${Y(v).toFixed(1)}`).join("");
+    const yrs = pts[0][0].slice(0, 4) !== pts[n - 1][0].slice(0, 4), dl = (d) => (yrs ? `${d.slice(2, 4)}.` : "") + md(d);
+    const last = pts[n - 1], ytxt = (v) => usd(v).replace("$", "");
+    return `<svg class="pbc-svg ${cls}" viewBox="0 0 ${W} ${H}" role="img" aria-label="가격 추이 ${esc(dl(pts[0][0]))}~${esc(dl(last[0]))}"
+        data-pts="${esc(JSON.stringify(pts))}" data-geo="${[L, R, T, B, W, H, t0, t1, lo, hi].join(",")}">
+      <line class="grid" x1="${L}" x2="${W - R}" y1="${T}" y2="${T}"/><line class="grid" x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/>
+      <text class="ax" x="${W - R + 4}" y="${T + 4}">${esc(ytxt(hi - pad))}</text><text class="ax" x="${W - R + 4}" y="${H - B}">${esc(ytxt(lo + pad))}</text>
+      <path class="ln" d="${line}"/>${n <= 40 ? pts.map(([d, v]) => `<circle class="dot" cx="${X(d).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.2"/>`).join("") : ""}
+      <circle class="last" cx="${X(last[0]).toFixed(1)}" cy="${Y(last[1]).toFixed(1)}" r="3.2"/>
+      <text class="ax" x="${L}" y="${H - 4}">${esc(dl(pts[0][0]))}</text><text class="ax" x="${W - R}" y="${H - 4}" text-anchor="end">${esc(dl(last[0]))}</text>
+      <line class="cur" x1="0" x2="0" y1="${T}" y2="${H - B}" visibility="hidden"/><circle class="cur" r="3.6" visibility="hidden"/></svg>`;
+  }
+  function seriesBox(label, pts, cls) {
+    if (pts.length < 2) return `<p class="pbc-few"><b>${esc(label)}</b> <span class="muted">기록 ${pts.length}개${pts[0] ? ` (${md(pts[0][0])} ${usd(pts[0][1])})` : ""} — 쌓이는 중</span></p>`;
+    const a = pts[0], z = pts[pts.length - 1];
+    return `<div class="pbc"><p class="pbc-h"><b>${esc(label)}</b> <span class="num">${usd(a[1])} → ${usd(z[1])}</span> <b class="num">${pc((z[1] / a[1] - 1) * 100)}</b>
+        <span class="muted">${md(a[0])}~${md(z[0])} · ${pts.length}개</span></p><p class="pbc-read muted num" aria-live="polite">&nbsp;</p>${lineChart(pts, cls)}</div>`;
+  }
+  function pbChart(c, r) {
+    const m = c.mod("memory") || {}, rg = RANGES.find((x) => x[0] === c.st.pbRange) || RANGES[3];
+    const spot = r.spot ? (m.spot_history?.[r.spot.name] || []) : [], con = r.contract ? (m.contract_history?.[r.contract.name] || []).map(([ym, v]) => [monthEnd(ym), v]) : [];
+    const ends = [spot, con].filter((x) => x.length).map((x) => x[x.length - 1][0]).sort(), from = ends.length ? TR.core.addDays(ends[ends.length - 1], -rg[2]) : "";
+    const cut = (x) => x.filter((p) => p[0] >= from);
+    const first = [spot[0]?.[0], con[0]?.[0]].filter(Boolean).sort()[0];
+    return `<li class="pb-chart"><div class="seg pbc-rng" role="group" aria-label="기간">${RANGES.map(([k, l]) => `<button type="button" data-pbrange="${k}" aria-pressed="${rg[0] === k}">${l}</button>`).join("")}</div>
+      ${r.spot ? seriesBox(`현물(${r.spot.cadence}) ${r.spot.name}`, cut(spot), "s1") : ""}
+      ${r.contract ? seriesBox(`고정가(월간) ${r.contract.name}`, cut(con), "s2") : ""}
+      <p class="hint">기록 시작 ${first ? md(first) : "—"}${first && first.slice(0, 4) !== todayKST().slice(0, 4) ? ` (${first.slice(0, 4)})` : ""} · 과거 시세는 DRAMeXchange 회원 전용이라 이 앱이 모은 날부터 쌓입니다(맥은 Daily Market Radar가 쌓은 기록도 합침). 차트를 누르면 그날 값.</p></li>`;
   }
 
   function outlook(c) {
@@ -163,6 +204,10 @@ TR.semiView = (() => {
   const mem = (c) => [c.safe("사이클", () => cycle(c)), c.safe("가격판", () => board(c)), c.safe("전망", () => outlook(c))].join("");
   // ---------- 뉴스: 기업 집중(회사 토글 · 주요/최신) · 업계 뉴스(태그) ----------
   const ago = (iso) => (iso ? TR.util.ago(iso) : "");
+  // 기사 한 줄(기업 집중 · 고객사 동향 공통): 분류 · 공식 · 중요도 · 제목 · 출처 · 관련 보도
+  const newsItem = (c, n, label, who = "") => `<li><p class="sm-tags"><span class="tg">${esc(label[n.category] || "기타")}</span>${who ? `<span class="tg cu">${esc(who)}</span>` : ""}${n.official ? `<span class="tg appr">공식</span>` : ""}${n.score != null ? `<span class="sm-score" title="중요도 ${n.score}점">${"●".repeat(Math.max(1, Math.min(5, Math.round(n.score / 3))))}</span>` : ""}</p>
+        <p>${c.link(n.url, n.title)}</p><p class="muted sm-meta">${esc(n.source || "")} · ${esc(ago(n.published_at))}</p>
+        ${n.related_count ? `<details class="sm-rel"><summary>관련 보도 ${n.related_count}건</summary><ul>${(n.related || []).map((r) => `<li>${c.link(r.url, r.title)} <span class="muted">· ${esc(r.source || "")}</span></li>`).join("")}${n.related_count > (n.related || []).length ? `<li class="muted">외 ${n.related_count - n.related.length}건</li>` : ""}</ul></details>` : ""}</li>`;
   function company(c) {
     const env = c.mod("company"), all = c.items("company");
     if (!env) return "";
@@ -175,15 +220,44 @@ TR.semiView = (() => {
     const rows = c.st.coTab === "latest" ? [...mine].sort((a, b) => (b.published_at || "").localeCompare(a.published_at || ""))
       : [...mine].sort((a, b) => (b.score ?? 0) - (a.score ?? 0) || (b.published_at || "").localeCompare(a.published_at || "")).slice(0, topN);
     const shown = c.st.coMore ? rows : rows.slice(0, 12);
-    const item = (n) => `<li><p class="sm-tags"><span class="tg">${esc(label[n.category] || "기타")}</span>${n.official ? `<span class="tg appr">공식</span>` : ""}${n.score != null ? `<span class="sm-score" title="중요도 ${n.score}점">${"●".repeat(Math.max(1, Math.min(5, Math.round(n.score / 3))))}</span>` : ""}</p>
-        <p>${c.link(n.url, n.title)}</p><p class="muted sm-meta">${esc(n.source || "")} · ${esc(ago(n.published_at))}</p>
-        ${n.related_count ? `<details class="sm-rel"><summary>관련 보도 ${n.related_count}건</summary><ul>${(n.related || []).map((r) => `<li>${c.link(r.url, r.title)} <span class="muted">· ${esc(r.source || "")}</span></li>`).join("")}${n.related_count > (n.related || []).length ? `<li class="muted">외 ${n.related_count - n.related.length}건</li>` : ""}</ul></details>` : ""}</li>`;
+    const item = (n) => newsItem(c, n, label);
     return `<div class="box">${c.H(`🏢 ${esc(cur.name)} 집중`, `중요도 기준 · 최근 5일${cur.dropped ? ` · 덜 중요한 ${cur.dropped}건 제외` : ""}`)}
       <div class="bar scroll-x sm-cos" role="group" aria-label="회사">${cos.map((x) => `<button type="button" class="chipbtn${x.id === cur.id ? " on" : ""}" data-co="${esc(x.id)}" aria-pressed="${x.id === cur.id}">${esc(x.name)} <span class="muted">${all.filter((n) => (n.company || "skhynix") === x.id).length}</span></button>`).join("")}</div>
       <div class="sm-ctl"><div class="seg" role="group">${[["top", `주요 ${Math.min(topN, mine.length)}`], ["latest", `최신 ${mine.length}`]].map(([k, l]) => `<button type="button" data-cotab="${k}" aria-pressed="${(c.st.coTab || "top") === k}">${l}</button>`).join("")}</div>
         ${cur.focus_label ? `<label class="chk"><input type="checkbox" data-cofocus ${focus ? "checked" : ""}> ${esc(cur.focus_label)}</label>` : ""}</div>
       ${shown.length ? `<ul class="sm-news">${shown.map(item).join("")}</ul>` : c.empty("해당 기사가 없습니다.")}
       ${rows.length > shown.length ? `<button type="button" class="btn" data-comore>더 보기 (${rows.length - shown.length})</button>` : ""}</div>`;
+  }
+
+  // 고객사 동향: 묶음(AI 가속기 · 하이퍼스케일러 · 서버/PC/모바일) → 고객사 칩 → 점수순. 선정 근거(공시 · 실적 발표)는 펼쳐 본다
+  function customers(c) {
+    const env = c.mod("customers"), all = c.items("customers");
+    if (!env) return "";
+    const cos = env.companies || [], groups = [{ id: "all", label: "전체" }, ...(env.groups || [])];
+    const label = Object.fromEntries((env.categories || []).map((x) => [x.id, x.label])), nameOf = Object.fromEntries(cos.map((x) => [x.id, x.name]));
+    const grp = groups.some((g) => g.id === c.st.cuGrp) ? c.st.cuGrp : "all";
+    const inGrp = cos.filter((x) => grp === "all" || x.group === grp);
+    const cu = inGrp.some((x) => x.id === c.st.cu) ? c.st.cu : "all";
+    const cnt = (ids) => all.filter((n) => ids.includes(n.company)).length;
+    const pool = all.filter((n) => (cu === "all" ? inGrp.some((x) => x.id === n.company) : n.company === cu));
+    // 여러 고객사가 함께 나온 기사(예: 오픈AI · 구글 · 오라클)는 '전체'에서 한 줄로 합치고 고객사 이름을 모두 단다
+    const byUrl = new Map();
+    for (const n of [...pool].sort((a, b) => (b.score ?? 0) - (a.score ?? 0) || (b.published_at || "").localeCompare(a.published_at || ""))) {
+      const k = cu === "all" ? n.url : n.id;
+      if (byUrl.has(k)) byUrl.get(k).who.push(nameOf[n.company]); else byUrl.set(k, { n, who: [nameOf[n.company]] });
+    }
+    const rows = [...byUrl.values()];
+    const shown = c.st.cuMore ? rows : rows.slice(0, 12), sel = cos.find((x) => x.id === cu);
+    const basis = (x) => `<li><b>${esc(x.name)}</b> — ${esc(x.basis || "")}${x.basis_url ? ` ${c.link(x.basis_url, "근거")}` : ""}</li>`;
+    return `<div class="box">${c.H("🤝 고객사 동향", "메모리 영업 관점 · 최근 7일 · 중요도순")}
+      <div class="seg seg-full sm-cugrp" role="group" aria-label="고객 묶음">${groups.map((g) => `<button type="button" data-cugrp="${esc(g.id)}" aria-pressed="${g.id === grp}">${esc(g.label)} <span class="muted">${cnt(cos.filter((x) => g.id === "all" || x.group === g.id).map((x) => x.id))}</span></button>`).join("")}</div>
+      <div class="bar scroll-x sm-cos" role="group" aria-label="고객사">${[{ id: "all", name: "전체" }, ...inGrp].map((x) => { const n = x.id === "all" ? cnt(inGrp.map((y) => y.id)) : cnt([x.id]);
+        return `<button type="button" class="chipbtn${x.id === cu ? " on" : ""}" data-cu="${esc(x.id)}" aria-pressed="${x.id === cu}">${esc(x.name)} <span class="muted">${n}</span></button>`; }).join("")}</div>
+      ${sel?.basis ? `<p class="hint sm-basis">선정 근거: ${esc(sel.basis)}${sel.basis_url ? ` ${c.link(sel.basis_url, "근거")}` : ""}</p>` : ""}
+      ${shown.length ? `<ul class="sm-news">${shown.map(({ n, who }) => newsItem(c, n, label, cu === "all" ? who.filter(Boolean).join(" · ") : "")).join("")}</ul>` : c.empty("최근 7일 이 고객사의 메모리 · AI 칩 · 투자 · 실적 · 계약 기사가 없습니다.")}
+      ${rows.length > shown.length ? `<button type="button" class="btn" data-cumore>더 보기 (${rows.length - shown.length})</button>` : ""}
+      <details class="more"><summary>고객사 선정 근거 (${cos.length}곳)</summary><ul class="sm-basis-l">${cos.map(basis).join("")}</ul>
+        <p class="hint">SK하이닉스는 고객 이름을 공시하지 않습니다(매출 10% 이상 고객 수 · 비중만). 이름은 업계 추정 · 고객사 실적 발표 · 공식 협약으로 확인한 것입니다. 분류: 메모리 조달 · AI 칩 · 투자/데이터센터 · 실적 · 계약만 남기고 증권가 · 주가 기사는 뺍니다.</p></details></div>`;
   }
   function industry(c) {
     const its = c.items("news");
@@ -196,7 +270,7 @@ TR.semiView = (() => {
       <div class="seg" role="group" aria-label="분야">${TAGS.map(([k, l]) => `<button type="button" data-ntag="${k}" aria-pressed="${tag === k}">${l} <span class="muted">${k === "all" ? its.length : its.filter((n) => (n.tags || []).includes(k)).length}</span></button>`).join("")}</div>
       ${rows.length ? `<ul class="sm-news">${rows.map((n) => `<li><p>${n.major ? "⭐ " : ""}${c.link(n.url, n.title)}</p><p class="muted sm-meta">${esc(n.source || "")} · ${esc(ago(n.published_at))}${(n.tags || []).length ? ` · ${n.tags.map((t) => esc(L[t] || t)).join(" · ")}` : ""}</p>${n.summary ? `<p class="hint">${esc(n.summary)}</p>` : ""}</li>`).join("")}</ul>` : c.empty("이 분야 뉴스가 없습니다.")}</div>`;
   }
-  const news = (c) => [c.safe("기업 집중", () => company(c)), c.safe("업계 뉴스", () => industry(c))].join("");
+  const news = (c) => [c.safe("기업 집중", () => company(c)), c.safe("고객사 동향", () => customers(c)), c.safe("업계 뉴스", () => industry(c))].join("");
 
   // ---------- 일정 · 지표: 일정(D-day) · 수출 속보 · 대만 월매출 · 빅테크 capex ----------
   const CAT = { earnings: "실적", macro: "매크로", semis: "반도체", conference: "학회·전시", memory: "메모리", policy: "정책" };
@@ -255,6 +329,31 @@ TR.semiView = (() => {
     el.querySelectorAll("[data-ntag]").forEach((x) => x.addEventListener("click", () => set({ newsTag: x.dataset.ntag })));
     el.querySelector("[data-comore]")?.addEventListener("click", () => set({ coMore: true }));
     el.querySelector("[data-cofocus]")?.addEventListener("change", (e) => set({ [`focus_${c.st.co}`]: e.target.checked, coMore: false }));
+    el.querySelectorAll("[data-cugrp]").forEach((x) => x.addEventListener("click", () => set({ cuGrp: x.dataset.cugrp, cu: "all", cuMore: false })));
+    el.querySelectorAll("[data-cu]").forEach((x) => x.addEventListener("click", () => set({ cu: x.dataset.cu, cuMore: false })));
+    el.querySelector("[data-cumore]")?.addEventListener("click", () => set({ cuMore: true }));
+    // 메모리 가격판: 품목 누르면 추이 펼침/접기 · 기간 · 차트 누르면 그날 값
+    el.querySelectorAll("[data-pbkey]").forEach((x) => {
+      const toggle = () => set({ pb: c.st.pb === x.dataset.pbkey ? null : x.dataset.pbkey });
+      x.addEventListener("click", toggle);
+      x.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+    });
+    el.querySelectorAll("[data-pbrange]").forEach((x) => x.addEventListener("click", () => set({ pbRange: x.dataset.pbrange })));
+    el.querySelectorAll(".pbc-svg").forEach((svg) => {
+      const pts = JSON.parse(svg.dataset.pts), [L, R, T, B, W, H, t0, t1, lo, hi] = svg.dataset.geo.split(",").map(Number);
+      const read = svg.closest(".pbc").querySelector(".pbc-read"), [vl, dot] = svg.querySelectorAll(".cur");
+      const show = (e) => {
+        const b = svg.getBoundingClientRect(), x = ((e.clientX - b.left) / b.width) * W, t = t0 + ((x - L) / (W - L - R)) * (t1 - t0);
+        const p = pts.reduce((a, q) => (Math.abs(tOf(q[0]) - t) < Math.abs(tOf(a[0]) - t) ? q : a));
+        const px = L + ((tOf(p[0]) - t0) / (t1 - t0)) * (W - L - R), py = T + (1 - (p[1] - lo) / (hi - lo)) * (H - T - B);
+        vl.setAttribute("x1", px); vl.setAttribute("x2", px); dot.setAttribute("cx", px); dot.setAttribute("cy", py);
+        vl.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
+        const z = pts[pts.length - 1];
+        read.innerHTML = `${esc(p[0])} <b>${usd(p[1])}</b> · 지금 대비 ${pc((z[1] / p[1] - 1) * 100)}`;
+      };
+      svg.addEventListener("pointerdown", show);
+      svg.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse" || e.buttons) show(e); });
+    });
   }
   return { sum, mem, news, cal, bind, _: { change, pct, md, dir, signed, spark } };
 })();
