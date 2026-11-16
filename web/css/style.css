@@ -82,6 +82,7 @@ button, input, select { font: inherit; color: inherit; }
 .mk::before { content: "○ "; } .mk.on { color: var(--ok-text); border-color: color-mix(in srgb, var(--ok-text) 40%, transparent); } .mk.on::before { content: "● "; }
 .clock { color: var(--text-2); font-size: 0.75rem; white-space: nowrap; }
 .pill { font-size: 0.7rem; font-weight: 700; padding: 0.12rem 0.55rem; border-radius: 999px; white-space: nowrap; }
+button.pill { border: 0; cursor: pointer; font-family: inherit; }
 .pill.ok { background: var(--ok-bg); color: var(--ok-text); }
 .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
 .icon-btn { width: var(--tap); height: var(--tap); display: grid; place-items: center; flex: none; background: var(--card); border: 1px solid var(--border); border-radius: 0.6rem; cursor: pointer; font-size: 1.2rem; line-height: 1; color: var(--text-2); }

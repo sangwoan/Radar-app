@@ -14,17 +14,19 @@
       if (ok) p.res(payload); else p.rej(new Error(payload || "네이티브 호출 실패"));
     };
   }
-  const call = (fn) => new Promise((res, rej) => {
+  // ms: 답이 끝내 오지 않을 때(앱이 뒤로 간 사이 응답이 버려짐 등) 기다림을 끝낸다 — 없으면 그 요청을 기다리는 수집이 영영 멈춘다
+  const call = (fn, ms = 0) => new Promise((res, rej) => {
     const id = ++seq;
-    pending.set(id, { res, rej });
-    try { fn(id); } catch (e) { pending.delete(id); rej(e); }
+    const t = ms ? setTimeout(() => { if (pending.delete(id)) rej(new Error("응답 없음(시간 초과)")); }, ms) : null;
+    pending.set(id, { res: (v) => { clearTimeout(t); res(v); }, rej: (e) => { clearTimeout(t); rej(e); } });
+    try { fn(id); } catch (e) { pending.delete(id); clearTimeout(t); rej(e); }
   });
   const parse = (s, d) => { try { return JSON.parse(s); } catch { return d; } };
 
   TR.native = {
     available: !!N,
     background: !!(N && N.isBackground && N.isBackground()),
-    http: (url, ms, headers) => call((id) => (headers && N.httpH ? N.httpH(id, url, ms | 0, JSON.stringify(headers)) : N.http(id, url, ms | 0))).then((p) => parse(p, { status: 0, body: "" })),
+    http: (url, ms, headers) => call((id) => (headers && N.httpH ? N.httpH(id, url, ms | 0, JSON.stringify(headers)) : N.http(id, url, ms | 0)), (ms | 0) * 4 + 30000).then((p) => parse(p, { status: 0, body: "" })),
     headers: !!(N && N.httpH),                                       // 헤더를 붙여 부를 수 있는 앱인가(4.13~, 옛 앱은 헤더 없이 부름)
     notify: (title, body, sym) => { if (N) N.notify(String(title), String(body), sym || ""); },
     schedule: (minutes, exact) => { if (N) N.schedule(minutes | 0, !!exact); },

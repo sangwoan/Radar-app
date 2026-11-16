@@ -2,7 +2,7 @@
 //  아래 탭: 요약(브리프 · KPI · 시세) · 메모리(가격판 · 사이클 · 전망) · 뉴스(기업 집중 · 업계) · 일정(일정 · 수출 · 대만 월매출 · capex)
 //  바깥 링크(뉴스 원문)는 앱에서 폰 브라우저로 연다(app.js의 바깥 링크 처리). 모든 바깥 글은 esc()를 거친다.
 TR.modules.semi = (el) => {
-  const { esc, load, save } = TR.util;
+  const { esc, load, save, toast } = TR.util;
   const st = Object.assign({ sub: "sum", co: "skhynix", coTab: "top", newsTag: "semis" }, load("tr-semi", {}));
   const SUBS = [["sum", "요약"], ["mem", "메모리"], ["news", "뉴스"], ["cal", "일정·지표"]];
   const keep = () => save("tr-semi", st);
@@ -29,10 +29,10 @@ TR.modules.semi = (el) => {
     const failed = Object.entries(b?.data?.meta?.modules || {}).filter(([, v]) => v.status === "error").map(([k]) => NAMES[k] || k);
     return `<div class="semi-head">
       <span class="clock">${upd ? `${fmtDate(upd)} 기준` : "—"}</span>
-      ${res.running ? `<span class="pill" data-semi-running>새로 받는 중…</span>`
+      ${res.running ? `<span class="pill" data-semi-running>새로 받는 중${res.progress ? ` ${res.progress[0]}/${res.progress[1]}` : "…"}</span>`
         : hours != null && hours > 2 ? `<span class="pill warn">${hours >= 48 ? `${Math.floor(hours / 24)}일 전` : `${Math.floor(hours)}시간 전`} 데이터</span>` : ""}
-      ${failed.length ? `<span class="pill warn" title="${esc(failed.join(" · "))}">일부 출처 실패 ${failed.length}</span>` : ""}
-      ${res.error ? `<span class="pill warn" title="${esc(res.error)}">받기 실패 · 보관본</span>` : ""}
+      ${failed.length ? `<button type="button" class="pill warn" data-semi-say="${esc(`받지 못한 출처(이전 데이터 유지): ${failed.join(" · ")}`)}">일부 출처 실패 ${failed.length}</button>` : ""}
+      ${res.error ? `<button type="button" class="pill warn" data-semi-say="${esc(res.error)}">받기 실패 · 보관본</button>` : ""}
       <span class="semi-acts"><button type="button" class="btn sm" data-semi-refresh title="지금 새로 받기"${res.running ? " disabled" : ""}>↻ 새로 받기</button></span>
     </div>`;
   }
@@ -54,29 +54,41 @@ TR.modules.semi = (el) => {
 
   function draw() {
     el.innerHTML = page();
-    el.querySelectorAll("[data-semi-refresh]").forEach((btn) => btn.addEventListener("click", async (e) => {
-      e.currentTarget.disabled = true;
+    el.querySelectorAll("[data-semi-refresh]").forEach((btn) => btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      TR.semi.asked = true;                                          // 끝나면 결과를 알려 준다
       res = await TR.semi.load(true);
       draw();
       poll();
+      if (!res.running) done();
     }));
+    el.querySelectorAll("[data-semi-say]").forEach((b) => b.addEventListener("click", () => toast(b.dataset.semiSay)));   // 폰엔 툴팁이 없어 눌러서 본다
     el.querySelectorAll("[data-sub]").forEach((b) => b.addEventListener("click", () => { st.sub = b.dataset.sub; keep(); draw(); window.scrollTo(0, 0); }));
     if (res.bundle) S.bind(el, { ...ctx(), draw });                  // 섹션별 조작(회사 토글 등)
   }
 
-  // 모으는 중이면 몇 초마다 다시 묻고, 끝나면(또는 묶음이 바뀌면) 다시 그린다
-  let timer = null;
+  // '새로 받기'를 누른 수집이 끝났을 때 한 번: 됐는지 · 무엇이 안 됐는지
+  function done() {
+    if (!TR.semi.asked) return;
+    TR.semi.asked = false;
+    const bad = Object.entries(res.bundle?.data?.meta?.modules || {}).filter(([, v]) => v.status === "error").map(([k]) => NAMES[k] || k);
+    toast(res.error ? `새로 받지 못했습니다: ${res.error}` : bad.length ? `새로 받았습니다 · 실패 ${bad.length}곳(${bad.join(" · ")})은 이전 데이터` : "새로 받았습니다");
+  }
+  // 모으는 중이면 3초마다 다시 묻고, 모듈이 하나 끝날 때마다(묶음 · 진행이 바뀌면) 다시 그린다. 타이머는 TR.semi에 하나만
+  // (1분 새로고침으로 이 모듈이 다시 만들어져도 겹쳐 돌지 않게).
+  const stamp = (r) => [r.bundle?.built_at, Object.keys(r.bundle?.data?.meta?.modules || {}).length, r.running, r.error, (r.progress || []).join("/")].join("|");
   function poll() {
-    clearTimeout(timer);
+    clearTimeout(TR.semi.timer);
     if (!res?.running) return;
-    timer = setTimeout(async () => {
+    TR.semi.timer = setTimeout(async () => {
       if (!here()) return;
-      const before = res;
+      const before = stamp(res);
       res = await TR.semi.load();
       if (!here()) return;
-      if (before.bundle?.built_at !== res.bundle?.built_at || before.running !== res.running || before.error !== res.error) draw();
+      if (before !== stamp(res)) draw();
+      if (!res.running) done();
       poll();
-    }, 4000);
+    }, 3000);
   }
 
   // 메모리에 있으면 바로 그리고(1분 새로고침에도 깜빡이지 않게), 오래됐으면 뒤에서 받아 바뀐 경우에만 다시 그린다
@@ -87,7 +99,7 @@ TR.modules.semi = (el) => {
     const before = res;
     res = await TR.semi.load();
     if (!here()) return;                                           // 그동안 다른 화면으로 갔으면 그리지 않음
-    if (!before || before.bundle?.built_at !== res.bundle?.built_at || before.error !== res.error || before.running !== res.running) draw();
+    if (!before || stamp(before) !== stamp(res)) draw();
     poll();
   })();
 };

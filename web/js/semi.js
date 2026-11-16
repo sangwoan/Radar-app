@@ -14,7 +14,7 @@ TR.semi = (() => {
   async function load(force = false) {
     try {
       const r = await TR.api.get(`/api/semi${force ? "?force=1" : ""}`);
-      mem = { bundle: r.bundle || null, fetchedAt: r.fetched_at || null, running: !!r.running, error: r.error || null };
+      mem = { bundle: r.bundle || null, fetchedAt: r.fetched_at || null, running: !!r.running, error: r.error || null, progress: r.progress || null };
     } catch (e) {
       mem = { bundle: mem?.bundle || null, fetchedAt: mem?.fetchedAt || null, running: false, error: msg(e) };
     }
@@ -28,5 +28,5 @@ TR.semi = (() => {
     save: (body) => TR.api.post("/api/semi/keys", body),            // 폰 앱: { text: "RADARKEYS1:…" } · { clear: true }
     exportText: () => TR.api.post("/api/semi/keys/export", {}),     // 이 맥에서만
   };
-  return { load, peek, fresh, keys, TTL };
+  return { load, peek, fresh, keys, TTL, timer: null, asked: false };   // timer · asked: 화면(js/modules/semi.js)의 다시 묻기 · '새로 받기' 결과 알림
 })();

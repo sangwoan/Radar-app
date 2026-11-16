@@ -10,7 +10,7 @@
   }
   // mode: live(TR.http) · replay(녹화본: { url: {status, body|b64} })
   function makeNet(mode = "live", tape = {}) {
-    const calls = [];
+    const calls = [], fails = {}, DEAD_AFTER = 4, TIMEOUT = 15000;
     async function get(url, headers = null) {
       calls.push(url);
       if (mode === "replay") {
@@ -19,8 +19,15 @@
         if (t.status !== 200) throw new NetError(t.status);
         return "b64" in t ? Buffer.from(t.b64, "base64").toString("utf8") : t.body;
       }
-      try { return await TR.http.text(url, 20000, headers); }
-      catch (e) { const m = /HTTP (\d+)/.exec(e.message || ""); throw new NetError(m ? +m[1] : 0, e.message); }
+      // 응답 없는 출처가 수집 전체를 붙잡지 않게: 한 호스트가 연달아 DEAD_AFTER번 응답이 없으면 이번 수집에서는 건너뛴다(base.py Net과 같게)
+      const host = (/^https?:\/\/([^/:?#]+)/.exec(url) || [])[1] || "";
+      if ((fails[host] || 0) >= DEAD_AFTER) throw new NetError(0, `응답 없는 출처 건너뜀: ${host}`);
+      try { const text = await TR.http.text(url, TIMEOUT, headers); fails[host] = 0; return text; }
+      catch (e) {
+        const m = /HTTP (\d+)/.exec(e.message || ""), status = m ? +m[1] : 0;
+        if (!status) fails[host] = (fails[host] || 0) + 1;
+        throw new NetError(status, e.message);
+      }
     }
     return { mode, tape, calls, get, json: async (url, headers) => JSON.parse(await get(url, headers)) };
   }
